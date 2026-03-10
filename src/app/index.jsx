@@ -4,19 +4,18 @@ import { Logo } from '@/components/logo';
 
 export default function HomeScreen() {
     return (
-        <ImageBackground
-            source={require('../assets/supermarket.jpg')}
-            style={styles.background}
-            resizeMode="cover"
-        >
-            <View style={styles.container}>
-                <Text style={styles.bannerPlaceHolder}>BANNER PLACEHOLDER</Text>
-                <View style={styles.mainContent}>
-                    <Logo />
-                    <ScanButton />
-                </View>
+        // <ImageBackground
+        //     source={require('../assets/supermarket.jpg')}
+        //     style={styles.background}
+        //     resizeMode="cover"
+        // >
+        <>
+            <Text style={styles.bannerPlaceHolder}>BANNER PLACEHOLDER</Text>
+            <View style={styles.mainContent}>
+                <Logo />
+                <ScanButton />
             </View>
-        </ImageBackground>
+        </>
     );
 }
 
@@ -29,6 +28,7 @@ const styles = StyleSheet.create({
         height: 320,
         flex: 0,
         justifyContent: 'center',
+        marginBottom: 60,
         borderStyle: 'solid',
         borderWidth: 1,
         borderBottomRightRadius: 10,
@@ -37,9 +37,8 @@ const styles = StyleSheet.create({
     },
     mainContent: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         gap: 25,
-        marginTop: 200,
     },
 });
