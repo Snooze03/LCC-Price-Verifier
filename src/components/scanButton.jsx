@@ -1,42 +1,46 @@
 import { Pressable, Text, StyleSheet } from 'react-native';
 import { ScanLine } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useCameraPermissions } from 'expo-camera';
 
 export function ScanButton() {
+    const [permission, requestPermission] = useCameraPermissions();
+
+    function handleScan() {
+        requestPermission();
+
+        if (permission.granted) {
+            router.push('/camera/scan');
+        }
+    }
+
     return (
-        <Pressable
-            style={styles.scanhereButton}
-            onPress={() => router.push('/camera/scan')}
-        >
-            <ScanLine size={38} color="black" />
-            <Text style={styles.textScan}>scan</Text>
-            <Text style={styles.textHere}>here</Text>
+        <Pressable style={styles.scanHereButton} onPress={handleScan}>
+            <ScanLine size={45} />
+            <Text style={[styles.text, { color: '#4A90D9' }]}>scan</Text>
+            <Text style={[styles.text, { color: '#ffed47' }]}>here</Text>
         </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
-    scanhereButton: {
+    scanHereButton: {
+        width: 'auto',
+        height: 'auto',
+        paddingHorizontal: 50,
+        paddingVertical: 12,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         gap: 7,
         backgroundColor: 'white',
-        borderStyle: 'solid',
-        borderWidth: 2,
+        borderWidth: 1,
         borderRadius: 10,
-        borderColor: '#D8DCDE',
-        paddingHorizontal: 60,
-        paddingVertical: 12,
+        borderColor: '#d0d0d0',
     },
-    textScan: {
+    text: {
         textTransform: 'uppercase',
-        color: '#4A90D9',
-        fontSize: 34,
-    },
-    textHere: {
-        textTransform: 'uppercase',
-        color: '#E8D84A',
-        fontSize: 34,
+        fontSize: 32,
+        fontWeight: 'bold',
     },
 });
