@@ -1,7 +1,6 @@
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
-import { ScanHere } from '@/components/scan';
-import { LogoLCC } from '@/components/logolcc';
-import { PriceCheckBox } from '@/components/pricecheckerbox';
+import { ScanButton } from '@/components/scanButton';
+import { Logo } from '@/components/logo';
 
 export default function HomeScreen() {
     return (
@@ -11,11 +10,10 @@ export default function HomeScreen() {
             resizeMode="cover"
         >
             <View style={styles.container}>
-                <Text style={styles.bannerplaceholder}>BANNER PLACEHOLDER</Text>
-                <View style={styles.placeholderbox}>
-                    <LogoLCC />
-                    <PriceCheckBox />
-                    <ScanHere />
+                <Text style={styles.bannerPlaceHolder}>BANNER PLACEHOLDER</Text>
+                <View style={styles.mainContent}>
+                    <Logo />
+                    <ScanButton />
                 </View>
             </View>
         </ImageBackground>
@@ -24,28 +22,24 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
     background: {
-        flex: 1,
         width: '100%',
         height: '100%',
     },
-    container: {
-        flex: 1,
-    },
-    //  font-bold ">
-    placeholderbox: {
-        flex: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 2,
-        paddingTop: 56,
-    },
-    bannerplaceholder: {
+    bannerPlaceHolder: {
+        height: 320,
         flex: 0,
         justifyContent: 'center',
         borderStyle: 'solid',
         borderWidth: 1,
-        borderRadius: 6,
-        height: 250,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
         fontWeight: 'bold',
+    },
+    mainContent: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 25,
+        marginTop: 200,
     },
 });
