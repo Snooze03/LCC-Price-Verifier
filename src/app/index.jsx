@@ -9,26 +9,30 @@ export default function HomeScreen() {
         //     style={styles.background}
         //     resizeMode="cover"
         // >
-        <>
+        <View style={styles.container}>
             <Text style={styles.bannerPlaceHolder}>BANNER PLACEHOLDER</Text>
             <View style={styles.mainContent}>
                 <Logo />
                 <ScanButton />
             </View>
-        </>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    background: {
-        width: '100%',
-        height: '100%',
+    // background: {
+    //     width: '100%',
+    //     height: '100%',
+    // },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        gap: 50,
     },
     bannerPlaceHolder: {
         height: 320,
         flex: 0,
         justifyContent: 'center',
-        marginBottom: 60,
         borderStyle: 'solid',
         borderWidth: 1,
         borderBottomRightRadius: 10,
