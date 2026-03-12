@@ -3,7 +3,7 @@
         "name": "jsExpo",
         "slug": "jsExpo",
         "version": "1.0.0",
-        "orientation": "portrait",
+        "orientation": "default",
         "icon": "",
         "scheme": "jsexpo",
         "userInterfaceStyle": "light",
