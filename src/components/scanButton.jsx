@@ -1,4 +1,4 @@
-import { Pressable, Text, StyleSheet, Animated } from 'react-native';
+import { Pressable, Text, StyleSheet, Animated, View } from 'react-native';
 import { ChevronsDown } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useCameraPermissions } from 'expo-camera';
@@ -33,13 +33,19 @@ export function ScanButton() {
     }
 
     return (
-        <Animated.View style={{ transform: [{ translateY: bounceAnim }] }}>
-            <Pressable style={styles.scanHereButton} onPress={handleScan}>
-                <Text style={[styles.text, { color: '#4A90D9' }]}>scan</Text>
-                <Text style={[styles.text, { color: '#ffed47' }]}>here</Text>
-                <ChevronsDown size={45} />
-            </Pressable>
-        </Animated.View>
+        <View>
+            <Animated.View style={{ transform: [{ translateY: bounceAnim }] }}>
+                <Pressable style={styles.scanHereButton} onPress={handleScan}>
+                    <Text style={[styles.text, { color: '#4A90D9' }]}>
+                        scan
+                    </Text>
+                    <Text style={[styles.text, { color: '#ffed47' }]}>
+                        here
+                    </Text>
+                    <ChevronsDown size={45} />
+                </Pressable>
+            </Animated.View>
+        </View>
     );
 }
 
