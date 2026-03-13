@@ -11,7 +11,7 @@ export default function ScanBarcode() {
 
     function handleBarcodeScanned({ data }) {
         console.log(data);
-        router.back();
+        router.replace({ pathname: '/', params: { data } });
     }
 
     return (
