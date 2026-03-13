@@ -1,16 +1,20 @@
-const fastify = require('fastify')({ logger: true });
+import fastify from 'fastify';
+import dbConnector from './plugins/dbConnector.js';
+import itemRoutes from './routes/price.js';
 
-fastify.get('/price', async (request, reply) => {
-    reply.send({ message: 'BRUH' });
-});
+const FASTIFY = fastify({ logger: true });
 
 const start = async () => {
     try {
-        // Host must be 0.0.0.0 for mobile access
-        await fastify.listen({ port: 3000, host: '0.0.0.0' });
+        await FASTIFY.register(dbConnector);
+        await FASTIFY.register(itemRoutes);
+
+        await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
+        console.log('Server is running on port 3000');
     } catch (err) {
-        fastify.log.error(err);
+        FASTIFY.log.error(err);
         process.exit(1);
     }
 };
+
 start();
