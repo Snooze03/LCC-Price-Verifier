@@ -12,6 +12,8 @@
     "@react-navigation/bottom-tabs": "^7.15.2",
     "@react-navigation/elements": "^2.9.8",
     "@react-navigation/native": "^7.1.31",
+    "@tanstack/react-query": "^5.90.21",
+    "axios": "^1.13.6",
     "babel-preset-expo": "~54.0.10",
     "eslint": "^9.39.3",
     "eslint-config-expo": "~10.0.0",
