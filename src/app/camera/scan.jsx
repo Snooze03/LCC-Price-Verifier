@@ -1,14 +1,16 @@
 import { StyleSheet, View } from 'react-native';
 import { CameraView } from 'expo-camera';
 import { useRouter } from 'expo-router';
+import { usePriceVerifier } from '@/hooks/usePriceVerifier';
 
 import { BARCODE_TYPES } from '@/constants/barcodeTypes';
 
 export default function ScanBarcode() {
     const router = useRouter();
+    const { price } = usePriceVerifier();
 
     function handleBarcodeScanned({ data }) {
-        console.log(data);
+        console.log(price?.data.message);
         router.back();
     }
 
