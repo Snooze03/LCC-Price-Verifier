@@ -23,7 +23,11 @@ export default function HomeScreen() {
             </View>
             <View style={styles.rightColumn}>
                 <Logo />
-                {itemDetected ? <ResultScan data={data} /> : <ScanButton />}
+                <ResultScan />
+                <View style={styles.bottomRight}>
+                    <ScanButton />
+                </View>
+                {/* {itemDetected ? <ResultScan data={data} /> : <ScanButton />} */}
             </View>
         </View>
         //                 ) : (
@@ -88,5 +92,9 @@ const styles = StyleSheet.create({
         gap: 20,
         borderRightWidth: 1,
         borderRightColor: '#ccc',
+    },
+    bottomRight: {
+        alignSelf: 'flex-end',
+        padding: 20,
     },
 });
