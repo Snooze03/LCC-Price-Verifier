@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { ScanButton } from '@/components/scanButton';
 import { Logo } from '@/components/logo';
 //import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { ResultScan } from '@/components/priceresult';
+import { ResultScan } from '@/components/priceResult';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 
