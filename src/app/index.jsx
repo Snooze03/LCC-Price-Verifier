@@ -1,43 +1,46 @@
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { ScanButton } from '@/components/scanButton';
 import { Logo } from '@/components/logo';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+//import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { ResultScan } from '@/components/priceresult';
+import { useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 
 export default function HomeScreen() {
-    const { height, width } = useWindowDimensions();
-    const isLandscape = width > height;
+    // const { height, width } = useWindowDimensions();
+    // const isLandscape = width > height;
+    const { data } = useLocalSearchParams();
+    const itemDetected = !!data; // true if data exists, false if not
 
     return (
-        <SafeAreaProvider>
-            <SafeAreaView style={styles.container}>
-                {isLandscape ? (
-                    // LANDSCAPE: Two columns side by side
-                    <View style={styles.landscapeContainer}>
-                        <View style={styles.leftColumn}>
-                            <Text style={styles.bannerPlaceHolder}>
-                                BANNER PLACEHOLDER
-                            </Text>
-                        </View>
-                        <View style={styles.rightColumn}>
-                            <Logo />
+        // <SafeAreaProvider>
+        //     <SafeAreaView style={styles.container}>
+        //         {isLandscape ? (
+        // LANDSCAPE: Two columns side by side
+        <View style={styles.landscapeContainer}>
+            <View style={styles.leftColumn}>
+                <Text style={styles.bannerPlaceHolder}>BANNER PLACEHOLDER</Text>
+            </View>
+            <View style={styles.rightColumn}>
+                <Logo />
+                {itemDetected ? <ResultScan data={data} /> : <ScanButton />}
+            </View>
+        </View>
+        //                 ) : (
+        //                     // PORTRAIT: Original stacked layout
+        //                     <View style={styles.portraitContainer}>
+        //                         <Text style={styles.bannerPlaceHolder}>
+        //                             BANNER PLACEHOLDER
+        //                         </Text>
+        //                         <View style={styles.mainContent}>
+        //                             <Logo />
 
-                            <ScanButton />
-                        </View>
-                    </View>
-                ) : (
-                    // PORTRAIT: Original stacked layout
-                    <View style={styles.portraitContainer}>
-                        <Text style={styles.bannerPlaceHolder}>
-                            BANNER PLACEHOLDER
-                        </Text>
-                        <View style={styles.mainContent}>
-                            <Logo />
-                            <ScanButton />
-                        </View>
-                    </View>
-                )}
-            </SafeAreaView>
-        </SafeAreaProvider>
+        //                             {/* <ScanButton /> */}
+        //                         </View>
+        //                     </View>
+        //                 )}
+        //             </SafeAreaView>
+        //         </SafeAreaProvider>
     );
 }
 
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     rightColumn: {
-        flex: 1,
+        flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
         gap: 20,
