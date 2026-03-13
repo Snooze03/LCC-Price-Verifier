@@ -1,0 +1,19 @@
+{
+    "extends": "./node_modules/expo/tsconfig.base.json",
+    "compilerOptions": {
+        "strict": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "jsx": "react-native",
+        "checkJs": true
+    },
+    "include": [
+        "**/*.js",
+        "**/*.jsx",
+        "eslint.config.js",
+        "nativewind-env.d.ts"
+    ],
+    "exclude": ["node_modules", "dist", ".expo", ".expo/types/**/*.js"]
+}
