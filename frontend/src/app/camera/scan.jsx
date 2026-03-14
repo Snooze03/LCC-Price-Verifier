@@ -1,16 +1,22 @@
+import { use, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CameraView } from 'expo-camera';
 import { useRouter } from 'expo-router';
+import { usePriceVerifier } from '@/hooks/usePriceVerifier';
 
 import { BARCODE_TYPES } from '@/constants/barcodeTypes';
 
 export default function ScanBarcode() {
+    const [barcode, setBarcode] = useState(null);
     const router = useRouter();
+    const { price, isLoading, isSuccess } = usePriceVerifier(barcode);
 
-    function handleBarcodeScanned({ data }) {
-        console.log(data);
-        router.back();
-    }
+    useEffect(() => {
+        if (isSuccess && price) {
+            console.log(price);
+            router.back();
+        }
+    }, [price, isSuccess]);
 
     return (
         <View style={styles.container}>
@@ -21,7 +27,7 @@ export default function ScanBarcode() {
                 barcodeScannerSettings={{
                     barcodeTypes: [...BARCODE_TYPES],
                 }}
-                onBarcodeScanned={handleBarcodeScanned}
+                onBarcodeScanned={({ data }) => setBarcode(data)}
             />
         </View>
     );
