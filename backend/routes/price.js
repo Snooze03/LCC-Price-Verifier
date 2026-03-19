@@ -7,6 +7,11 @@ export default async function itemRoutes(FASTIFY, options) {
             [barcode],
         );
 
-        return { items: rows };
+        const item = rows[0];
+
+        return {
+            description: item.description,
+            price: parseFloat(item.price).toFixed(2),
+        };
     });
 }
