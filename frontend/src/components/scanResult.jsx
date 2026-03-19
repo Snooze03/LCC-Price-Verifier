@@ -37,10 +37,12 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     priceBox: {
-        backgroundColor: '#ffed47',
-        borderRadius: 10,
-        padding: 16,
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'flex-start',
+        backgroundColor: '#ffed47',
+        padding: 16,
+        borderRadius: 10,
     },
     priceText: {
         fontSize: 48,
