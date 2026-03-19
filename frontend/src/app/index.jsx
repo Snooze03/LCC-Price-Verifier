@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { TextInput, View, StyleSheet } from 'react-native';
+import { TextInput, Text, View, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Image } from 'expo-image';
@@ -8,13 +8,16 @@ import { usePriceVerifier } from '@/hooks/usePriceVerifier';
 import { Logo } from '@/components/logo';
 import { ScanResult } from '@/components/scanResult';
 import { ScanIndicator } from '@/components/scanIndicator';
+import { ErrorMessage } from '@/components/errorMessage';
 
 export default function HomeScreen() {
     const [barcode, setBarcode] = useState('');
     const [scanResult, setScanResult] = useState(false);
+    const isPaused = useRef(false);
     const inputRef = useRef(null);
 
-    const { product, isLoading, isSuccess } = usePriceVerifier(barcode);
+    const { product, isLoading, isSuccess, isError } =
+        usePriceVerifier(barcode);
 
     NavigationBar.setVisibilityAsync('hidden');
     // @ts-ignore
@@ -24,11 +27,26 @@ export default function HomeScreen() {
         if (product && isSuccess) {
             setScanResult(true);
         }
-    }, [product]);
+        setTimeout(() => {
+            setScanResult(false);
+            setBarcode('');
+            isPaused.current = false;
+        }, 3000);
+    }, [product, isSuccess, isLoading, isError]);
+
+    useEffect(() => {
+        if (barcode.length > 0 && !isPaused.current) {
+            const timer = setTimeout(() => {
+                isPaused.current = true;
+            }, 100);
+
+            return () => clearTimeout(timer);
+        }
+    }, [barcode]);
 
     const handleScan = (newBarcode) => {
-        const cleanCode = newBarcode.trim();
-        setBarcode(cleanCode);
+        if (isPaused.current) return;
+        setBarcode(newBarcode);
     };
 
     return (
@@ -46,6 +64,7 @@ export default function HomeScreen() {
 
             <View style={styles.rightColumn}>
                 <Logo />
+                {/* Hidden text input to catch scanned barcode */}
                 <TextInput
                     ref={inputRef}
                     style={styles.textBox}
@@ -59,17 +78,16 @@ export default function HomeScreen() {
                     contextMenuHidden={true}
                 />
 
-                {scanResult ? (
-                    <>
-                        {!isLoading && (
-                            <ScanResult
-                                productDescription={product?.description}
-                                productPrice={product?.price}
-                            />
-                        )}
-                    </>
+                {scanResult && !isLoading ? (
+                    <ScanResult
+                        productDescription={product?.description}
+                        productPrice={product?.price}
+                    />
                 ) : (
-                    <ScanIndicator />
+                    <>
+                        {isError && <ErrorMessage />}
+                        <ScanIndicator />
+                    </>
                 )}
             </View>
         </View>
@@ -89,7 +107,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
-        opacity: 1,
+        opacity: 0,
         width: 'auto',
         backgroundColor: 'white',
         borderWidth: 1,
