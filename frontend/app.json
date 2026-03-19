@@ -8,21 +8,17 @@
         "scheme": "jsexpo",
         "userInterfaceStyle": "light",
         "newArchEnabled": true,
-        "splash": {
-            "image": "",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
         "ios": {
             "supportsTablet": true
         },
+        "edgeToEdgeEnabled": false,
         "android": {
             "adaptiveIcon": {
                 "foregroundImage": "",
                 "backgroundColor": "#ffffff"
             },
-            "edgeToEdgeEnabled": true,
-            "permissions": ["CAMERA"]
+            "edgeToEdgeEnabled": false,
+            "package": "com.snooze33.jsExpo"
         },
         "web": {
             "bundler": "metro",
@@ -31,6 +27,11 @@
         "plugins": ["expo-font", "expo-web-browser"],
         "experiments": {
             "typedRoutes": true
+        },
+        "extra": {
+            "eas": {
+                "projectId": "800828e5-4756-4c92-a700-75ca550e1047"
+            }
         }
     }
 }

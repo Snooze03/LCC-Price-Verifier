@@ -9,19 +9,11 @@ const queryClient = new QueryClient();
 export default function RootLayout() {
     return (
         <QueryClientProvider client={queryClient}>
-            <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen
-                    name="camera/scan"
-                    options={{
-                        headerBackButtonDisplayMode: 'generic',
-                        headerTitle: 'Back',
-                        headerTransparent: true,
-                        headerBlurEffect: 'systemMaterialDark',
-                        headerTintColor: 'white',
-                    }}
-                />
-            </Stack>
+            <Stack
+                screenOptions={{
+                    headerShown: false,
+                }}
+            ></Stack>
         </QueryClientProvider>
     );
 }

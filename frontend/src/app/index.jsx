@@ -1,17 +1,44 @@
-import { View, StyleSheet } from 'react-native';
+import { useState, useRef, useEffect } from 'react';
+import { TextInput, View, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import * as NavigationBar from 'expo-navigation-bar';
 import { Image } from 'expo-image';
 
-import { ScanButton } from '@/components/scanButton';
+import { usePriceVerifier } from '@/hooks/usePriceVerifier';
 import { Logo } from '@/components/logo';
+import { ScanResult } from '@/components/scanResult';
+import { ScanIndicator } from '@/components/scanIndicator';
 
 export default function HomeScreen() {
+    const [barcode, setBarcode] = useState('');
+    const [scanResult, setScanResult] = useState(false);
+    const inputRef = useRef(null);
+
+    const { product, isLoading, isSuccess } = usePriceVerifier(barcode);
+
+    NavigationBar.setVisibilityAsync('hidden');
+    // @ts-ignore
+    inputRef.current?.focus();
+
+    useEffect(() => {
+        if (product && isSuccess) {
+            setScanResult(true);
+        }
+    }, [product]);
+
+    const handleScan = (newBarcode) => {
+        const cleanCode = newBarcode.trim();
+        setBarcode(cleanCode);
+    };
+
     return (
         <View style={styles.container}>
+            <StatusBar hidden={true} />
             <View style={styles.leftColumn}>
                 <Image
                     style={styles.image}
                     source={{
-                        uri: 'https://scontent.fmnl13-4.fna.fbcdn.net/v/t39.30808-6/650242741_1405979961574505_4335770736007184727_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=7b2446&_nc_eui2=AeHuYFiqr1AdXR7fxRFmELerFMYODidJE30Uxg4OJ0kTfcErG2va4Pnki1zSiPdBg1hLtSDQskUmwtBmrwz08nAh&_nc_ohc=NJQmRHdMr7QQ7kNvwFOw7kD&_nc_oc=Adnd3Pds_WJ6M-ZrJcj0GAyzHfiDblRRBNDG9ZDYQR0dXYflzdP0RrjZsMTFrqwEJAI&_nc_zt=23&_nc_ht=scontent.fmnl13-4.fna&_nc_gid=q_yErC7P3rIHx_sk-g9DoA&_nc_ss=8&oh=00_AfzFd1XzfdKOWCJ-_4OtiRM-HanVpZnd5HL4TKjfAPfuaQ&oe=69B883F0',
+                        uri: 'https://lcc.com.ph/wp-content/uploads/2025/10/ECO-BAG-DISCOUNT.jpg',
                     }}
                     contentFit="fill"
                 />
@@ -19,7 +46,31 @@ export default function HomeScreen() {
 
             <View style={styles.rightColumn}>
                 <Logo />
-                <ScanButton />
+                <TextInput
+                    ref={inputRef}
+                    style={styles.textBox}
+                    value={barcode}
+                    onChangeText={handleScan}
+                    onBlur={() => inputRef.current?.focus()}
+                    showSoftInputOnFocus={false}
+                    pointerEvents="none"
+                    caretHidden={true}
+                    autoCorrect={false}
+                    contextMenuHidden={true}
+                />
+
+                {scanResult ? (
+                    <>
+                        {!isLoading && (
+                            <ScanResult
+                                productDescription={product?.description}
+                                productPrice={product?.price}
+                            />
+                        )}
+                    </>
+                ) : (
+                    <ScanIndicator />
+                )}
             </View>
         </View>
     );
@@ -32,14 +83,25 @@ const styles = StyleSheet.create({
     },
     leftColumn: {
         flex: 1,
-        // backgroundColor: 'red',
+        // backgroundColor: 'green',
+    },
+    textBox: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        opacity: 1,
+        width: 'auto',
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: '#d0d0d0',
     },
     image: {
         width: '100%',
         height: '100%',
     },
     rightColumn: {
-        flex: 1,
+        flex: 1.2,
         justifyContent: 'center',
         alignItems: 'center',
         gap: 20,
