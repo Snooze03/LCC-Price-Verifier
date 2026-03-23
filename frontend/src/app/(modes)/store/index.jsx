@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { TextInput, View, StyleSheet } from 'react-native';
-// import { StatusBar } from 'expo-status-bar';
 import { Image } from 'expo-image';
 
+import { COLORS } from '@/constants/colors';
 import { usePriceVerifier } from '@/hooks/usePriceVerifier';
 import { Logo } from '@/components/logo';
 import { ScanResult } from '@/components/scanResult';
@@ -51,7 +51,6 @@ export default function PriceVerifier() {
 
     return (
         <View style={styles.container}>
-            {/* <StatusBar hidden={true} /> */}
             <View style={styles.leftColumn}>
                 <Image
                     style={styles.image}
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: '#d0d0d0',
+        borderColor: COLORS.border,
     },
     image: {
         width: '100%',
