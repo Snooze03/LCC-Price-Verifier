@@ -1,6 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { Animated, View, Text, StyleSheet } from 'react-native';
 import { ChevronsDown } from 'lucide-react-native';
+import { COLORS } from '@/constants/colors';
+import { ColorSpace } from 'react-native-reanimated';
 
 export function ScanIndicator() {
     const bounceAnim = useRef(new Animated.Value(0)).current;
@@ -25,8 +27,12 @@ export function ScanIndicator() {
     return (
         <Animated.View style={{ transform: [{ translateY: bounceAnim }] }}>
             <View style={styles.scanHereButton}>
-                <Text style={[styles.text, { color: '#4A90D9' }]}>scan</Text>
-                <Text style={[styles.text, { color: '#ffed47' }]}>here</Text>
+                <Text style={[styles.text, { color: COLORS.brand_blue }]}>
+                    scan
+                </Text>
+                <Text style={[styles.text, { color: COLORS.brand_yellow }]}>
+                    here
+                </Text>
                 <ChevronsDown size={45} />
             </View>
         </Animated.View>
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: '#d0d0d0',
+        borderColor: COLORS.border,
     },
     text: {
         textTransform: 'uppercase',
