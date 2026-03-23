@@ -3,12 +3,17 @@ import {
     QueryClient,
     QueryClientProvider,
 } from 'node_modules/@tanstack/react-query/build/legacy';
+import { StatusBar } from 'expo-status-bar';
+import * as NavigationBar from 'expo-navigation-bar';
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+    NavigationBar.setVisibilityAsync('hidden');
+
     return (
         <QueryClientProvider client={queryClient}>
+            <StatusBar hidden={true} />
             <Stack
                 screenOptions={{
                     headerShown: false,
