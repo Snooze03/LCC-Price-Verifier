@@ -2,7 +2,6 @@ import { useRef, useEffect } from 'react';
 import { Animated, View, Text, StyleSheet } from 'react-native';
 import { ChevronsDown } from 'lucide-react-native';
 import { COLORS } from '@/constants/colors';
-import { ColorSpace } from 'react-native-reanimated';
 
 export function ScanIndicator() {
     const bounceAnim = useRef(new Animated.Value(0)).current;
