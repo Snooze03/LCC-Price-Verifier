@@ -28,6 +28,15 @@ export default function Layout() {
                 drawerStyle: { width: '25%' },
                 drawerActiveBackgroundColor: COLORS.brand_blue,
                 drawerActiveTintColor: 'white',
+                drawerItemStyle: {
+                    borderRadius: 10,
+                },
+                // Style for the children routes
+                sceneStyle: {
+                    paddingHorizontal: 40,
+                    paddingVertical: 20,
+                    backgroundColor: '#F1F1F1',
+                },
             }}
         >
             {/* Drawer Tabs/Options */}
