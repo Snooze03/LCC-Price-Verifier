@@ -1,34 +1,81 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 import { COLORS } from '@/constants/colors';
+import { PromoImage } from '@/components/promoImage';
 
 export default function Promotions() {
+    const IMAGES = [
+        {
+            fileName: 'promo1',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/12/EARN.jpg',
+            date: 'May 12-29, 2026',
+        },
+        {
+            fileName: 'PREMIUM PREMIUM',
+            image: 'https://lcc.com.ph/wp-content/uploads/2026/02/CN_EVERLASTING-LOVE.jpg',
+            date: 'June 1-2, 2026',
+        },
+        {
+            fileName: 'PROMO NAMBER 2',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/12/ENJOY.jpg',
+            date: 'April 17-18, 2026',
+        },
+        {
+            fileName: 'SAMPLE TEXT',
+            image: 'https://lcc.com.ph/wp-content/uploads/2026/02/LCC-MALLS-LUCKY-AMPAO.jpg',
+            date: 'August 24-30, 2026',
+        },
+        {
+            fileName: 'BINGO!',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/10/LCC-BINGO-GAME.jpg',
+            date: 'October 5-9',
+        },
+        {
+            fileName: 'BINGO!',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/10/LCC-BINGO-GAME.jpg',
+            date: 'October 5-9',
+        },
+        {
+            fileName: 'BINGO!',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/10/LCC-BINGO-GAME.jpg',
+            date: 'October 5-9',
+        },
+        {
+            fileName: 'BINGO!',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/10/LCC-BINGO-GAME.jpg',
+            date: 'October 5-9',
+        },
+        {
+            fileName: 'BINGO!',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/10/LCC-BINGO-GAME.jpg',
+            date: 'October 5-9',
+        },
+        {
+            fileName: 'BINGO!',
+            image: 'https://lcc.com.ph/wp-content/uploads/2025/10/LCC-BINGO-GAME.jpg',
+            date: 'October 5-9',
+        },
+    ];
+
     return (
         <View style={styles.container}>
             {/* Header */}
             <Text style={styles.header}>Promotions</Text>
-            <Text style={styles.subHeader}>
-                Manage active digital signage and display campaigns
-            </Text>
+            <Text style={styles.subHeader}>View active digital signage</Text>
 
-            <View style={styles.settingsContainer}>
-                {/* Media Assets */}
-                <View style={styles.mediaContainer}>
-                    <Text>Media Assets</Text>
-                </View>
-
-                {/* Display Settings */}
-                <View style={styles.mediaContainer}>
-                    <Text>Media Assets</Text>
-                </View>
-            </View>
-
-            <Text style={[styles.header, { marginTop: 15 }]}>
-                Active Rotations
-            </Text>
-            <Text style={styles.subHeader}>
-                Manage active digital signage and display campaigns
-            </Text>
+            {/* Lazy load images */}
+            <FlatList
+                data={IMAGES}
+                keyExtractor={(item, index) => index.toString()}
+                numColumns={3}
+                renderItem={({ item }) => (
+                    <PromoImage
+                        image={item.image}
+                        fileName={item.fileName}
+                        date={item.date}
+                    />
+                )}
+            />
         </View>
     );
 }
@@ -47,18 +94,5 @@ const styles = StyleSheet.create({
         fontWeight: 'regular',
         color: COLORS.sub_text,
         marginBottom: 35,
-    },
-    settingsContainer: {
-        flexDirection: 'row',
-        gap: 25,
-    },
-    mediaContainer: {
-        height: 200,
-        flex: 1,
-        padding: 20,
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderRadius: 10,
-        borderColor: COLORS.border,
     },
 });
