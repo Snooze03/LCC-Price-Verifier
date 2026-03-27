@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { useRouter } from 'expo-router';
 
 import {
     Card,
@@ -14,9 +15,16 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-export const LoginDialog = ({ isVisible, login }) => {
+export const LoginDialog = ({ isVisible, setIsVisible }) => {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    // Add custom hook logic to handle auth
+    function handleLogin() {
+        router.push('/admin');
+        setIsVisible(!isVisible);
+    }
 
     return (
         <Modal animationType="fade" transparent={true} visible={isVisible}>
@@ -43,7 +51,7 @@ export const LoginDialog = ({ isVisible, login }) => {
                     </CardContent>
 
                     <CardFooter>
-                        <Button>Test</Button>
+                        <Button onPress={handleLogin}>Test</Button>
                     </CardFooter>
                 </Card>
             </BlurView>

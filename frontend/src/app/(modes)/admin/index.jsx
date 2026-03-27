@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 import { COLORS } from '@/constants/colors';
+import { ScreenContainer } from '@/components/ui/container';
 import { PromoImage } from '@/components/promoImage';
 
 export default function Promotions() {
@@ -58,7 +59,7 @@ export default function Promotions() {
     ];
 
     return (
-        <View style={styles.container}>
+        <ScreenContainer>
             {/* Header */}
             <Text style={styles.header}>Promotions</Text>
             <Text style={styles.subHeader}>View active digital signage</Text>
@@ -76,14 +77,11 @@ export default function Promotions() {
                     />
                 )}
             />
-        </View>
+        </ScreenContainer>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     header: {
         fontSize: 32,
         fontWeight: 'bold',

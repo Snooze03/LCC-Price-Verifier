@@ -2,6 +2,8 @@ import { Search } from 'lucide-react-native';
 import { StyleSheet, View, Text } from 'react-native';
 import { Image } from 'expo-image';
 
+import { Card } from '@/components/ui/card';
+
 export function Logo() {
     return (
         <>
@@ -10,10 +12,10 @@ export function Logo() {
                 style={styles.image}
                 contentFit="cover"
             />
-            <View style={styles.container}>
+            <Card style={styles.container}>
                 <Text style={styles.subtext}>price checker</Text>
                 <Search size={35} color="white" />
-            </View>
+            </Card>
         </>
     );
 }
