@@ -8,6 +8,7 @@ export function usePriceVerifier(barcode) {
             return await api.get(`/price/${barcode}`);
         },
         enabled: !!barcode && barcode !== 'null',
+        retry: false,
     });
 
     return {

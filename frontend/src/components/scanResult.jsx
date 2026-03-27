@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet } from 'react-native';
 
+import { COLORS } from '@/constants/colors';
+
 export function ScanResult({ productDescription, productPrice }) {
     return (
         <View style={styles.boxWrapper}>
@@ -23,10 +25,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#d0d0d0',
+        borderColor: COLORS.border,
     },
     descriptionBox: {
-        backgroundColor: '#4A90D9',
+        backgroundColor: COLORS.brand_blue,
         borderRadius: 10,
         padding: 12,
         alignItems: 'center',
@@ -37,10 +39,12 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     priceBox: {
-        backgroundColor: '#ffed47',
-        borderRadius: 10,
-        padding: 16,
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'flex-start',
+        backgroundColor: COLORS.brand_yellow,
+        padding: 16,
+        borderRadius: 10,
     },
     priceText: {
         fontSize: 48,
