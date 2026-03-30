@@ -1,4 +1,4 @@
-export default async function itemRoutes(FASTIFY, options) {
+export async function priceRoutes(FASTIFY, options) {
     FASTIFY.get('/price/:barcode', async (request, reply) => {
         const { barcode } = request.params;
 

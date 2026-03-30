@@ -1,13 +1,13 @@
 import fastify from 'fastify';
 import dbConnector from './plugins/dbConnector.js';
-import itemRoutes from './routes/price.js';
+import { priceRoutes } from './routes/price.js';
 
 const FASTIFY = fastify({ logger: true });
 
 const start = async () => {
     try {
         await FASTIFY.register(dbConnector);
-        await FASTIFY.register(itemRoutes);
+        await FASTIFY.register(priceRoutes);
 
         await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
         console.log('Server is running on port 3000');
