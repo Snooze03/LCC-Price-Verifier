@@ -1,14 +1,13 @@
 export async function configRoutes(FASTIFY, options) {
-    // Route for fetching local store backend server config (db connection string, user name, etc...)
+    // Route for fetching local store backend server config
+    // (db connection string, user name, etc...)
     FASTIFY.get('/config/backend/:store_id', async (request, reply) => {
         const { store_id } = request.params;
 
         const [rows] = await FASTIFY.mysql.query(
-            `SELECT config.store_id, config.db_connection_string, config.db_user_name
+            `SELECT store_id, db_connection_string, db_user_name, db_password, image_path
             FROM config
-            INNER JOIN stores 
-            ON stores.store_id = config.store_id
-            WHERE config.store_id = ?`,
+            WHERE store_id = ?`,
             [store_id],
         );
 
@@ -25,6 +24,8 @@ export async function configRoutes(FASTIFY, options) {
             store_id: item.store_id,
             db_connection_string: item.db_connection_string,
             db_user_name: item.db_user_name,
+            db_password: item.db_password,
+            image_path: item.image_path,
         };
     });
 }
