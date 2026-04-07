@@ -1,4 +1,6 @@
-export default async function itemRoutes(FASTIFY, options) {
+// Local store routes
+export async function priceRoutes(FASTIFY, options) {
+    // Route for fetching product price through local store database
     FASTIFY.get('/price/:barcode', async (request, reply) => {
         const { barcode } = request.params;
 

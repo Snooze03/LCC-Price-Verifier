@@ -8,6 +8,7 @@ import { Logo } from '@/components/logo';
 import { ScanResult } from '@/components/scanResult';
 import { ScanIndicator } from '@/components/scanIndicator';
 import { ErrorMessage } from '@/components/errorMessage';
+import { ScreenContainer } from '@/components/ui/container';
 
 export default function PriceVerifier() {
     const [barcode, setBarcode] = useState('');
@@ -21,12 +22,13 @@ export default function PriceVerifier() {
     // @ts-ignore
     inputRef.current?.focus();
 
+    // effect for barcode scanning
     useEffect(() => {
         if (product && isSuccess) {
             setScanResult(true);
         }
 
-        // Time out: reset barcode state every 3 seconds
+        // reset barcode state every 3 seconds
         setTimeout(() => {
             setScanResult(false);
             setBarcode('');
@@ -50,7 +52,7 @@ export default function PriceVerifier() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScreenContainer style={styles.container}>
             <View style={styles.leftColumn}>
                 <Image
                     style={styles.image}
@@ -63,6 +65,7 @@ export default function PriceVerifier() {
 
             <View style={styles.rightColumn}>
                 <Logo />
+
                 {/* Hidden text input to catch scanned barcode */}
                 <TextInput
                     ref={inputRef}
@@ -89,13 +92,12 @@ export default function PriceVerifier() {
                     </>
                 )}
             </View>
-        </View>
+        </ScreenContainer>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: 'row',
     },
     leftColumn: {
