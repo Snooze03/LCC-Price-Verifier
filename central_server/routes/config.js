@@ -1,7 +1,7 @@
 export async function configRoutes(FASTIFY, options) {
     // Route for fetching local store backend server config
     // (db connection string, user name, etc...)
-    FASTIFY.get('/config/backend/:store_id', async (request, reply) => {
+    FASTIFY.get('/:store_id', async (request, reply) => {
         const { store_id } = request.params;
 
         const [rows] = await FASTIFY.mysql.query(
@@ -28,4 +28,6 @@ export async function configRoutes(FASTIFY, options) {
             image_path: item.image_path,
         };
     });
+
+    FASTIFY.log.info('Routes: Configuration Routes Registered');
 }
