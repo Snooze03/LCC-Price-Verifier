@@ -9,12 +9,14 @@ export const authSchema = {
         200: z.object({
             message: z.string(),
             body: z.object({
-                store_id: z.number(),
+                result: z.array(z.any()),
             }),
         }),
         404: z.object({
             message: z.string(),
-            store_id: z.number(),
+        }),
+        401: z.object({
+            message: z.string(),
         }),
     },
 };
