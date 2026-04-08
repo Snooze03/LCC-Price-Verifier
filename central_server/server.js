@@ -1,13 +1,16 @@
-import fastify from 'fastify';
+import Fastify from 'fastify';
+import 'dotenv/config';
 import {
     serializerCompiler,
     validatorCompiler,
 } from 'fastify-type-provider-zod';
+
 import dbConnector from './plugins/dbConnector.js';
+import jwtToken from './plugins/jwt.js';
 import { configRoutes } from './routes/config.js';
 import { authRoutes } from './routes/auth.js';
 
-const FASTIFY = fastify({
+const FASTIFY = Fastify({
     logger: {
         transport: {
             target: 'pino-pretty',
@@ -15,17 +18,18 @@ const FASTIFY = fastify({
     },
 });
 
-// Set fastify zod settings
-FASTIFY.setValidatorCompiler(validatorCompiler);
-FASTIFY.setSerializerCompiler(serializerCompiler);
-
 const start = async () => {
-    // Register Plugins
-    await FASTIFY.register(dbConnector);
+    // zod settings
+    FASTIFY.setValidatorCompiler(validatorCompiler);
+    FASTIFY.setSerializerCompiler(serializerCompiler);
 
-    // Register Routes
-    await FASTIFY.register(configRoutes);
-    await FASTIFY.register(authRoutes);
+    // Plugins
+    await FASTIFY.register(dbConnector);
+    await FASTIFY.register(jwtToken);
+
+    // Routes
+    FASTIFY.register(configRoutes, { prefix: '/config' });
+    FASTIFY.register(authRoutes, { prefix: '/auth' });
 
     await FASTIFY.listen({ port: 3001, host: '0.0.0.0' });
 };
