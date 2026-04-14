@@ -2,12 +2,12 @@ export async function configRoutes(FASTIFY, options) {
     // Route for fetching local store backend server config
     // (db connection string, user name, etc...)
     FASTIFY.get(
-        '/:store_id',
+        '/',
         {
-            onRequest: FASTIFY.jwtAuthenticate,
+            onRequest: [FASTIFY.jwtAuthenticate],
         },
         async (request, reply) => {
-            const { store_id } = request.params;
+            const { store_id } = request.user.payload;
 
             const [rows] = await FASTIFY.mysql.query(
                 `SELECT store_id, db_connection_string, db_user_name, db_password, image_path
