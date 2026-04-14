@@ -3,13 +3,13 @@ import { z } from 'zod';
 export const authSchema = {
     body: z.object({
         store_id: z.number(),
-        password: z.string().min(10).max(20),
+        password: z.string(),
     }),
     response: {
         200: z.object({
             message: z.string(),
             body: z.object({
-                result: z.array(z.any()),
+                access_token: z.string(),
             }),
         }),
         404: z.object({
