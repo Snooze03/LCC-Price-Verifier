@@ -3,17 +3,30 @@ import fastifyJwt from '@fastify/jwt';
 import 'dotenv/config';
 
 async function jwtToken(FASTIFY, options) {
+    // Access Token
     FASTIFY.register(fastifyJwt, {
         secret: process.env.JWT_SECRET_KEY,
+        namespace: 'access',
+        sign: { expiresIn: '15' },
     });
 
-    FASTIFY.decorate('jwtAuthenticate', async function (request, reply) {
+    // Refresh Token
+    FASTIFY.register(fastifyJwt, {
+        secret: process.env.JWT_SECRET_KEY,
+        cookie: {
+            cookieName: 'refresh_token',
+        },
+        namespace: 'refresh',
+        sign: { expiresIn: '7d' },
+    });
+
+    // JWT Authenticator for routes
+    FASTIFY.decorate('authenticate', async function (request, reply) {
         try {
-            await request.jwtVerify();
+            await request.accessJwtVerify();
         } catch (error) {
             FASTIFY.log.error({ err: error }, 'JWT verification failed');
             reply.code(401).send({ message: 'Unauthorized!' });
-            return;
         }
     });
 
