@@ -3,7 +3,13 @@ import { consoleLogin } from './plugins/consoleLogin.js';
 import dbConnector from './plugins/dbConnector.js';
 import { priceRoutes } from './routes/local.js';
 
-const FASTIFY = fastify({ logger: true });
+const FASTIFY = fastify({
+    logger: {
+        transport: {
+            target: 'pino-pretty',
+        },
+    },
+});
 
 // Local Server Flow
 // 1. Fetch config from CENTRAL DB
@@ -12,18 +18,21 @@ const FASTIFY = fastify({ logger: true });
 const start = async () => {
     // Authenticate local server
     const remoteToken = await consoleLogin();
-    console.log(remoteToken);
+    // console.log(remoteToken);
 
-    try {
-        await FASTIFY.register(dbConnector);
-        await FASTIFY.register(priceRoutes);
+    await FASTIFY.register(dbConnector);
+    await FASTIFY.register(priceRoutes);
 
-        await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
-        console.log('Server is running on port 3000');
-    } catch (error) {
-        FASTIFY.log.error('Fastify Error: ', error);
-        process.exit(1);
-    }
+    await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
 };
+
+// graceful shutdown
+['SIGINT', 'SIGTERM'].forEach((signal) => {
+    process.on(signal, async () => {
+        await FASTIFY.close();
+
+        process.exit(0);
+    });
+});
 
 start();

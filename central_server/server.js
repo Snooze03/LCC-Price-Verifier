@@ -1,20 +1,50 @@
-import fastify from 'fastify';
-import dbConnector from './plugins/dbConnector.js';
-import { configRoutes } from './routes/config.js';
+import Fastify from 'fastify';
+import 'dotenv/config';
+import {
+    serializerCompiler,
+    validatorCompiler,
+} from 'fastify-type-provider-zod';
 
-const FASTIFY = fastify({ logger: true });
+import dbConnector from './plugins/dbConnector.js';
+import jwtToken from './plugins/jwt.js';
+import cookies from './plugins/cookies.js';
+import { configRoutes } from './routes/config.js';
+import { authRoutes } from './routes/auth.js';
+
+const FASTIFY = Fastify({
+    logger: {
+        transport: {
+            target: 'pino-pretty',
+        },
+    },
+});
 
 const start = async () => {
-    try {
-        await FASTIFY.register(dbConnector);
-        await FASTIFY.register(configRoutes);
+    // zod settings
+    FASTIFY.setValidatorCompiler(validatorCompiler);
+    FASTIFY.setSerializerCompiler(serializerCompiler);
 
-        await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
-        console.log('Server is running on port 3000');
-    } catch (err) {
-        FASTIFY.log.error(err);
-        process.exit(1);
-    }
+    // Plugins
+    await FASTIFY.register(dbConnector);
+    await FASTIFY.register(jwtToken);
+    await FASTIFY.register(cookies);
+
+    // Public Routes
+    FASTIFY.register(authRoutes, { prefix: '/auth' });
+
+    // Protected Routes
+    FASTIFY.register(configRoutes, { prefix: '/config' });
+
+    await FASTIFY.listen({ port: 3001, host: '0.0.0.0' });
 };
+
+// graceful shutdown
+['SIGINT', 'SIGTERM'].forEach((signal) => {
+    process.on(signal, async () => {
+        await FASTIFY.close();
+
+        process.exit(0);
+    });
+});
 
 start();

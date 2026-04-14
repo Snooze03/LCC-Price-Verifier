@@ -7,6 +7,8 @@ async function dbConnector(FASTIFY, options) {
         promise: true,
         connectionString: process.env.DB_CONNECTION_STRING,
     });
+
+    FASTIFY.log.info('Plugins: Connected to MySQL Database');
 }
 
 export default fastifyPlugin(dbConnector);
