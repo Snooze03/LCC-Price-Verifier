@@ -7,7 +7,7 @@ export async function configRoutes(FASTIFY, options) {
             onRequest: [FASTIFY.authenticate],
         },
         async (request, reply) => {
-            const { store_id } = request.user.payload;
+            const { store_id } = request.user;
 
             const [rows] = await FASTIFY.mysql.query(
                 `SELECT store_id, db_connection_string, db_user_name, db_password, image_path

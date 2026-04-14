@@ -7,7 +7,7 @@ async function jwtToken(FASTIFY, options) {
     FASTIFY.register(fastifyJwt, {
         secret: process.env.JWT_SECRET_KEY,
         namespace: 'access',
-        sign: { expiresIn: '15' },
+        sign: { expiresIn: '15m' },
     });
 
     // Refresh Token
