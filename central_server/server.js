@@ -7,6 +7,7 @@ import {
 
 import dbConnector from './plugins/dbConnector.js';
 import jwtToken from './plugins/jwt.js';
+import cookies from './plugins/cookies.js';
 import { configRoutes } from './routes/config.js';
 import { authRoutes } from './routes/auth.js';
 
@@ -26,10 +27,13 @@ const start = async () => {
     // Plugins
     await FASTIFY.register(dbConnector);
     await FASTIFY.register(jwtToken);
+    await FASTIFY.register(cookies);
 
-    // Routes
-    FASTIFY.register(configRoutes, { prefix: '/config' });
+    // Public Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
+
+    // Protected Routes
+    FASTIFY.register(configRoutes, { prefix: '/config' });
 
     await FASTIFY.listen({ port: 3001, host: '0.0.0.0' });
 };
