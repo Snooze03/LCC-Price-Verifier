@@ -7,11 +7,14 @@ export async function authRoutes(FASTIFY, options) {
             schema: authSchema,
         },
         async (request, reply) => {
+            const store_id = request.body.store_id;
+            const password = request.body.password;
+
             const [rows] = await FASTIFY.mysql.query(
                 `SELECT id, passWord
                 FROM stores
                 WHERE id = ?`,
-                [request.body.store_id],
+                [store_id],
             );
 
             // Checks if store exists
@@ -25,18 +28,24 @@ export async function authRoutes(FASTIFY, options) {
             const store = rows[0];
 
             // Check if password matches
-            if (store.passWord !== request.body.password) {
+            // IMPORTANT NOTE: Add password hashing later on
+            if (store.passWord !== password) {
                 return reply.code(401).send({
-                    message: 'Authentication Failed',
+                    message: 'Incorrect Password',
                 });
             }
 
             // Generate JWT token
+            const access_token = FASTIFY.jwt.sign({
+                payload: {
+                    store_id,
+                },
+            });
 
             return {
                 message: 'SUCCESS!',
                 body: {
-                    result: rows,
+                    access_token,
                 },
             };
         },
