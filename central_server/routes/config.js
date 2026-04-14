@@ -4,7 +4,7 @@ export async function configRoutes(FASTIFY, options) {
     FASTIFY.get(
         '/',
         {
-            onRequest: [FASTIFY.jwtAuthenticate],
+            onRequest: [FASTIFY.authenticate],
         },
         async (request, reply) => {
             const { store_id } = request.user.payload;
