@@ -35,21 +35,52 @@ export async function authRoutes(FASTIFY, options) {
                 });
             }
 
-            // Generate JWT token
-            const access_token = FASTIFY.jwt.sign({
-                payload: {
-                    store_id,
-                },
-            });
+            // Generate tokens
+            const access_token = FASTIFY.jwt.access.sign({ store_id });
+            const refresh_token = FASTIFY.jwt.refresh.sign({ store_id });
 
-            return {
+            // generate cookie with refresh token
+            reply.setCookie('refresh_token', refresh_token).send({
                 message: 'SUCCESS!',
                 body: {
                     access_token,
                 },
-            };
+            });
         },
     );
+
+    FASTIFY.post('/refresh', async (request, reply) => {
+        const old_refresh_token = await request.cookies.refresh_token;
+
+        if (!old_refresh_token)
+            return reply.code(401).send({ message: 'Refresh Token Missing!' });
+
+        try {
+            // verify old refresh token
+            const decoded = await request.refreshJwtVerify({
+                onlyCookie: true,
+            });
+
+            // generate new tokens (token rotation)
+            const newAccessToken = FASTIFY.jwt.access.sign({
+                store_id: decoded.store_id,
+            });
+            const newRefreshToken = FASTIFY.jwt.refresh.sign({
+                store_id: decoded.store_id,
+            });
+
+            // overwrite old cookies with new tokens
+            reply.setCookie('refresh_token', newRefreshToken).send({
+                message: 'SUCCESS!',
+                body: {
+                    access_token: newAccessToken,
+                },
+            });
+        } catch (error) {
+            FASTIFY.log.error(error);
+            return reply.code(401).send({ message: 'Invalid Refresh Token!' });
+        }
+    });
 
     FASTIFY.log.info('Routes: Authentication Routes Registered');
 }
