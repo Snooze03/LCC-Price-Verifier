@@ -10,6 +10,7 @@ import jwtToken from './plugins/jwt.js';
 import cookies from './plugins/cookies.js';
 import { configRoutes } from './routes/config.js';
 import { authRoutes } from './routes/auth.js';
+import { storeRoutes } from './routes/stores.js';
 
 const FASTIFY = Fastify({
     logger: {
@@ -34,6 +35,7 @@ const start = async () => {
 
     // Protected Routes
     FASTIFY.register(configRoutes, { prefix: '/config' });
+    FASTIFY.register(storeRoutes, { prefix: '/stores' });
 
     await FASTIFY.listen({ port: 3001, host: '0.0.0.0' });
 };
