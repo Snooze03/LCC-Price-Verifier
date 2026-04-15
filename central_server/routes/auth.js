@@ -11,9 +11,9 @@ export async function authRoutes(FASTIFY, options) {
             const password = request.body.password;
 
             const [rows] = await FASTIFY.mysql.query(
-                `SELECT id, passWord
+                `SELECT store_id, passWord
                 FROM stores
-                WHERE id = ?`,
+                WHERE store_id = ?`,
                 [store_id],
             );
 
