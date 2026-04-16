@@ -9,9 +9,9 @@ import dbConnector from './plugins/FP-dbConnector.js';
 import jwtToken from './plugins/FP-jwt.js';
 import cookies from './plugins/FP-cookies.js';
 import argonFP from './plugins/FP-argon.js';
-import { configRoutes } from './routes/config.js';
-import { authRoutes } from './routes/auth.js';
-import { storeRoutes } from './routes/stores.js';
+import { configRoutes } from './routes/pricever/config.js';
+import { authRoutes } from './routes/local/auth.js';
+import { storeRoutes } from './routes/local/stores.js';
 
 const FASTIFY = Fastify({
     logger: {
@@ -36,7 +36,7 @@ const start = async () => {
     FASTIFY.register(authRoutes, { prefix: '/auth' });
 
     // Protected Routes
-    FASTIFY.register(configRoutes, { prefix: '/config' });
+    FASTIFY.register(configRoutes, { prefix: '/pricever/server' });
     FASTIFY.register(storeRoutes, { prefix: '/stores' });
 
     await FASTIFY.listen({ port: 3001, host: '0.0.0.0' });
