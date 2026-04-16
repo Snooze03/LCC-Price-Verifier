@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import 'dotenv/config';
+import fastifyCors from '@fastify/cors';
 import {
     serializerCompiler,
     validatorCompiler,
@@ -22,6 +23,11 @@ const FASTIFY = Fastify({
 });
 
 const start = async () => {
+    // Cors Origins Settings
+    await FASTIFY.register(fastifyCors, {
+        origin: '*',
+    });
+
     // zod settings
     FASTIFY.setValidatorCompiler(validatorCompiler);
     FASTIFY.setSerializerCompiler(serializerCompiler);
