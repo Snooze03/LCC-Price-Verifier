@@ -5,10 +5,10 @@ import {
     validatorCompiler,
 } from 'fastify-type-provider-zod';
 
-import dbConnector from './plugins/dbConnector-FP.js';
-import jwtToken from './plugins/jwtFP-FP.js';
-import cookies from './plugins/cookies-FP.js';
-import argonFP from './plugins/argon-FP.js';
+import dbConnector from './plugins/FP-dbConnector.js';
+import jwtToken from './plugins/FP-jwt.js';
+import cookies from './plugins/FP-cookies.js';
+import argonFP from './plugins/FP-argon.js';
 import { configRoutes } from './routes/config.js';
 import { authRoutes } from './routes/auth.js';
 import { storeRoutes } from './routes/stores.js';
