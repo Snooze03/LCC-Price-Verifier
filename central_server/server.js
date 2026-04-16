@@ -8,6 +8,7 @@ import {
 import dbConnector from './plugins/dbConnector.js';
 import jwtToken from './plugins/jwt.js';
 import cookies from './plugins/cookies.js';
+import argonFP from './plugins/argonFP.js';
 import { configRoutes } from './routes/config.js';
 import { authRoutes } from './routes/auth.js';
 import { storeRoutes } from './routes/stores.js';
@@ -29,6 +30,7 @@ const start = async () => {
     await FASTIFY.register(dbConnector);
     await FASTIFY.register(jwtToken);
     await FASTIFY.register(cookies);
+    await FASTIFY.register(argonFP);
 
     // Public Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
