@@ -11,7 +11,7 @@ export async function authRoutes(FASTIFY, options) {
             const password = request.body.password;
 
             const [rows] = await FASTIFY.mysql.query(
-                `SELECT store_id, passWord
+                `SELECT store_id, password
                 FROM stores
                 WHERE store_id = ?`,
                 [store_id],
@@ -28,8 +28,7 @@ export async function authRoutes(FASTIFY, options) {
             const store = rows[0];
 
             // Check if password matches
-            // IMPORTANT NOTE: Add password hashing later on
-            if (store.passWord !== password) {
+            if (!FASTIFY.verify(store.password, password)) {
                 return reply.code(401).send({
                     message: 'Incorrect Password',
                 });
