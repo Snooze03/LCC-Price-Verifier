@@ -22,10 +22,13 @@ export async function storeRoutes(FASTIFY, options) {
     FASTIFY.post('/', async (request, reply) => {
         const { store_id, password, location } = request.body;
 
+        // hash password
+        const hashedPassword = await FASTIFY.hash(password);
+
         const [rows] = await FASTIFY.mysql.query(
-            `INSERT INTO stores
+            `INSERT INTO stores (store_id, password, location)
                 VALUES (?, ?, ?)`,
-            [store_id, password, location],
+            [store_id, hashedPassword, location],
         );
 
         return rows;
@@ -44,11 +47,13 @@ export async function storeRoutes(FASTIFY, options) {
         const store_id = request.params.store_id;
         const { password, location } = request.body;
 
+        const hashedPassword = await FASTIFY.hash(password);
+
         const [rows] = await FASTIFY.mysql.query(
             `UPDATE stores
             SET password = ?, location = ?
             WHERE store_id = ?`,
-            [password, location, store_id],
+            [hashedPassword, location, store_id],
         );
 
         return rows;
