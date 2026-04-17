@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import { consoleLogin } from './plugins/consoleLogin.js';
 import dbConnector from './plugins/dbConnector.js';
 import { priceRoutes } from './routes/local.js';
+import { api } from './api/api.js';
 
 const FASTIFY = fastify({
     logger: {
@@ -17,11 +18,12 @@ const FASTIFY = fastify({
 // 3. Register routes
 const start = async () => {
     // Authenticate local server
-    const remoteToken = await consoleLogin();
-    // console.log(remoteToken);
+    await consoleLogin();
 
-    await FASTIFY.register(dbConnector);
-    await FASTIFY.register(priceRoutes);
+    const response = await api.get('config');
+
+    // await FASTIFY.register(dbConnector);
+    // await FASTIFY.register(priceRoutes);
 
     await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
 };
