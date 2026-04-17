@@ -10,9 +10,9 @@ import corsFP from './plugins/FP-cors.js';
 import jwtTokenFP from './plugins/FP-jwt.js';
 import cookiesFP from './plugins/FP-cookies.js';
 import argonFP from './plugins/FP-argon.js';
-import { configRoutes } from './routes/pricever/config.js';
-import { authRoutes } from './routes/local/auth.js';
-import { storeRoutes } from './routes/local/stores.js';
+import { configRoutes } from './routes/remote/config.js';
+import { authRoutes } from './routes/internal/auth.js';
+import { storeRoutes } from './routes/internal/stores.js';
 
 const FASTIFY = Fastify({
     logger: {
