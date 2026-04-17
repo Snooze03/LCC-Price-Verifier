@@ -1,4 +1,11 @@
 export async function storeRoutes(FASTIFY, options) {
+    // ================ IMPORTANT NOTE =================
+    // To add:
+    // 1. Schemas
+    // 2. Error handlers
+    // 3. Pagination
+
+    // ========== EVENT LISTENERS ==========
     FASTIFY.addHook('onRequest', async (request, reply) => {
         try {
             await FASTIFY.authenticate(request, reply);
@@ -6,57 +13,140 @@ export async function storeRoutes(FASTIFY, options) {
             reply.send(error);
         }
     });
+    // ========== END EVENT LISTENERS ==========
 
-    // fetches all records from a table
-    async function selectAll(table) {
-        const [result] = await FASTIFY.mysql.query(
-            `SELECT *
-            FROM ${table}`,
-        );
-
-        return result;
-    }
-
-    // ========== STORE ROUTES ==========
+    // ========== ROUTES ==========
     // Create new Store Accounts
     FASTIFY.post('/', async (request, reply) => {
-        const { store_id, password, location } = request.body;
+        // get request data
+        const {
+            store_id,
+            password,
+            location,
+            db_connection_string,
+            db_user_name,
+            db_password,
+            image_path,
+        } = request.body;
 
         // hash password
         const hashedPassword = await FASTIFY.hash(password);
+        // create a connection pool
+        const connection = await FASTIFY.mysql.getConnection();
 
+        // transaction to create store with config
+        try {
+            await connection.query('START TRANSACTION');
+
+            const [storeResult] = await connection.query(
+                'INSERT INTO stores (store_id, password, location) VALUES (?, ?, ?)',
+                [store_id, hashedPassword, location],
+            );
+
+            const [configResult] = await connection.query(
+                'INSERT INTO config (store_id, db_connection_string, db_user_name, db_password, image_path) VALUES (?, ?, ?, ?, ?)',
+                [
+                    store_id,
+                    db_connection_string,
+                    db_user_name,
+                    db_password,
+                    image_path,
+                ],
+            );
+
+            await connection.commit();
+
+            return {
+                message: 'Store and Configuration Created Successfully',
+                data: {
+                    store_affected: storeResult.affectedRows,
+                    config_affected: configResult.affectedRows,
+                    store_id: store_id,
+                },
+            };
+        } catch (error) {
+            await connection.rollback();
+
+            return {
+                error,
+            };
+        } finally {
+            connection.release();
+        }
+    });
+
+    // Fetch Stores with their Corresponding Configs
+    FASTIFY.get('/', async (request, reply) => {
         const [rows] = await FASTIFY.mysql.query(
-            `INSERT INTO stores (store_id, password, location)
-                VALUES (?, ?, ?)`,
-            [store_id, hashedPassword, location],
+            `SELECT s.*, c.db_connection_string, c.db_user_name, c.db_password, c.image_path
+            FROM STORES AS s
+            INNER JOIN CONFIG AS c
+            ON c.store_id = s.store_id;`,
         );
 
         return rows;
-    });
-
-    // Read Stores
-    FASTIFY.get('/', async (request, reply) => {
-        // To add:
-        // 1. Error handlers
-        // 2. Pagination
-        return selectAll('stores');
     });
 
     // Update Stores
-    FASTIFY.patch('/:store_id', async (request, reply) => {
-        const store_id = request.params.store_id;
-        const { password, location } = request.body;
+    FASTIFY.patch('/:id', async (request, reply) => {
+        // url parameter
+        const id = request.params.id;
 
+        // get request data
+        const {
+            store_id,
+            password,
+            location,
+            db_connection_string,
+            db_user_name,
+            db_password,
+            image_path,
+        } = request.body;
+
+        // hash password
         const hashedPassword = await FASTIFY.hash(password);
+        // create a connection pool
+        const connection = await FASTIFY.mysql.getConnection();
 
-        const [rows] = await FASTIFY.mysql.query(
-            `UPDATE stores
-            SET password = ?, location = ?
-            WHERE store_id = ?`,
-            [hashedPassword, location, store_id],
-        );
+        // transaction to create store with config
+        try {
+            await connection.query('START TRANSACTION');
 
-        return rows;
+            const [storeResult] = await connection.query(
+                'UPDATE stores SET store_id = ?, password = ?, location =? WHERE id = ?',
+                [store_id, hashedPassword, location, id],
+            );
+
+            const [configResult] = await connection.query(
+                'UPDATE config SET db_connection_string = ?, db_user_name = ?, db_password = ?, image_path = ? WHERE store_id = ?',
+                [
+                    db_connection_string,
+                    db_user_name,
+                    db_password,
+                    image_path,
+                    store_id,
+                ],
+            );
+
+            await connection.commit();
+
+            return {
+                message: 'Store and Configuration Update Successfully',
+                data: {
+                    store_affected: storeResult.affectedRows,
+                    config_affected: configResult.affectedRows,
+                    store_id: store_id,
+                },
+            };
+        } catch (error) {
+            await connection.rollback();
+
+            return {
+                message: 'Transaction Error',
+            };
+        } finally {
+            connection.release();
+        }
     });
 
     // Delete Store Accounts
@@ -72,11 +162,4 @@ export async function storeRoutes(FASTIFY, options) {
         return rows;
     });
     // ========== END STORE ROUTES ==========
-
-    FASTIFY.get('/config', async (request, reply) => {
-        // To add:
-        // 1. Error handlers
-        // 2. Pagination
-        return selectAll('config');
-    });
 }
