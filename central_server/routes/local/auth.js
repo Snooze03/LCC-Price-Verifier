@@ -1,4 +1,4 @@
-import { authSchema } from '../schema/auth.js';
+import { authSchema } from '../../schema/auth.js';
 
 export async function authRoutes(FASTIFY, options) {
     FASTIFY.post(
@@ -11,9 +11,9 @@ export async function authRoutes(FASTIFY, options) {
             const password = request.body.password;
 
             const [rows] = await FASTIFY.mysql.query(
-                `SELECT id, passWord
+                `SELECT store_id, password
                 FROM stores
-                WHERE id = ?`,
+                WHERE store_id = ?`,
                 [store_id],
             );
 
@@ -26,26 +26,26 @@ export async function authRoutes(FASTIFY, options) {
 
             // Get object
             const store = rows[0];
-
             // Check if password matches
-            // IMPORTANT NOTE: Add password hashing later on
-            if (store.passWord !== password) {
+            const isCorrect = await FASTIFY.verify(store.password, password);
+
+            if (isCorrect) {
+                // Generate tokens
+                const access_token = FASTIFY.jwt.access.sign({ store_id });
+                const refresh_token = FASTIFY.jwt.refresh.sign({ store_id });
+
+                // generate cookie with refresh token
+                reply.setCookie('refresh_token', refresh_token).send({
+                    message: 'SUCCESS!',
+                    body: {
+                        access_token,
+                    },
+                });
+            } else {
                 return reply.code(401).send({
                     message: 'Incorrect Password',
                 });
             }
-
-            // Generate tokens
-            const access_token = FASTIFY.jwt.access.sign({ store_id });
-            const refresh_token = FASTIFY.jwt.refresh.sign({ store_id });
-
-            // generate cookie with refresh token
-            reply.setCookie('refresh_token', refresh_token).send({
-                message: 'SUCCESS!',
-                body: {
-                    access_token,
-                },
-            });
         },
     );
 

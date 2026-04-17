@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "module": "es2022",
+        "types": ["vite/client"],
+        "moduleResolution": "Node",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"],
+            "@/assets/*": ["./src/assets/*"]
+        },
+        "jsx": "react-native",
+        "checkJs": true
+    },
+    "include": ["**/*.js", "**/*.jsx", "eslint.config.js"],
+    "exclude": ["node_modules"]
+}
