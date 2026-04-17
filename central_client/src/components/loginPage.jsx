@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import brandLogo from '@/assets/brandLogo.png';
 import {
     Card,
@@ -8,16 +8,39 @@ import {
     CardHeader,
     CardTitle,
 } from './ui/card';
+import { api, addToken } from '@/api/api';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 export default function LoginPage() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState('');
+    const [store_id, setStoreId] = useState(0);
 
-    const handleSubmit = () => {
-        // TODO: handle login
-        navigate('/dashboard');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            // send request
+            const postdata = {
+                store_id: Number(store_id),
+                password,
+            };
+            // console.log('postdata', postdata);
+            const response = await api.post(`/auth/login`, postdata);
+
+            // const response = await api.ge\(`/auth/login`);
+
+            const access_token = response.data.body.access_token;
+
+            // add token to axios response interceptor
+            await addToken(access_token);
+
+            navigate('/dashboard');
+        } catch (error) {
+            alert('Invalid login credentials. Please try again.');
+        }
     };
 
     return (
@@ -45,16 +68,17 @@ export default function LoginPage() {
                     </CardDescription>
                 </CardHeader>
 
-                {/* Fields */}
-                {/* <div className="flex flex-col gap-4">
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400 transition"
-            /> */}
-                <CardContent>
+                <CardContent className="flex flex-col gap-3">
+                    {/* Username input */}
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={store_id}
+                        onChange={(e) => setStoreId(Number(e.target.value))}
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400 transition"
+                    />
+
+                    {/* Password input with toggle */}
                     <div className="relative">
                         <input
                             type={showPassword ? 'text' : 'password'}
