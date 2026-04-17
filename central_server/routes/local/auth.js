@@ -26,25 +26,26 @@ export async function authRoutes(FASTIFY, options) {
 
             // Get object
             const store = rows[0];
-
             // Check if password matches
-            if (!FASTIFY.verify(store.password, password)) {
+            const isCorrect = await FASTIFY.verify(store.password, password);
+
+            if (isCorrect) {
+                // Generate tokens
+                const access_token = FASTIFY.jwt.access.sign({ store_id });
+                const refresh_token = FASTIFY.jwt.refresh.sign({ store_id });
+
+                // generate cookie with refresh token
+                reply.setCookie('refresh_token', refresh_token).send({
+                    message: 'SUCCESS!',
+                    body: {
+                        access_token,
+                    },
+                });
+            } else {
                 return reply.code(401).send({
                     message: 'Incorrect Password',
                 });
             }
-
-            // Generate tokens
-            const access_token = FASTIFY.jwt.access.sign({ store_id });
-            const refresh_token = FASTIFY.jwt.refresh.sign({ store_id });
-
-            // generate cookie with refresh token
-            reply.setCookie('refresh_token', refresh_token).send({
-                message: 'SUCCESS!',
-                body: {
-                    access_token,
-                },
-            });
         },
     );
 
