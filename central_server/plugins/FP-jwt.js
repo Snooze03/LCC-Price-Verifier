@@ -2,7 +2,7 @@ import fastifyPlugin from 'fastify-plugin';
 import fastifyJwt from '@fastify/jwt';
 import 'dotenv/config';
 
-async function jwtToken(FASTIFY, options) {
+async function jwtTokenFP(FASTIFY, options) {
     // Access Token
     FASTIFY.register(fastifyJwt, {
         secret: process.env.JWT_SECRET_KEY,
@@ -33,4 +33,4 @@ async function jwtToken(FASTIFY, options) {
     FASTIFY.log.info('Plugins: JWT Token Registered');
 }
 
-export default fastifyPlugin(jwtToken);
+export default fastifyPlugin(jwtTokenFP);

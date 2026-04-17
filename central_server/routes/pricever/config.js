@@ -11,8 +11,8 @@ export async function configRoutes(FASTIFY, options) {
 
             const [rows] = await FASTIFY.mysql.query(
                 `SELECT store_id, db_connection_string, db_user_name, db_password, image_path
-            FROM config
-            WHERE store_id = ?`,
+                FROM config
+                WHERE store_id = ?`,
                 [store_id],
             );
 
