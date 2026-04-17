@@ -25,11 +25,11 @@ const FASTIFY = Fastify({
 const start = async () => {
     // Plugins
     await FASTIFY.register(dbConnectorFP);
+    // Cors Origins Settings
+    await FASTIFY.register(corsFP);
     await FASTIFY.register(jwtTokenFP);
     await FASTIFY.register(cookiesFP);
     await FASTIFY.register(argonFP);
-    // Cors Origins Settings
-    await FASTIFY.register(corsFP);
 
     // zod settings
     FASTIFY.setValidatorCompiler(validatorCompiler);
