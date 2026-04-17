@@ -2,7 +2,7 @@ import fastifyPlugin from 'fastify-plugin';
 import fastifyMysql from '@fastify/mysql';
 import 'dotenv/config';
 
-async function dbConnector(FASTIFY, options) {
+async function dbConnectorFP(FASTIFY, options) {
     FASTIFY.register(fastifyMysql, {
         promise: true,
         connectionString: process.env.DB_CONNECTION_STRING,
@@ -11,4 +11,4 @@ async function dbConnector(FASTIFY, options) {
     FASTIFY.log.info('Plugins: Connected to MySQL Database');
 }
 
-export default fastifyPlugin(dbConnector);
+export default fastifyPlugin(dbConnectorFP);

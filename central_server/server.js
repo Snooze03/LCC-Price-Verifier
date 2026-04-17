@@ -1,14 +1,14 @@
 import Fastify from 'fastify';
 import 'dotenv/config';
-import fastifyCors from '@fastify/cors';
 import {
     serializerCompiler,
     validatorCompiler,
 } from 'fastify-type-provider-zod';
 
-import dbConnector from './plugins/FP-dbConnector.js';
-import jwtToken from './plugins/FP-jwt.js';
-import cookies from './plugins/FP-cookies.js';
+import dbConnectorFP from './plugins/FP-dbConnector.js';
+import corsFP from './plugins/FP-cors.js';
+import jwtTokenFP from './plugins/FP-jwt.js';
+import cookiesFP from './plugins/FP-cookies.js';
 import argonFP from './plugins/FP-argon.js';
 import { configRoutes } from './routes/pricever/config.js';
 import { authRoutes } from './routes/local/auth.js';
@@ -23,20 +23,17 @@ const FASTIFY = Fastify({
 });
 
 const start = async () => {
+    // Plugins
+    await FASTIFY.register(dbConnectorFP);
+    await FASTIFY.register(jwtTokenFP);
+    await FASTIFY.register(cookiesFP);
+    await FASTIFY.register(argonFP);
     // Cors Origins Settings
-    await FASTIFY.register(fastifyCors, {
-        origin: '*',
-    });
+    await FASTIFY.register(corsFP);
 
     // zod settings
     FASTIFY.setValidatorCompiler(validatorCompiler);
     FASTIFY.setSerializerCompiler(serializerCompiler);
-
-    // Plugins
-    await FASTIFY.register(dbConnector);
-    await FASTIFY.register(jwtToken);
-    await FASTIFY.register(cookies);
-    await FASTIFY.register(argonFP);
 
     // Public Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
