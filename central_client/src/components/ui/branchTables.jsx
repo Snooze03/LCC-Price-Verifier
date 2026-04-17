@@ -1,3 +1,6 @@
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/api/api';
+
 const headers = [
     { id: 1, key: 'id', label: 'ID' },
     { id: 2, key: 'storeNo', label: 'Store No.' },
@@ -18,27 +21,26 @@ const data = [
         db_password: 'pass1234',
         image_path: '/images/store1.png',
     },
-    {
-        id: 2,
-        storeNo: 'STR-002',
-        location: 'Quezon City',
-        db_connection_string: 'Server=192.168.1.2;Database=store2',
-        db_user_name: 'admin2',
-        db_password: 'pass5678',
-        image_path: '/images/store2.png',
-    },
-    {
-        id: 3,
-        storeNo: 'STR-003',
-        location: 'Cebu City',
-        db_connection_string: 'Server=192.168.1.3;Database=store3',
-        db_user_name: 'admin3',
-        db_password: 'pass9012',
-        image_path: '/images/store3.png',
-    },
 ];
 
 export default function BranchTables() {
+    const {
+        data = [],
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['stores'],
+        queryFn: async () => {
+            const response = await api.get('/stores');
+
+            return response.data;
+        },
+    });
+    console.log(data);
+    if (isLoading) return <p className="p-4 text-sm">Loading...</p>;
+    if (error)
+        return <p className="p-4 text-sm text-red-500">Failed to load data.</p>;
+
     return (
         <table className="w-full text-sm text-left">
             <thead className="bg-[#99AADF]">
@@ -50,7 +52,6 @@ export default function BranchTables() {
                     ))}
                 </tr>
             </thead>
-
             <tbody className="divide-y divide-gray-100">
                 {data.map((row) => (
                     <tr key={row.id} className="hover:bg-gray-300">
