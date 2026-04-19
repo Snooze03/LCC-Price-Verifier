@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
-import brandLogo from '@/assets/brandLogo.png';
+import { useState } from 'react';
+import { api, addToken } from '@/api/api';
+import { useNavigate } from 'react-router-dom';
+
 import {
     Card,
     CardContent,
@@ -7,10 +9,8 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from './ui/card';
-import { api, addToken } from '@/api/api';
-import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+} from '@ui/card';
+import brandLogo from '@/assets/brandLogo.png';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -27,10 +27,7 @@ export default function LoginPage() {
                 store_id: Number(store_id),
                 password,
             };
-            // console.log('postdata', postdata);
             const response = await api.post(`/auth/login`, postdata);
-
-            // const response = await api.ge\(`/auth/login`);
 
             const access_token = response.data.body.access_token;
 
@@ -44,8 +41,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#eef2fb] to-[#e8ecf8] flex flex-col items-center justify-center px-4">
-            {/* Box on top */}
+        <>
             <div className="rounded-2xl  p-4  flex  items-center flex-col">
                 <img
                     src={brandLogo}
@@ -106,6 +102,6 @@ export default function LoginPage() {
                 </CardContent>
                 <CardFooter>Liberty Commercial Center © 1945</CardFooter>
             </Card>
-        </div>
+        </>
     );
 }
