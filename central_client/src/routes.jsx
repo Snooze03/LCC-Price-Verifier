@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import { AuthLayout } from './components/layouts/AuthLayout';
+
 import LoginPage from '@/pages/auth/LoginPage';
 import StorePage from '@/components/storeAdminPage';
 import BranchAccounts from '@/pages/branchAccounts.jsx';
 import Configuration from '@/pages/configuration.jsx';
-import { AuthLayout } from './components/layouts/AuthLayout';
+import { NotFound } from './pages/miscs/NotFound';
 
 function AppRoutes() {
     return (
@@ -25,6 +27,7 @@ function AppRoutes() {
                 </Route>
 
                 {/* Miscs */}
+                <Route path="*" element={<NotFound />}></Route>
             </Routes>
         </BrowserRouter>
     );
