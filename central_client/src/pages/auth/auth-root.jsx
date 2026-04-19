@@ -5,7 +5,7 @@ export function AuthRoot() {
     return (
         <>
             {/* Header */}
-            <div className="flex flex-col justify-center items-center mb-6">
+            <div className="flex flex-col justify-center items-center mb-10">
                 <img
                     src={brandLogo}
                     alt="Logo"

@@ -1,12 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { AuthLayout } from './components/layouts/AuthLayout';
+import { AuthLayout } from '@layouts/AuthLayout';
 
-import LoginPage from '@/pages/auth/LoginPage';
-import StorePage from '@/components/storeAdminPage';
-import BranchAccounts from '@/pages/branchAccounts.jsx';
-import Configuration from '@/pages/configuration.jsx';
-import { NotFound } from './pages/miscs/NotFound';
+import { AuthRoot } from './pages/auth/auth-root';
+import { NotFound } from '@pages/miscs/NotFound';
 
 function AppRoutes() {
     return (
@@ -14,20 +11,13 @@ function AppRoutes() {
             <Routes>
                 {/* Auth Routes */}
                 <Route element={<AuthLayout />}>
-                    <Route index element={<LoginPage />} />
+                    <Route index element={<AuthRoot />} />
                 </Route>
 
                 {/* Private Routes */}
-                <Route path="/dashboard" element={<StorePage />}>
-                    <Route
-                        path="branch-accounts"
-                        element={<BranchAccounts />}
-                    />
-                    <Route path="configuration" element={<Configuration />} />
-                </Route>
 
                 {/* Miscs */}
-                <Route path="*" element={<NotFound />}></Route>
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );
