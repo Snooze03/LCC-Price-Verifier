@@ -1,3 +1,5 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,15 +9,32 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import {
-    Field,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-} from '@/components/ui/field';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 
+import { authSchema } from '@/schemas/auth/auth-schema';
+import { useAuth } from '@/hooks/useAuth';
+
 export function LoginForm({ className, ...props }) {
+    // Login request
+    const { login, isLoading, isError } = useAuth();
+
+    // Form handler
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(authSchema),
+    });
+
+    // Submit handler
+    const onSubmit = (formData) => {
+        login({ email: formData.email, password: formData.password });
+    };
+
+    // IMPORTANT NOTE: Display zod errors and handle submit errors too
+
     return (
         <div className={cn('flex flex-col gap-6', className)} {...props}>
             <Card>
@@ -26,14 +45,15 @@ export function LoginForm({ className, ...props }) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <FieldGroup>
                             <Field>
                                 <FieldLabel htmlFor="email">Email</FieldLabel>
                                 <Input
+                                    {...register('email')}
                                     id="email"
                                     type="email"
-                                    placeholder="m@example.com"
+                                    placeholder="lcc@email.com"
                                     required
                                 />
                             </Field>
@@ -42,21 +62,22 @@ export function LoginForm({ className, ...props }) {
                                     <FieldLabel htmlFor="password">
                                         Password
                                     </FieldLabel>
-                                    <a
-                                        href="#"
-                                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                                    >
-                                        Forgot your password?
-                                    </a>
                                 </div>
-                                <Input id="password" type="password" required />
+                                <Input
+                                    {...register('password')}
+                                    id="password"
+                                    type="password"
+                                    required
+                                />
                             </Field>
                             <Field>
-                                <Button type="submit">Login</Button>
-                                <FieldDescription className="text-center">
-                                    Don&apos;t have an account?{' '}
-                                    <a href="#">Sign up</a>
-                                </FieldDescription>
+                                <Button
+                                    type="submit"
+                                    className="bg-blue-400 font-bold"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? 'Logging in...' : 'Login'}
+                                </Button>
                             </Field>
                         </FieldGroup>
                     </form>
