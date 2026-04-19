@@ -1,43 +1,99 @@
-export function Card({ children, className = '' }) {
+import * as React from 'react';
+
+import { cn } from '@/lib/utils';
+
+function Card({ className, size = 'default', ...props }) {
     return (
         <div
-            className={`flex w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-6  ${className}`}
-        >
-            {/* bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-6 */}
-            {children}
-        </div>
+            data-slot="card"
+            data-size={size}
+            className={cn(
+                'group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-8 px-3 text-sm text-card-foreground ring-1 ring-foreground/10 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl',
+                className,
+            )}
+            {...props}
+        />
     );
 }
 
-export function CardHeader({ children, className = '' }) {
+function CardHeader({ className, ...props }) {
     return (
-        <div className={`flex flex-col gap-1  ${className}`}>{children}</div>
+        <div
+            data-slot="card-header"
+            className={cn(
+                'group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3',
+                className,
+            )}
+            {...props}
+        />
     );
 }
 
-export function CardTitle({ children, className = '' }) {
+function CardTitle({ className, ...props }) {
     return (
-        <h1 className="text-2xl font-semibold text-slate-800">{children}</h1>
+        <div
+            data-slot="card-title"
+            className={cn(
+                'font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm',
+                className,
+            )}
+            {...props}
+        />
     );
 }
 
-export function CardDescription({ children, className = '' }) {
-    return <p className="text-sm text-slate-400">{children}</p>;
-}
-
-export function CardContent({ children, className = '' }) {
-    return <div className={`flex flex-col gap-4 ${className}`}>{children}</div>;
-}
-export function CardFooter({ children, className = '' }) {
+function CardDescription({ className, ...props }) {
     return (
-        <p className="text-sm text-slate-400 flex justify-center">{children}</p>
+        <div
+            data-slot="card-description"
+            className={cn('text-sm text-muted-foreground', className)}
+            {...props}
+        />
     );
 }
 
-export function OpeningCardBranch({ children, className = '' }) {
+function CardAction({ className, ...props }) {
     return (
-        <div className="bg-mist-100 h-full min-h-full p-4 flex flex-col gap-4">
-            {children}
-        </div>
+        <div
+            data-slot="card-action"
+            className={cn(
+                'col-start-2 row-span-2 row-start-1 self-start justify-self-end',
+                className,
+            )}
+            {...props}
+        />
     );
 }
+
+function CardContent({ className, ...props }) {
+    return (
+        <div
+            data-slot="card-content"
+            className={cn('px-4 group-data-[size=sm]/card:px-3', className)}
+            {...props}
+        />
+    );
+}
+
+function CardFooter({ className, ...props }) {
+    return (
+        <div
+            data-slot="card-footer"
+            className={cn(
+                'flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3',
+                className,
+            )}
+            {...props}
+        />
+    );
+}
+
+export {
+    Card,
+    CardHeader,
+    CardFooter,
+    CardTitle,
+    CardAction,
+    CardDescription,
+    CardContent,
+};
