@@ -7,6 +7,9 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"],
+            "@pages/*": ["./src/pages/*"],
+            "@layouts/*": ["./src/components/layouts/*"],
+            "@ui/*": ["./src/components/ui/*"],
             "@/assets/*": ["./src/assets/*"]
         },
         "jsx": "react-native",
