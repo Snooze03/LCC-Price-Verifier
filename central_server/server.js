@@ -35,10 +35,10 @@ const start = async () => {
     FASTIFY.setValidatorCompiler(validatorCompiler);
     FASTIFY.setSerializerCompiler(serializerCompiler);
 
-    // Public Routes
+    // Internal Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
 
-    // Protected Routes
+    // Remote Routes
     FASTIFY.register(configRoutes, { prefix: '/pricever/server' });
     FASTIFY.register(storeRoutes, { prefix: '/stores' });
 
