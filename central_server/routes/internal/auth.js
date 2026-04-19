@@ -4,41 +4,42 @@ export async function authRoutes(FASTIFY, options) {
     FASTIFY.post(
         '/login',
         {
-            schema: authSchema,
+            // schema: authSchema,
         },
         async (request, reply) => {
-            const store_id = request.body.store_id;
+            const email = request.body.email;
             const password = request.body.password;
 
             const [rows] = await FASTIFY.mysql.query(
-                `SELECT store_id, password
-                FROM stores
-                WHERE store_id = ?`,
-                [store_id],
+                `SELECT email, password
+                FROM accounts
+                WHERE email = ?`,
+                [email],
             );
 
             // Checks if store exists
             if (rows.length === 0) {
                 return reply.code(404).send({
-                    message: 'Store Not Found',
+                    message: 'Account Not Found',
                 });
             }
 
             // Get object
-            const store = rows[0];
+            const account = rows[0];
             // Check if password matches
-            const isCorrect = await FASTIFY.verify(store.password, password);
+            // const isCorrect = await FASTIFY.verify(email.password, password);
 
+            const isCorrect = password === account.password;
             if (isCorrect) {
                 // Generate tokens
-                const access_token = FASTIFY.jwt.access.sign({ store_id });
-                const refresh_token = FASTIFY.jwt.refresh.sign({ store_id });
+                const access_token = FASTIFY.jwt.access.sign({ email });
+                const refresh_token = FASTIFY.jwt.refresh.sign({ email });
 
                 // generate cookie with refresh token
                 reply.setCookie('refresh_token', refresh_token).send({
                     message: 'SUCCESS!',
                     body: {
-                        access_token,
+                        access_token: access_token,
                     },
                 });
             } else {
@@ -63,10 +64,10 @@ export async function authRoutes(FASTIFY, options) {
 
             // generate new tokens (token rotation)
             const newAccessToken = FASTIFY.jwt.access.sign({
-                store_id: decoded.store_id,
+                email: decoded.email,
             });
             const newRefreshToken = FASTIFY.jwt.refresh.sign({
-                store_id: decoded.store_id,
+                email: decoded.email,
             });
 
             // overwrite old cookies with new tokens
