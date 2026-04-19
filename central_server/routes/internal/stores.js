@@ -79,8 +79,8 @@ export async function storeRoutes(FASTIFY, options) {
     FASTIFY.get('/', async (request, reply) => {
         const [rows] = await FASTIFY.mysql.query(
             `SELECT s.*, c.db_connection_string, c.db_user_name, c.db_password, c.image_path
-            FROM STORES AS s
-            INNER JOIN CONFIG AS c
+            FROM stores AS s
+            INNER JOIN config AS c
             ON c.store_id = s.store_id;`,
         );
 
