@@ -6,35 +6,41 @@ export async function consoleLogin(FASTIFY, options) {
     let store_id = null;
     let passWord = '';
 
-    console.log('---------- CENTRAL SERVER AUTHENTICATION ----------');
+    while (true) {
+        console.log('---------- CENTRAL SERVER AUTHENTICATION ----------');
 
-    store_id = await number({
-        message: 'Enter Store Number: ',
-        validate: async (value) => {
-            // Add validation: if store exists!
-            if (!value) return 'Please enter a Store Number';
+        store_id = await number({
+            message: 'Enter Store Number: ',
+            validate: (value) => (value ? true : 'Please enter Password'),
+        });
 
-            return true;
-        },
-    });
+        passWord = await password({
+            message: 'Enter Password: ',
+            mask: '*',
+            validate: (value) => (value ? true : 'Please enter Password'),
+        });
 
-    passWord = await password({
-        message: 'Enter Password: ',
-        mask: '*',
-        validate: (value) => (value ? true : 'Please enter Password'),
-    });
+        // send request
+        try {
+            const response = await api.post(`/pricever/login`, {
+                store_id,
+                password: passWord,
+            });
+            const access_token = response.data.body.access_token;
 
-    // send request
-    const response = await api.post(`auth/login`, {
-        store_id,
-        password: passWord,
-    });
+            // add token to axios response interceptor
+            await addToken(access_token);
+            break;
+        } catch (error) {
+            const { status, data } = error.response;
+            console.clear();
 
-    const access_token = response.data.body.access_token;
-    console.log('RESPONSE: ', response);
-
-    // add token to axios response interceptor
-    await addToken(access_token);
+            console.log('---------- AUTHENTICATION ERROR ----------');
+            console.log('- Status:', status);
+            console.log('- Response:', data.message, '\n');
+            continue;
+        }
+    }
 
     console.log('---------- AUTHENTICATION SUCCESS ----------');
 }
