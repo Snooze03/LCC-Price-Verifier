@@ -9,10 +9,14 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
+    SidebarInset,
 } from '../ui/sidebar';
 import { LayoutDashboard, Settings, LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { DashboardModal } from '@/modals/dashboardModal';
 
 export function DashboardLayout() {
+    const [showModal, setShowModal] = useState(false);
     return (
         <>
             <SidebarProvider>
@@ -63,8 +67,10 @@ export function DashboardLayout() {
                         </SidebarMenu>
                     </SidebarFooter>
                 </Sidebar>
+                <SidebarInset>
+                    <Outlet />
+                </SidebarInset>
             </SidebarProvider>
-            <Outlet />
         </>
     );
 }
