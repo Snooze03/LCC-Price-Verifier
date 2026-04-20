@@ -13,6 +13,7 @@ import argonFP from './plugins/FP-argon.js';
 import { configRoutes } from './routes/remote/config.js';
 import { authRoutes } from './routes/internal/auth.js';
 import { storeRoutes } from './routes/internal/stores.js';
+import { remoteAuth } from './routes/remote/auth.js';
 
 const FASTIFY = Fastify({
     logger: {
@@ -35,12 +36,22 @@ const start = async () => {
     FASTIFY.setValidatorCompiler(validatorCompiler);
     FASTIFY.setSerializerCompiler(serializerCompiler);
 
-    // Internal Routes
+    // Internal PUBLIC Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
+    // Internal PRIVATE Routes
+    FASTIFY.register(storeRoutes, { prefix: '/stores' });
 
     // Remote Routes
-    FASTIFY.register(configRoutes, { prefix: '/pricever/server' });
-    FASTIFY.register(storeRoutes, { prefix: '/stores' });
+    FASTIFY.register(
+        async (instance) => {
+            // Public Routes
+            instance.register(remoteAuth);
+
+            // Private Routes
+            instance.register(configRoutes);
+        },
+        { prefix: '/pricever' },
+    );
 
     await FASTIFY.listen({ port: 3001, host: '0.0.0.0' });
 };

@@ -1,12 +1,13 @@
 import { authSchema } from '../../schema/auth.js';
 
-export async function authRoutes(FASTIFY, options) {
+export async function remoteAuth(FASTIFY, options) {
     FASTIFY.post(
         '/login',
         {
-            schema: authSchema,
+            // schema: authSchema,
         },
         async (request, reply) => {
+            // Request data
             const store_id = request.body.store_id;
             const password = request.body.password;
 
@@ -24,10 +25,9 @@ export async function authRoutes(FASTIFY, options) {
                 });
             }
 
-            // Get object
-            const store = rows[0];
-            // Check if password matches
-            const isCorrect = await FASTIFY.verify(store.password, password);
+            // Get password from object
+            const hashedPassword = rows[0].password;
+            const isCorrect = await FASTIFY.verify(hashedPassword, password);
 
             if (isCorrect) {
                 // Generate tokens
