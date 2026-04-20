@@ -2,7 +2,7 @@ export async function configRoutes(FASTIFY, options) {
     // Route for fetching local store backend server config
     // (db connection string, user name, etc...)
     FASTIFY.get(
-        '/',
+        '/config',
         {
             onRequest: [FASTIFY.authenticate],
         },
