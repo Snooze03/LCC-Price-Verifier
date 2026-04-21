@@ -11,12 +11,37 @@ import {
 import { Field, FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAddStore } from '@/hooks/useAddStores';
 
 export function DashboardDialog({ open, onOpenChange }) {
+    const { addStore, isLoading } = useAddStore(); // ✅ call the hook
+    // Handle form submission
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+
+        const storeData = {
+            store_id: Number(formData.get('store_id')),
+            location: String(formData.get('location')),
+            password: String(formData.get('password')),
+            connection_type: String(formData.get('connection_type')),
+            db_user: String(formData.get('db_user')),
+            db_password: String(formData.get('db_password')),
+            host: String(formData.get('host')),
+            port: String(formData.get('port')),
+            db: String(formData.get('database')),
+            image_path: String(formData.get('imagepath')),
+        };
+
+        addStore(storeData);
+        onOpenChange(false);
+    };
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-2xl">
-                <form>
+                <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle>Add Store</DialogTitle>
                         <DialogDescription>
@@ -41,6 +66,7 @@ export function DashboardDialog({ open, onOpenChange }) {
                                 id="password"
                                 name="password"
                                 type="password"
+                                minLength={1}
                             />
                         </Field>
                     </div>
@@ -86,13 +112,19 @@ export function DashboardDialog({ open, onOpenChange }) {
                             <Label htmlFor="database">Database</Label>
                             <Input id="database" name="database" />
                         </Field>
+                        <Field>
+                            <Label htmlFor="imagepath">Imagepath</Label>
+                            <Input id="imagepath" name="imagepath" />
+                        </Field>
                     </div>
 
                     <DialogFooter>
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit">Save changes</Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? 'Saving...' : 'Save changes'}
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
