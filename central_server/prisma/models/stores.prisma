@@ -1,0 +1,12 @@
+model stores {
+    id       Int      @unique(map: "id") @default(autoincrement())
+    store_id Int      @id
+    password String   @db.VarChar(255)
+    location String   @db.VarChar(255)
+    config   config[]
+}
+
+enum accounts_role {
+    admin
+    developer
+}
