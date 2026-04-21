@@ -5,7 +5,7 @@ import {
     validatorCompiler,
 } from 'fastify-type-provider-zod';
 
-import dbConnectorFP from '#plugins/FP-dbConnector';
+import prismaClientFP from '#plugins/FP-prisma';
 import corsFP from '#plugins/FP-cors';
 import jwtTokenFP from '#plugins/FP-jwt';
 import cookiesFP from '#plugins/FP-cookies';
@@ -25,8 +25,7 @@ const FASTIFY = Fastify({
 
 const start = async () => {
     // Plugins
-    await FASTIFY.register(dbConnectorFP);
-    // Cors Origins Settings
+    await FASTIFY.register(prismaClientFP);
     await FASTIFY.register(corsFP);
     await FASTIFY.register(jwtTokenFP);
     await FASTIFY.register(cookiesFP);
