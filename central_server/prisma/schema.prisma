@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model accounts {
+  id       Int           @id @default(autoincrement())
+  email    String        @unique(map: "username") @db.VarChar(255)
+  password String        @db.VarChar(255)
+  role     accounts_role
+}
+
+model config {
+  id              Int                    @id @default(autoincrement())
+  store_id        Int
+  connection_type config_connection_type
+  db_user         String                 @db.VarChar(255)
+  db_password     String                 @db.VarChar(255)
+  host            String                 @db.VarChar(255)
+  port            String                 @db.VarChar(255)
+  db              String                 @db.VarChar(255)
+  image_path      String                 @db.VarChar(255)
+  stores          stores                 @relation(fields: [store_id], references: [store_id], onDelete: Cascade, map: "FK_store_id")
+
+  @@index([store_id], map: "FK_store_id")
+}
+
+model stores {
+  id       Int      @unique(map: "id") @default(autoincrement())
+  store_id Int      @id
+  password String   @db.VarChar(255)
+  location String   @db.VarChar(255)
+  config   config[]
+}
+
+enum config_connection_type {
+  mysql
+  mariadb
+  postgres
+}
+
+enum accounts_role {
+  admin
+  developer
+}
