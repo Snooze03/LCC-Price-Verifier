@@ -6,13 +6,13 @@ export async function storeRoutes(FASTIFY, options) {
     // 3. Pagination
 
     // ========== EVENT LISTENERS ==========
-    FASTIFY.addHook('onRequest', async (request, reply) => {
-        try {
-            await FASTIFY.authenticate(request, reply);
-        } catch (error) {
-            reply.send(error);
-        }
-    });
+    // FASTIFY.addHook('onRequest', async (request, reply) => {
+    //     try {
+    //         await FASTIFY.authenticate(request, reply);
+    //     } catch (error) {
+    //         reply.send(error);
+    //     }
+    // });
     // ========== END EVENT LISTENERS ==========
 
     // ========== ROUTES ==========
@@ -23,9 +23,12 @@ export async function storeRoutes(FASTIFY, options) {
             store_id,
             password,
             location,
-            db_connection_string,
-            db_user_name,
+            connection_type,
+            db_user,
             db_password,
+            host,
+            port,
+            db,
             image_path,
         } = request.body;
 
@@ -44,12 +47,15 @@ export async function storeRoutes(FASTIFY, options) {
             );
 
             const [configResult] = await connection.query(
-                'INSERT INTO config (store_id, db_connection_string, db_user_name, db_password, image_path) VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO config (store_id, connection_type, db_user, db_password, host, port, db, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     store_id,
-                    db_connection_string,
-                    db_user_name,
+                    connection_type,
+                    db_user,
                     db_password,
+                    host,
+                    port,
+                    db,
                     image_path,
                 ],
             );
@@ -78,7 +84,7 @@ export async function storeRoutes(FASTIFY, options) {
     // Fetch Stores with their Corresponding Configs
     FASTIFY.get('/', async (request, reply) => {
         const [rows] = await FASTIFY.mysql.query(
-            `SELECT s.*, c.db_connection_string, c.db_user_name, c.db_password, c.image_path
+            `SELECT s.*, c.connection_type, c.db_user, c.db_password, c.host, c.port, c.db, c.image_path
             FROM stores AS s
             INNER JOIN config AS c
             ON c.store_id = s.store_id;`,
@@ -97,9 +103,12 @@ export async function storeRoutes(FASTIFY, options) {
             store_id,
             password,
             location,
-            db_connection_string,
-            db_user_name,
+            connection_type,
+            db_user,
             db_password,
+            host,
+            port,
+            db,
             image_path,
         } = request.body;
 
@@ -118,11 +127,14 @@ export async function storeRoutes(FASTIFY, options) {
             );
 
             const [configResult] = await connection.query(
-                'UPDATE config SET db_connection_string = ?, db_user_name = ?, db_password = ?, image_path = ? WHERE store_id = ?',
+                'UPDATE config SET connection_type = ?, db_user = ?, db_password = ?, host = ?, port = ?, db = ?, image_path = ? WHERE store_id = ?',
                 [
-                    db_connection_string,
-                    db_user_name,
+                    connection_type,
+                    db_user,
                     db_password,
+                    host,
+                    port,
+                    db,
                     image_path,
                     store_id,
                 ],
@@ -141,9 +153,10 @@ export async function storeRoutes(FASTIFY, options) {
         } catch (error) {
             await connection.rollback();
 
-            return {
+            return reply.code(400).send({
                 message: 'Transaction Error',
-            };
+                error: error.message,
+            });
         } finally {
             connection.release();
         }
