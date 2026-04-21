@@ -1,3 +1,5 @@
+import { includes } from 'zod';
+
 export async function storeRoutes(FASTIFY, options) {
     // ================ IMPORTANT NOTE =================
     // To add:
@@ -16,131 +18,86 @@ export async function storeRoutes(FASTIFY, options) {
     // ========== END EVENT LISTENERS ==========
 
     // ========== ROUTES ==========
-    // Create new Store Accounts
+    // Create new Store Accounts with Config
     FASTIFY.post('/', async (request, reply) => {
-        // get request data
-        const {
-            store_id,
-            password,
-            location,
-            db_connection_string,
-            db_user_name,
-            db_password,
-            image_path,
-        } = request.body;
-
-        // hash password
+        const { store_id, password, location, ...configData } = request.body;
         const hashedPassword = await FASTIFY.hash(password);
-        // create a connection pool
-        const connection = await FASTIFY.mysql.getConnection();
 
-        // transaction to create store with config
         try {
-            await connection.query('START TRANSACTION');
+            // Transaction operation
+            const result = await FASTIFY.prisma.$transaction(async (tx) => {
+                await tx.stores.create({
+                    data: {
+                        store_id,
+                        password: hashedPassword,
+                        location,
+                    },
+                });
 
-            const [storeResult] = await connection.query(
-                'INSERT INTO stores (store_id, password, location) VALUES (?, ?, ?)',
-                [store_id, hashedPassword, location],
-            );
+                await tx.config.create({
+                    data: {
+                        store_id,
+                        ...configData,
+                    },
+                });
 
-            const [configResult] = await connection.query(
-                'INSERT INTO config (store_id, db_connection_string, db_user_name, db_password, image_path) VALUES (?, ?, ?, ?, ?)',
-                [
-                    store_id,
-                    db_connection_string,
-                    db_user_name,
-                    db_password,
-                    image_path,
-                ],
-            );
+                return reply.code(200).send({
+                    message: 'Successfully created Store with Config',
+                });
+            });
 
-            await connection.commit();
-
-            return {
-                message: 'Store and Configuration Created Successfully',
-                data: {
-                    store_affected: storeResult.affectedRows,
-                    config_affected: configResult.affectedRows,
-                    store_id: store_id,
-                },
-            };
+            return result;
         } catch (error) {
-            await connection.rollback();
-
-            return {
-                error,
-            };
-        } finally {
-            connection.release();
+            return error;
         }
     });
 
     // Fetch Stores with their Corresponding Configs
     FASTIFY.get('/', async (request, reply) => {
-        const result = FASTIFY.prisma.stores.findMany();
-
-        return result;
+        try {
+            const stores = await FASTIFY.prisma.stores.findMany({
+                include: { config: true },
+            });
+            return stores;
+        } catch (error) {
+            return error;
+        }
     });
 
     // Update Stores
     FASTIFY.patch('/:id', async (request, reply) => {
-        // url parameter
-        const id = request.params.id;
+        const id = Number(request.params.id);
 
-        // get request data
-        const {
-            store_id,
-            password,
-            location,
-            db_connection_string,
-            db_user_name,
-            db_password,
-            image_path,
-        } = request.body;
-
-        // hash password
+        const { store_id, password, location, ...configData } = request.body;
         const hashedPassword = await FASTIFY.hash(password);
-        // create a connection pool
-        const connection = await FASTIFY.mysql.getConnection();
 
-        // transaction to create store with config
         try {
-            await connection.query('START TRANSACTION');
+            // Transaction operation
+            const result = await FASTIFY.prisma.$transaction(async (tx) => {
+                await tx.stores.update({
+                    where: { id },
+                    data: {
+                        store_id,
+                        password: hashedPassword,
+                        location,
+                    },
+                });
 
-            const [storeResult] = await connection.query(
-                'UPDATE stores SET store_id = ?, password = ?, location =? WHERE id = ?',
-                [store_id, hashedPassword, location, id],
-            );
+                await tx.config.update({
+                    where: { store_id },
+                    data: {
+                        ...configData,
+                    },
+                });
 
-            const [configResult] = await connection.query(
-                'UPDATE config SET db_connection_string = ?, db_user_name = ?, db_password = ?, image_path = ? WHERE store_id = ?',
-                [
-                    db_connection_string,
-                    db_user_name,
-                    db_password,
-                    image_path,
-                    store_id,
-                ],
-            );
+                return reply.code(200).send({
+                    message: 'Successfully created Store with Config',
+                });
+            });
 
-            await connection.commit();
-
-            return {
-                message: 'Store and Configuration Update Successfully',
-                data: {
-                    store_affected: storeResult.affectedRows,
-                    config_affected: configResult.affectedRows,
-                    store_id: store_id,
-                },
-            };
+            return result;
         } catch (error) {
-            await connection.rollback();
-
-            return {
-                message: 'Transaction Error',
-            };
-        } finally {
-            connection.release();
+            return error;
         }
     });
 
@@ -148,11 +105,13 @@ export async function storeRoutes(FASTIFY, options) {
     FASTIFY.delete('/:store_id', async (request, reply) => {
         try {
             const store_id = Number(request.params.store_id);
-            const result = await FASTIFY.prisma.stores.delete({
+
+            await FASTIFY.prisma.stores.delete({
                 where: {
                     store_id: store_id,
                 },
             });
+
             return reply.code(200).send({
                 message: `Deleted store with Store ID: ${store_id}`,
             });
