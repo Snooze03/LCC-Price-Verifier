@@ -18,7 +18,7 @@ CREATE TABLE `config` (
     `db_password` VARCHAR(255) NOT NULL,
     `host` VARCHAR(255) NOT NULL,
     `port` VARCHAR(255) NOT NULL,
-    `db` VARCHAR(255) NOT NULL,
+    `db_name` VARCHAR(255) NOT NULL,
     `image_path` VARCHAR(255) NOT NULL,
 
     INDEX `FK_store_id`(`store_id`),
