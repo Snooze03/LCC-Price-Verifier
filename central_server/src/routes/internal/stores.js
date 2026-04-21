@@ -6,13 +6,13 @@ export async function storeRoutes(FASTIFY, options) {
     // 3. Pagination
 
     // ========== EVENT LISTENERS ==========
-    FASTIFY.addHook('onRequest', async (request, reply) => {
-        try {
-            await FASTIFY.authenticate(request, reply);
-        } catch (error) {
-            reply.send(error);
-        }
-    });
+    // FASTIFY.addHook('onRequest', async (request, reply) => {
+    //     try {
+    //         await FASTIFY.authenticate(request, reply);
+    //     } catch (error) {
+    //         reply.send(error);
+    //     }
+    // });
     // ========== END EVENT LISTENERS ==========
 
     // ========== ROUTES ==========
@@ -77,14 +77,9 @@ export async function storeRoutes(FASTIFY, options) {
 
     // Fetch Stores with their Corresponding Configs
     FASTIFY.get('/', async (request, reply) => {
-        const [rows] = await FASTIFY.mysql.query(
-            `SELECT s.*, c.db_connection_string, c.db_user_name, c.db_password, c.image_path
-            FROM stores AS s
-            INNER JOIN config AS c
-            ON c.store_id = s.store_id;`,
-        );
+        const result = FASTIFY.prisma.stores.findMany();
 
-        return rows;
+        return result;
     });
 
     // Update Stores
@@ -151,15 +146,19 @@ export async function storeRoutes(FASTIFY, options) {
 
     // Delete Store Accounts
     FASTIFY.delete('/:store_id', async (request, reply) => {
-        const store_id = request.params.store_id;
-
-        const [rows] = await FASTIFY.mysql.query(
-            `DELETE FROM stores
-                WHERE store_id = ?`,
-            [store_id],
-        );
-
-        return rows;
+        try {
+            const store_id = Number(request.params.store_id);
+            const result = await FASTIFY.prisma.stores.delete({
+                where: {
+                    store_id: store_id,
+                },
+            });
+            return reply.code(200).send({
+                message: `Deleted store with Store ID: ${store_id}`,
+            });
+        } catch (error) {
+            return error.message;
+        }
     });
     // ========== END STORE ROUTES ==========
 }
