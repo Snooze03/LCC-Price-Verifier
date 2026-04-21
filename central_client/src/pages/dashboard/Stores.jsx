@@ -23,6 +23,7 @@ const columns = [
     'Host',
     'Port',
     'Database',
+    'Image Path',
 ];
 
 function StoresTab() {
@@ -30,7 +31,7 @@ function StoresTab() {
     const { data, isLoading, isError, error } = useStores();
     console.log(data);
 
-    // if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <p>Loading...</p>;
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
@@ -43,7 +44,7 @@ function StoresTab() {
 
             <DashboardDialog open={dialogOpen} onOpenChange={setDialogOpen} />
             <Table>
-                <TableHeader>
+                <TableHeader className="bg-black">
                     <TableRow>
                         {columns.map((col) => (
                             <TableHead key={col}>{col}</TableHead>
@@ -51,11 +52,13 @@ function StoresTab() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {/* {data.map((store) => (
+                    {data.map((store) => (
                         <TableRow key={store.store_id}>
                             <TableCell>{store.store_id}</TableCell>
                             <TableCell>{store.location}</TableCell>
-                            <TableCell>{store.password}</TableCell>
+                            <TableCell className="max-w-[100px] truncate">
+                                {store.password}
+                            </TableCell>
                             <TableCell>{store.connection_type}</TableCell>
                             <TableCell>{store.db_user}</TableCell>
                             <TableCell>{store.db_password}</TableCell>
@@ -64,7 +67,7 @@ function StoresTab() {
                             <TableCell>{store.db}</TableCell>
                             <TableCell>{store.image_path}</TableCell>
                         </TableRow>
-                    ))} */}
+                    ))}
                 </TableBody>
             </Table>
         </div>
