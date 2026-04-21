@@ -38,6 +38,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+central_server/generated
 
 # vscode
 .vscode
