@@ -1,0 +1,7 @@
+{
+    "store_id": 100,
+    "db_connection_string": "mysql://@10.0.3.46:3306/price_ver",
+    "db_user_name": "root",
+    "db_password": "sudoPassword",
+    "image_path": "./mga-letrato"
+}

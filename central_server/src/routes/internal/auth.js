@@ -1,4 +1,4 @@
-import { authSchema } from '../../schema/auth.js';
+import { authSchema } from '#schema/auth';
 
 export async function authRoutes(FASTIFY, options) {
     FASTIFY.post(

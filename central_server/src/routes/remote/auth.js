@@ -1,4 +1,4 @@
-import { authSchema } from '../../schema/auth.js';
+import { authSchema } from '#schema/auth';
 
 export async function remoteAuth(FASTIFY, options) {
     FASTIFY.post(

@@ -32,8 +32,8 @@
         "prisma": "^7.7.0"
     },
     "imports": {
-        "#plugins/*": "./plugins/*.js",
-        "#routes/*": "./routes/*.js",
-        "#schema/*": "./schema/*.js"
+        "#plugins/*": "./src/plugins/*.js",
+        "#routes/*": "./src/routes/*.js",
+        "#schema/*": "./src/schema/*.js"
     }
 }

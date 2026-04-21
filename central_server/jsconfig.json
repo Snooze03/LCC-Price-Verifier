@@ -5,9 +5,10 @@
         "checkJs": true,
         "baseUrl": ".",
         "paths": {
-            "#plugins/*": ["./plugins/*"],
-            "#routes/*": ["./routes/*"]
+            "#plugins/*": ["src/plugins/*"],
+            "#routes/*": ["src/routes/*"],
+            "#schema/*": ["src/schema/*"]
         }
     },
-    "exclude": ["dist"]
+    "exclude": ["node_modules", "dist"]
 }
