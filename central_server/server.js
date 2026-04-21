@@ -5,15 +5,15 @@ import {
     validatorCompiler,
 } from 'fastify-type-provider-zod';
 
-import dbConnectorFP from './plugins/FP-dbConnector.js';
-import corsFP from './plugins/FP-cors.js';
-import jwtTokenFP from './plugins/FP-jwt.js';
-import cookiesFP from './plugins/FP-cookies.js';
-import argonFP from './plugins/FP-argon.js';
-import { configRoutes } from './routes/remote/config.js';
-import { authRoutes } from './routes/internal/auth.js';
-import { storeRoutes } from './routes/internal/stores.js';
-import { remoteAuth } from './routes/remote/auth.js';
+import dbConnectorFP from '#plugins/FP-dbConnector';
+import corsFP from '#plugins/FP-cors';
+import jwtTokenFP from '#plugins/FP-jwt';
+import cookiesFP from '#plugins/FP-cookies';
+import argonFP from '#plugins/FP-argon';
+import { configRoutes } from '#routes/remote/config';
+import { authRoutes } from '#routes/internal/auth';
+import { storeRoutes } from '#routes/internal/stores';
+import { remoteAuth } from '#routes/remote/auth';
 
 const FASTIFY = Fastify({
     logger: {
