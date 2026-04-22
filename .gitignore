@@ -40,5 +40,8 @@ yarn-error.*
 /android
 central_server/generated
 
+# local server config
+local_server/config.json
+
 # vscode
 .vscode
