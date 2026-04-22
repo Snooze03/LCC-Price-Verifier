@@ -1,5 +1,5 @@
 import { number, password } from '@inquirer/prompts';
-import { api, addToken } from '../api/api.js';
+import { api, addToken } from '#api/api';
 import 'dotenv/config';
 
 export async function consoleLogin(FASTIFY, options) {

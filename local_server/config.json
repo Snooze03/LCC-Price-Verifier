@@ -1,7 +1,9 @@
 {
-    "store_id": 100,
-    "db_connection_string": "mysql://@10.0.3.46:3306/price_ver",
-    "db_user_name": "root",
-    "db_password": "sudoPassword",
-    "image_path": "./mga-letrato"
+    "connection_type": "mysql",
+    "db_user": "pricever",
+    "db_password": "pricever",
+    "host": "10.0.3.46",
+    "port": "3306",
+    "db_name": "price_ver",
+    "image_path": "/images"
 }

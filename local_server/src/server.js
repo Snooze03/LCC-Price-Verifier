@@ -1,10 +1,10 @@
 import { writeFile } from 'node:fs/promises';
 import fastify from 'fastify';
 
-import { consoleLogin } from './plugins/consoleLogin.js';
-import dbConnectorFP from './plugins/FP-dbConnector.js';
-import { priceRoutes } from './routes/local.js';
-import { api } from './api/api.js';
+import { consoleLogin } from '#plugins/consoleLogin';
+import dbConnectorFP from '#plugins/FP-dbConnector';
+import { priceRoutes } from '#routes/local';
+import { api } from '#api/api';
 
 const FASTIFY = fastify({
     logger: {
@@ -14,10 +14,6 @@ const FASTIFY = fastify({
     },
 });
 
-// Local Server Flow
-// [x] Fetch config from CENTRAL DB
-// [ ] Configure local server with fetched config
-// [ ] Register routes
 const start = async () => {
     // Authenticate local server
     await consoleLogin();
@@ -27,13 +23,13 @@ const start = async () => {
         const config = JSON.stringify(response.data, null, 4);
 
         await writeFile('./config.json', config, 'utf8');
-        console.log('Config Saved!');
+        FASTIFY.log.info('Config: Updated config file');
     } catch (error) {
         console.log(error);
     }
 
-    // await FASTIFY.register(dbConnectorFP);
-    // await FASTIFY.register(priceRoutes);
+    await FASTIFY.register(dbConnectorFP);
+    await FASTIFY.register(priceRoutes, { prefix: 'price' });
 
     await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
 };
