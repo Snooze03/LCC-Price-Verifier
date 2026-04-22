@@ -30,7 +30,6 @@ function StoresTab() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedStore, setSelectedStore] = useState(null); // ✅ track clicked store
     const { data, isLoading, isError, error } = useStores();
-    console.log('stores', data);
 
     if (isLoading) return <p>Loading...</p>;
 
@@ -48,7 +47,7 @@ function StoresTab() {
         <div className="space-y-6">
             <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
                 <h1 className="text-lg font-bold">Stores</h1>
-                <Button onClick={() => setDialogOpen(true)} size="sm">
+                <Button onClick={handleAddClick} size="sm">
                     <Plus />
                     Add Store
                 </Button>
@@ -83,7 +82,7 @@ function StoresTab() {
                                 <TableCell className="max-w-[100px] truncate">
                                     {store.password}
                                 </TableCell>
-                                {console.log('fix', store)}
+
                                 <TableCell>{config.connection_type}</TableCell>
                                 <TableCell>{config.db_user}</TableCell>
                                 <TableCell>{config.db_password}</TableCell>
