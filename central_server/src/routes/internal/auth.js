@@ -7,45 +7,68 @@ export async function authRoutes(FASTIFY, options) {
             // schema: authSchema,
         },
         async (request, reply) => {
-            const email = request.body.email;
-            const password = request.body.password;
+            const { email, password } = request.body;
 
-            const [rows] = await FASTIFY.mysql.query(
-                `SELECT email, password
-                FROM accounts
-                WHERE email = ?`,
-                [email],
-            );
+            // Check if account exists
+            const account = await FASTIFY.prisma.accounts.findUnique({
+                where: { email },
+            });
 
-            // Checks if store exists
-            if (rows.length === 0) {
+            if (account) {
+                // Check if password matches
+                const isCorrect = await FASTIFY.verify(
+                    account.password,
+                    password,
+                );
+
+                if (isCorrect) {
+                    // Generate tokens
+                    const access_token = FASTIFY.jwt.access.sign({ email });
+                    const refresh_token = FASTIFY.jwt.refresh.sign({ email });
+
+                    // generate cookie with refresh token
+                    reply.setCookie('refresh_token', refresh_token).send({
+                        message: 'SUCCESS!',
+                        body: {
+                            access_token: access_token,
+                        },
+                    });
+                } else {
+                    return reply.code(401).send({
+                        message: 'Incorrect Password',
+                    });
+                }
+            } else {
                 return reply.code(404).send({
-                    message: 'Account Not Found',
+                    message: `Could not find account with email: ${email}`,
                 });
             }
+        },
+    );
 
-            // Get object
-            const account = rows[0];
-            // Check if password matches
-            // const isCorrect = await FASTIFY.verify(email.password, password);
+    FASTIFY.post(
+        '/signup',
+        {
+            // schema: authSchema,
+        },
+        async (request, reply) => {
+            const { email, password, role } = request.body;
+            const hashedPassword = await FASTIFY.hash(password);
 
-            const isCorrect = password === account.password;
-            if (isCorrect) {
-                // Generate tokens
-                const access_token = FASTIFY.jwt.access.sign({ email });
-                const refresh_token = FASTIFY.jwt.refresh.sign({ email });
+            const newAccount = await FASTIFY.prisma.accounts.create({
+                data: {
+                    email,
+                    password: hashedPassword,
+                    role,
+                },
+            });
 
-                // generate cookie with refresh token
-                reply.setCookie('refresh_token', refresh_token).send({
-                    message: 'SUCCESS!',
-                    body: {
-                        access_token: access_token,
-                    },
+            if (newAccount) {
+                return reply.code(200).send({
+                    message: 'New account created successfully',
                 });
             } else {
-                return reply.code(401).send({
-                    message: 'Incorrect Password',
-                });
+                return newAccount;
             }
         },
     );
