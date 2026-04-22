@@ -13,8 +13,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAddStore } from '@/hooks/useAddStores';
 
-export function DashboardDialog({ open, onOpenChange }) {
+export function DashboardDialog({ open, onOpenChange, store }) {
     const { addStore, isLoading } = useAddStore(); // ✅ call the hook
+
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -30,11 +31,12 @@ export function DashboardDialog({ open, onOpenChange }) {
             db_password: String(formData.get('db_password')),
             host: String(formData.get('host')),
             port: String(formData.get('port')),
-            db: String(formData.get('database')),
+            db_name: String(formData.get('database')),
             image_path: String(formData.get('imagepath')),
         };
 
         addStore(storeData);
+
         onOpenChange(false);
     };
 
