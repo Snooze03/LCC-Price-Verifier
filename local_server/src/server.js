@@ -1,10 +1,12 @@
 import { writeFile } from 'node:fs/promises';
 import fastify from 'fastify';
+import fastifyCors from '@fastify/cors';
 
-import { consoleLogin } from '#plugins/consoleLogin';
-import dbConnectorFP from '#plugins/FP-dbConnector';
-import { priceRoutes } from '#routes/local';
 import { api } from '#api/api';
+import dbConnectorFP from '#plugins/FP-dbConnector';
+import fastifyStaticFP from '#plugins/FP-static';
+import { consoleLogin } from '#plugins/consoleLogin';
+import { priceRoutes } from '#routes/price';
 
 const FASTIFY = fastify({
     logger: {
@@ -15,21 +17,33 @@ const FASTIFY = fastify({
 });
 
 const start = async () => {
+    await FASTIFY.register(fastifyCors, {
+        // Allow all
+        // IMPORTANT NOTE: change to specific ip's on prod
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    });
     // Authenticate local server
-    await consoleLogin();
+    // await consoleLogin();
 
-    try {
-        const response = await api.get('pricever/config');
-        const config = JSON.stringify(response.data, null, 4);
+    // try {
+    //     const response = await api.get('pricever/config');
+    //     FASTIFY.log.info(response.message);
+    //     const config = JSON.stringify(response.data, null, 4);
 
-        await writeFile('./config.json', config, 'utf8');
-        FASTIFY.log.info('Config: Updated config file');
-    } catch (error) {
-        console.log(error);
-    }
+    //     await writeFile('./config.json', config, 'utf8');
+    //     FASTIFY.log.info('Config: Updated config file');
+    // } catch (error) {
+    //     FASTIFY.log.error(error);
+    // }
 
-    await FASTIFY.register(dbConnectorFP);
-    await FASTIFY.register(priceRoutes, { prefix: 'price' });
+    // Plugins
+    // await FASTIFY.register(dbConnectorFP);
+    await FASTIFY.register(fastifyStaticFP);
+
+    // Routes
+    FASTIFY.register(priceRoutes);
 
     await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
 };
