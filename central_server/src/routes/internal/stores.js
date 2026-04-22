@@ -65,10 +65,11 @@ export async function storeRoutes(FASTIFY, options) {
     });
 
     // Update Stores
-    FASTIFY.patch('/:id', async (request, reply) => {
-        const id = Number(request.params.id);
-
-        const { store_id, password, location, ...configData } = request.body;
+    FASTIFY.patch('/', async (request, reply) => {
+        const { id, store_id, password, location, ...rawConfigData } =
+            request.body;
+        // Destructure config array to get object
+        const config = rawConfigData.config[0];
         const hashedPassword = await FASTIFY.hash(password);
 
         try {
@@ -84,14 +85,14 @@ export async function storeRoutes(FASTIFY, options) {
                 });
 
                 await tx.config.update({
-                    where: { store_id },
+                    where: { id: config.id },
                     data: {
-                        ...configData,
+                        ...config,
                     },
                 });
 
                 return reply.code(200).send({
-                    message: 'Successfully created Store with Config',
+                    message: 'Successfully updated Store',
                 });
             });
 
