@@ -12,32 +12,29 @@ import { Field, FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAddStore } from '@/hooks/useAddStores';
+import { UseEditStores } from '@/hooks/useEditStores';
 
 export function DashboardDialog({ open, onOpenChange, store }) {
-    const { addStore, isLoading } = useAddStore(); // ✅ call the hook
+    const { addStore, isLoading: isAdding } = useAddStore(); // ✅ call the hook
+    const { editStore, isLoading: isEditing } = UseEditStores();
+
+    const isEditMode = !!store;
+    const isLoading = isAdding || isEditing;
+    const config = store?.config?.[0] ?? {};
 
     // Handle form submission
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-
-        const storeData = {
-            store_id: Number(formData.get('store_id')),
-            location: String(formData.get('location')),
-            password: String(formData.get('password')),
-            connection_type: String(formData.get('connection_type')),
-            db_user: String(formData.get('db_user')),
-            db_password: String(formData.get('db_password')),
-            host: String(formData.get('host')),
-            port: String(formData.get('port')),
-            db_name: String(formData.get('database')),
-            image_path: String(formData.get('imagepath')),
-        };
-
-        addStore(storeData);
-
-        onOpenChange(false);
+        const storeID = store.id;
+        if (isEditMode) {
+            editStore({ storeID, formData, store }); // ✅ hook formats for edit
+        } else {
+            addStore(formData); // ✅ hook formats for add
+            onOpenChange(false);
+        }
     };
 
     return (
@@ -45,10 +42,14 @@ export function DashboardDialog({ open, onOpenChange, store }) {
             <DialogContent className="sm:max-w-2xl">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
-                        <DialogTitle>Add Store</DialogTitle>
+                        <DialogTitle>
+                            {isEditMode ? 'Edit Store' : 'Add Store'}
+                        </DialogTitle>
                         <DialogDescription>
-                            Fill in the store details below. Click save when
-                            you&apos;re done.
+                            {isEditMode
+                                ? 'Update the store details below.'
+                                : 'Fill in the store details below.'}{' '}
+                            Click save when you&apos;re done.
                         </DialogDescription>
                     </DialogHeader>
 
@@ -56,11 +57,20 @@ export function DashboardDialog({ open, onOpenChange, store }) {
                     <div className="grid grid-cols-3 gap-4 py-4">
                         <Field>
                             <Label htmlFor="store-id">Store ID</Label>
-                            <Input id="store-id" name="store_id" />
+                            <Input
+                                id="store-id"
+                                name="store_id"
+                                defaultValue={store?.store_id ?? ''}
+                                // store_id shouldn't change on edit
+                            />
                         </Field>
                         <Field>
                             <Label htmlFor="location">Location</Label>
-                            <Input id="location" name="location" />
+                            <Input
+                                id="location"
+                                name="location"
+                                defaultValue={store?.location ?? ''}
+                            />
                         </Field>
                         <Field>
                             <Label htmlFor="password">Password</Label>
@@ -69,6 +79,7 @@ export function DashboardDialog({ open, onOpenChange, store }) {
                                 name="password"
                                 type="password"
                                 minLength={1}
+                                defaultValue={store?.password ?? ''}
                             />
                         </Field>
                     </div>
@@ -88,11 +99,16 @@ export function DashboardDialog({ open, onOpenChange, store }) {
                             <Input
                                 id="connection-type"
                                 name="connection_type"
+                                defaultValue={config?.connection_type ?? ''}
                             />
                         </Field>
                         <Field>
                             <Label htmlFor="db-user">DB User</Label>
-                            <Input id="db-user" name="db_user" />
+                            <Input
+                                id="db-user"
+                                name="db_user"
+                                defaultValue={config?.db_user ?? ''}
+                            />
                         </Field>
                         <Field>
                             <Label htmlFor="db-password">DB Password</Label>
@@ -100,23 +116,40 @@ export function DashboardDialog({ open, onOpenChange, store }) {
                                 id="db-password"
                                 name="db_password"
                                 type="password"
+                                defaultValue={config?.db_password ?? ''}
                             />
                         </Field>
                         <Field>
                             <Label htmlFor="host">Host</Label>
-                            <Input id="host" name="host" />
+                            <Input
+                                id="host"
+                                name="host"
+                                defaultValue={config?.host ?? ''}
+                            />
                         </Field>
                         <Field>
                             <Label htmlFor="port">Port</Label>
-                            <Input id="port" name="port" />
+                            <Input
+                                id="port"
+                                name="port"
+                                defaultValue={config?.port ?? ''}
+                            />
                         </Field>
                         <Field>
                             <Label htmlFor="database">Database</Label>
-                            <Input id="database" name="database" />
+                            <Input
+                                id="database"
+                                name="database"
+                                defaultValue={config?.db_name ?? ''}
+                            />
                         </Field>
                         <Field>
                             <Label htmlFor="imagepath">Imagepath</Label>
-                            <Input id="imagepath" name="imagepath" />
+                            <Input
+                                id="imagepath"
+                                name="imagepath"
+                                defaultValue={config?.image_path ?? ''}
+                            />
                         </Field>
                     </div>
 
