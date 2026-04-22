@@ -42,7 +42,7 @@ const start = async () => {
 
     // Remote Routes
     FASTIFY.register(
-        async (instance) => {
+        (instance) => {
             // Public Routes
             instance.register(remoteAuth);
 
