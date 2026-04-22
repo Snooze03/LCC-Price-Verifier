@@ -6,6 +6,8 @@ async function corsFP(FASTIFY, options) {
         // Allow all
         // IMPORTANT NOTE: change to specific ip's on prod
         origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     });
 }
 
