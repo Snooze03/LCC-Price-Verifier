@@ -1,0 +1,11 @@
+model accounts {
+  id       Int           @id @default(autoincrement())
+  email    String        @unique(map: "username") @db.VarChar(255)
+  password String        @db.VarChar(255)
+  role     accounts_role
+}
+
+enum accounts_role {
+  admin
+  developer
+}

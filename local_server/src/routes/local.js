@@ -1,7 +1,7 @@
 // Local store routes
 export async function priceRoutes(FASTIFY, options) {
     // Route for fetching product price through local store database
-    FASTIFY.get('/price/:barcode', async (request, reply) => {
+    FASTIFY.get('/:barcode', async (request, reply) => {
         const { barcode } = request.params;
 
         const [rows] = await FASTIFY.mysql.query(
@@ -27,4 +27,6 @@ export async function priceRoutes(FASTIFY, options) {
             price: parseFloat(item.price).toFixed(2),
         };
     });
+
+    FASTIFY.log.info('Routes: Price Routes Registered');
 }

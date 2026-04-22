@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "target": "es2022",
+        "checkJs": true,
+        "moduleResolution": "nodenext",
+        "baseUrl": ".",
+        "paths": {
+            "#api/*": ["src/api/*"],
+            "#plugins/*": ["src/plugins/*"],
+            "#routes/*": ["src/routes/*"],
+            "#schema/*": ["src/schema/*"],
+            "#generated/*": ["generated/*"]
+        }
+    },
+    "exclude": ["node_modules", "dist"]
+}

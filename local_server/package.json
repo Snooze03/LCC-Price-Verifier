@@ -2,7 +2,7 @@
     "name": "backend",
     "version": "1.0.0",
     "author": "",
-    "main": "index.js",
+    "main": "./src/server.js",
     "dependencies": {
         "@fastify/mysql": "^5.0.2",
         "@fastify/static": "^9.0.0",
@@ -18,10 +18,17 @@
     "license": "ISC",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "node --watch server.js"
+        "dev": "bun --watch ./src/server.js"
     },
     "type": "module",
     "devDependencies": {
         "fastify-pino-pretty": "^5.2.1"
+    },
+    "imports": {
+        "#api/*": "./src/api/*.js",
+        "#plugins/*": "./src/plugins/*.js",
+        "#routes/*": "./src/routes/*.js",
+        "#schema/*": "./src/schema/*.js",
+        "#generated/*": "./generated/*.js"
     }
 }

@@ -5,14 +5,15 @@ import {
     validatorCompiler,
 } from 'fastify-type-provider-zod';
 
-import dbConnectorFP from './plugins/FP-dbConnector.js';
-import corsFP from './plugins/FP-cors.js';
-import jwtTokenFP from './plugins/FP-jwt.js';
-import cookiesFP from './plugins/FP-cookies.js';
-import argonFP from './plugins/FP-argon.js';
-import { configRoutes } from './routes/remote/config.js';
-import { authRoutes } from './routes/internal/auth.js';
-import { storeRoutes } from './routes/internal/stores.js';
+import prismaClientFP from '#plugins/FP-prisma';
+import corsFP from '#plugins/FP-cors';
+import jwtTokenFP from '#plugins/FP-jwt';
+import cookiesFP from '#plugins/FP-cookies';
+import argonFP from '#plugins/FP-argon';
+import { configRoutes } from '#routes/remote/config';
+import { authRoutes } from '#routes/internal/auth';
+import { storeRoutes } from '#routes/internal/stores';
+import { remoteAuth } from '#routes/remote/auth';
 
 const FASTIFY = Fastify({
     logger: {
@@ -24,8 +25,7 @@ const FASTIFY = Fastify({
 
 const start = async () => {
     // Plugins
-    await FASTIFY.register(dbConnectorFP);
-    // Cors Origins Settings
+    await FASTIFY.register(prismaClientFP);
     await FASTIFY.register(corsFP);
     await FASTIFY.register(jwtTokenFP);
     await FASTIFY.register(cookiesFP);
@@ -35,12 +35,22 @@ const start = async () => {
     FASTIFY.setValidatorCompiler(validatorCompiler);
     FASTIFY.setSerializerCompiler(serializerCompiler);
 
-    // Internal Routes
+    // Internal PUBLIC Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
+    // Internal PRIVATE Routes
+    FASTIFY.register(storeRoutes, { prefix: '/stores' });
 
     // Remote Routes
-    FASTIFY.register(configRoutes, { prefix: '/pricever/server' });
-    FASTIFY.register(storeRoutes, { prefix: '/stores' });
+    FASTIFY.register(
+        (instance) => {
+            // Public Routes
+            instance.register(remoteAuth);
+
+            // Private Routes
+            instance.register(configRoutes);
+        },
+        { prefix: '/pricever' },
+    );
 
     await FASTIFY.listen({ port: 3001, host: '0.0.0.0' });
 };
