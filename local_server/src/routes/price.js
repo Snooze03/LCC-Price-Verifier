@@ -27,4 +27,6 @@ export async function priceRoutes(FASTIFY, options) {
             price: parseFloat(item.price).toFixed(2),
         };
     });
+
+    FASTIFY.log.info('Routes: Price Routes Registered');
 }

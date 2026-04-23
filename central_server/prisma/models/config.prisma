@@ -1,0 +1,20 @@
+model config {
+  id              Int                    @id @default(autoincrement())
+  store_id        Int
+  connection_type config_connection_type
+  db_user         String                 @db.VarChar(255)
+  db_password     String                 @db.VarChar(255)
+  host            String                 @db.VarChar(255)
+  port            String                 @db.VarChar(255)
+  db_name         String                 @db.VarChar(255)
+  image_path      String                 @db.VarChar(255)
+  stores          stores                 @relation(fields: [store_id], references: [store_id], onDelete: Cascade, map: "FK_store_id")
+
+  @@index([store_id], map: "FK_store_id")
+}
+
+enum config_connection_type {
+  mysql
+  mariadb
+  postgres
+}

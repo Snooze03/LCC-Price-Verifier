@@ -1,0 +1,9 @@
+{
+    "connection_type": "mysql",
+    "db_user": "pricever",
+    "db_password": "pricever",
+    "host": "10.0.3.46",
+    "port": "3306",
+    "db_name": "price_ver",
+    "image_path": "/images"
+}
