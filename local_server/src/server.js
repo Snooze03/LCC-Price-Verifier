@@ -1,8 +1,7 @@
-import { writeFile } from 'node:fs/promises';
 import fastify from 'fastify';
-import fastifyCors from '@fastify/cors';
 
-import { api } from '#api/api';
+import corsFP from '#plugins/FP-cors';
+import configFP from '#plugins/FP-config';
 import dbConnectorFP from '#plugins/FP-dbConnector';
 import fastifyStaticFP from '#plugins/FP-static';
 import { consoleLogin } from '#plugins/consoleLogin';
@@ -17,29 +16,13 @@ const FASTIFY = fastify({
 });
 
 const start = async () => {
-    await FASTIFY.register(fastifyCors, {
-        // Allow all
-        // IMPORTANT NOTE: change to specific ip's on prod
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-    });
     // Authenticate local server
-    // await consoleLogin();
-
-    // try {
-    //     const response = await api.get('pricever/config');
-    //     FASTIFY.log.info(response.message);
-    //     const config = JSON.stringify(response.data, null, 4);
-
-    //     await writeFile('./config.json', config, 'utf8');
-    //     FASTIFY.log.info('Config: Updated config file');
-    // } catch (error) {
-    //     FASTIFY.log.error(error);
-    // }
+    await consoleLogin();
 
     // Plugins
-    // await FASTIFY.register(dbConnectorFP);
+    await FASTIFY.register(corsFP);
+    await FASTIFY.register(configFP);
+    await FASTIFY.register(dbConnectorFP);
     await FASTIFY.register(fastifyStaticFP);
 
     // Routes
