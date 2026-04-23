@@ -12,6 +12,7 @@ import cookiesFP from '#plugins/FP-cookies';
 import argonFP from '#plugins/FP-argon';
 import { configRoutes } from '#routes/remote/config';
 import { authRoutes } from '#routes/internal/auth';
+import { accountRoutes } from '#routes/internal/accounts';
 import { storeRoutes } from '#routes/internal/stores';
 import { remoteAuth } from '#routes/remote/auth';
 
@@ -38,6 +39,7 @@ const start = async () => {
     // Internal PUBLIC Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
     // Internal PRIVATE Routes
+    FASTIFY.register(accountRoutes, { prefix: '/account' });
     FASTIFY.register(storeRoutes, { prefix: '/stores' });
 
     // Remote Routes
