@@ -7,7 +7,6 @@ export async function remoteAuth(FASTIFY, options) {
             // schema: authSchema,
         },
         async (request, reply) => {
-            // Request data
             const { store_id, password } = request.body;
 
             // Check if account exists
@@ -43,10 +42,10 @@ export async function remoteAuth(FASTIFY, options) {
                     });
                 }
             } else {
-                return account;
+                return reply.code(404).send({
+                    message: `Could not find Store with ID: ${store_id}`,
+                });
             }
-
-            // Get password from object
         },
     );
 
