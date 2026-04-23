@@ -7,13 +7,16 @@ async function fastifyStaticFP(FASTIFY, options) {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
 
+    // To add:
+    // [ ] Use image path from config
     const imageRoot = join(__dirname, '../../images');
-    console.log(imageRoot);
-    const prefix = '/images';
+
+    // Route Prefix
+    const routePrefix = '/images';
 
     FASTIFY.register(fastifyStatic, {
         root: imageRoot,
-        prefix,
+        prefix: routePrefix,
 
         // Security
         dotfiles: 'ignore',
@@ -23,10 +26,18 @@ async function fastifyStaticFP(FASTIFY, options) {
 
         // Performance and Caching
         setHeaders: (res, filePath) => {
-            const ext = extname(filePath).slice(1).toLocaleLowerCase();
-            const imagesExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+            const fileExtension = extname(filePath).slice(1).toLowerCase();
+            const imageFileExtension = [
+                'jpg',
+                'jpeg',
+                'png',
+                'gif',
+                'webp',
+                'svg',
+            ];
 
-            if (imagesExt.includes(ext)) {
+            // Checks if file extension is valid
+            if (imageFileExtension.includes(fileExtension)) {
                 res.setHeader(
                     'Cache-Control',
                     'public, max-age=2592000, immutable',
@@ -35,6 +46,8 @@ async function fastifyStaticFP(FASTIFY, options) {
             }
         },
     });
+
+    FASTIFY.log.info('Plugins: Fastify Static Image Registered');
 }
 
 export default fastifyPlugin(fastifyStaticFP);
