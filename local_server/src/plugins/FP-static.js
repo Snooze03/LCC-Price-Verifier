@@ -1,15 +1,12 @@
-import { dirname, extname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { homedir } from 'node:os';
+import { extname, join } from 'node:path';
+
 import fastifyStatic from '@fastify/static';
 import fastifyPlugin from 'fastify-plugin';
 
 async function fastifyStaticFP(FASTIFY, options) {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-
-    // To add:
-    // [ ] Use image path from config
-    const imageRoot = join(__dirname, '../../images');
+    const { image_path } = FASTIFY.config;
+    const imageRoot = join(homedir(), image_path);
 
     // Route Prefix
     const routePrefix = '/images';
