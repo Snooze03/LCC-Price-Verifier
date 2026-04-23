@@ -47,7 +47,11 @@ function StoresTab() {
         <div className="space-y-6">
             <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
                 <h1 className="text-lg font-bold">Stores</h1>
-                <Button onClick={handleAddClick} size="sm">
+                <Button
+                    onClick={handleAddClick}
+                    size="sm"
+                    className="bg-[#293041] hover:bg-[#3F4759]"
+                >
                     <Plus />
                     Add Store
                 </Button>
@@ -58,7 +62,7 @@ function StoresTab() {
                 onOpenChange={setDialogOpen}
                 store={selectedStore}
             />
-            <Table>
+            <Table className="shadow-xl">
                 <TableHeader className="bg-[#344573]">
                     <TableRow>
                         {columns.map((col) => (
