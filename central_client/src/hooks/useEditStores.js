@@ -29,9 +29,8 @@ export function UseEditStores({ onSuccess } = {}) {
                 ],
             };
 
-            console.log('full payload:', JSON.stringify(payload, null, 2));
             const response = await api.patch(`/stores`, payload);
-            console.log('response:', response);
+
             return response;
         },
         onSuccess: () => {
