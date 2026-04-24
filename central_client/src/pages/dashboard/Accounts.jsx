@@ -16,8 +16,7 @@ const columns = ['Email', 'Role', 'Password'];
 
 function AccountsTab() {
     const { data, isLoading, isError, error } = useAccount();
-    const [selectedAccount, setSelectedAccount] = useState(null); // ← add this
-    const [dialogOpen, setDialogOpen] = useState(false); // ← add this
+    const [selectedAccount, setSelectedAccount] = useState(null);
 
     if (isLoading)
         return <p className="p-4 text-sm text-gray-500">Loading accounts...</p>;
@@ -28,12 +27,10 @@ function AccountsTab() {
 
     const handleRowClick = (account) => {
         setSelectedAccount(account);
-        setDialogOpen(true);
     };
 
     const handleAddClick = () => {
         setSelectedAccount(null);
-        setDialogOpen(true);
     };
 
     return (

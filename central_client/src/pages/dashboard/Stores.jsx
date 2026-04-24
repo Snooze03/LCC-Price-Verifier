@@ -1,7 +1,6 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -9,9 +8,9 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { DashboardDialog } from '@/dialog/dashboardDialog';
+
 import { useStores } from '@/hooks/useStores';
-import { useState } from 'react';
+import { TableActionMenu } from './table-action-menu';
 
 const columns = [
     'Store ID',
@@ -24,76 +23,58 @@ const columns = [
     'Port',
     'Database',
     'Image Path',
+    'Actions',
 ];
 
 function StoresTab() {
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [selectedStore, setSelectedStore] = useState(null); // ✅ track clicked store
-    const { data, isLoading, isError, error } = useStores();
+    const { stores, isPending, isError, error } = useStores();
 
-    if (isLoading) return <p>Loading...</p>;
-
-    const handleRowClick = (store) => {
-        setSelectedStore(store); // ✅ set the clicked store
-        setDialogOpen(true); // ✅ open dialog
-    };
-
-    const handleAddClick = () => {
-        setSelectedStore(null); // ✅ clear store so dialog is in "add" mode
-        setDialogOpen(true);
-    };
+    if (isPending) return <h1>Loading...</h1>;
 
     return (
         <div className="space-y-6">
+            {/* Header */}
             <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
                 <h1 className="text-lg font-bold">Stores</h1>
-                <Button
-                    onClick={handleAddClick}
-                    size="sm"
-                    className="bg-[#293041] hover:bg-[#3F4759]"
-                >
+                <Button size="sm" className="bg-[#293041] hover:bg-[#3F4759]">
                     <Plus />
                     Add Store
                 </Button>
             </div>
 
-            <DashboardDialog
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                store={selectedStore}
-            />
+            {/* Table */}
             <Table className="shadow-xl">
-                <TableHeader className="bg-[#344573]">
-                    <TableRow>
+                <TableHeader>
+                    <TableRow className="hover:bg-inherit">
                         {columns.map((col) => (
-                            <TableHead className="text-white" key={col}>
-                                {col}
-                            </TableHead>
+                            <TableHead key={col}>{col}</TableHead>
                         ))}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.map((store) => {
-                        const config = store.config?.[0] ?? {};
+                    {stores.map((store) => {
+                        const config = store.config[0];
+                        const [id, store_id, ...configValues] =
+                            Object.values(config);
+
                         return (
                             <TableRow
                                 key={store.store_id}
-                                onClick={() => handleRowClick(store)} // ✅ click handler
                                 className="cursor-pointer hover:bg-gray-100"
                             >
                                 <TableCell>{store.store_id}</TableCell>
                                 <TableCell>{store.location}</TableCell>
-                                <TableCell className="max-w-[100px] truncate">
+                                <TableCell className="max-w-25 truncate">
                                     {store.password}
                                 </TableCell>
 
-                                <TableCell>{config.connection_type}</TableCell>
-                                <TableCell>{config.db_user}</TableCell>
-                                <TableCell>{config.db_password}</TableCell>
-                                <TableCell>{config.host}</TableCell>
-                                <TableCell>{config.port}</TableCell>
-                                <TableCell>{config.db_name}</TableCell>
-                                <TableCell>{config.image_path}</TableCell>
+                                {configValues.map((value, index) => (
+                                    <TableCell key={index + value}>
+                                        {value}
+                                    </TableCell>
+                                ))}
+
+                                <TableActionMenu />
                             </TableRow>
                         );
                     })}
