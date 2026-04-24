@@ -1,14 +1,15 @@
-import fastifyPlugin from 'fastify-plugin';
 import fastifyCors from '@fastify/cors';
+import fastifyPlugin from 'fastify-plugin';
 
 async function corsFP(FASTIFY, options) {
     FASTIFY.register(fastifyCors, {
-        // Allow all
         // IMPORTANT NOTE: change to specific ip's on prod
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        origin: '*', // Allow all
+        methods: ['GET'],
         allowedHeaders: ['Content-Type', 'Authorization'],
     });
+
+    FASTIFY.log.info('Plugins: Cors Registered');
 }
 
 export default fastifyPlugin(corsFP);

@@ -30,14 +30,16 @@ export async function consoleLogin(FASTIFY, options) {
 
             // add token to axios response interceptor
             await addToken(access_token);
+
             break;
         } catch (error) {
             const { status, data } = error.response;
             console.clear();
 
-            console.log('---------- AUTHENTICATION ERROR ----------');
+            console.log('--------------- AUTHENTICATION ERROR --------------');
             console.log('- Status:', status);
             console.log('- Response:', data.message, '\n');
+
             continue;
         }
     }

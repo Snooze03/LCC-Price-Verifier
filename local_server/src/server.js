@@ -1,10 +1,11 @@
-import { writeFile } from 'node:fs/promises';
 import fastify from 'fastify';
 
-import { consoleLogin } from '#plugins/consoleLogin';
+import corsFP from '#plugins/FP-cors';
+import configFP from '#plugins/FP-config';
 import dbConnectorFP from '#plugins/FP-dbConnector';
-import { priceRoutes } from '#routes/local';
-import { api } from '#api/api';
+import fastifyStaticFP from '#plugins/FP-static';
+import { consoleLogin } from '#plugins/consoleLogin';
+import { priceRoutes } from '#routes/price';
 
 const FASTIFY = fastify({
     logger: {
@@ -18,18 +19,14 @@ const start = async () => {
     // Authenticate local server
     await consoleLogin();
 
-    try {
-        const response = await api.get('pricever/config');
-        const config = JSON.stringify(response.data, null, 4);
-
-        await writeFile('./config.json', config, 'utf8');
-        FASTIFY.log.info('Config: Updated config file');
-    } catch (error) {
-        console.log(error);
-    }
-
+    // Plugins
+    await FASTIFY.register(corsFP);
+    await FASTIFY.register(configFP);
     await FASTIFY.register(dbConnectorFP);
-    await FASTIFY.register(priceRoutes, { prefix: 'price' });
+    await FASTIFY.register(fastifyStaticFP);
+
+    // Routes
+    FASTIFY.register(priceRoutes);
 
     await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
 };
