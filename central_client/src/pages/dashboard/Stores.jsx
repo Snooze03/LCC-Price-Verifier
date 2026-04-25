@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { Plus } from 'lucide-react';
+
 import {
     Table,
     TableBody,
@@ -6,82 +9,128 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-
 import { useStores } from '@/hooks/useStores';
-import { TableActionMenu } from './table-action-menu';
+import { TabHeader, TabTitle } from './components/tab-header';
+import { TableActionMenu } from './components/table-action-menu';
+import { Button } from '@/components/ui/button';
+import { AddStoreDialog } from './dialogs/add-store-dialog';
+import { DeleteStoreDialog } from './dialogs/delete-store-dialog';
+import { STORE_COLUMNS } from './columns';
 
-const columns = [
-    'Store ID',
-    'Location',
-    'Password',
-    'Connection Type',
-    'DB User',
-    'DB Password',
-    'Host',
-    'Port',
-    'Database',
-    'Image Path',
-    'Actions',
-];
-
-function StoresTab() {
+export function StoresTab() {
+    // Fetch stores
     const { stores, isPending, isError, error } = useStores();
+
+    // State for Dialogs
+    const [selectedStore, setSelectedStore] = useState();
+    const [activeDialog, setActiveDialog] = useState(null);
 
     if (isPending) return <h1>Loading...</h1>;
 
+    // ===== EVENT HANDLERS =====
+    const handleAddStore = () => {
+        console.log('Add Store');
+        setActiveDialog('add');
+    };
+
+    const handleEditStore = (store) => {
+        setSelectedStore(store);
+        setActiveDialog('edit');
+    };
+
+    const handleDeleteStore = (store) => {
+        setSelectedStore(store);
+        setActiveDialog('delete');
+    };
+
+    const handleCloseDialog = () => {
+        setActiveDialog(null);
+        setSelectedStore(null);
+    };
+
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
-                <h1 className="text-lg font-bold">Stores</h1>
-                <Button size="sm" className="bg-[#293041] hover:bg-[#3F4759]">
-                    <Plus />
-                    Add Store
-                </Button>
+        <>
+            <div className="space-y-6">
+                {/* Header */}
+                <TabHeader>
+                    <TabTitle>Store Branches</TabTitle>
+                    <Button
+                        onClick={handleAddStore}
+                        size="sm"
+                        className="bg-[#293041] hover:bg-[#3F4759]"
+                    >
+                        <Plus />
+                        Add Store
+                    </Button>
+                </TabHeader>
+
+                {/* Table */}
+                <Table className="shadow-xl">
+                    <TableHeader>
+                        <TableRow className="hover:bg-inherit">
+                            {STORE_COLUMNS.map((col) => (
+                                <TableHead key={col}>{col}</TableHead>
+                            ))}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {stores.map((store) => {
+                            // get config for each store
+                            const config = store.config[0];
+                            const [configId, configStoreID, ...configValues] =
+                                Object.values(config);
+
+                            return (
+                                <TableRow
+                                    key={store.store_id}
+                                    className="cursor-pointer hover:bg-gray-100"
+                                >
+                                    {/* Store Values */}
+                                    <TableCell>{store.store_id}</TableCell>
+                                    <TableCell>{store.location}</TableCell>
+                                    <TableCell className="max-w-25 truncate">
+                                        {store.password}
+                                    </TableCell>
+
+                                    {/* Config Values */}
+                                    {configValues.map((value, index) => (
+                                        <TableCell key={index + value}>
+                                            {value}
+                                        </TableCell>
+                                    ))}
+
+                                    {/* Action Menu */}
+                                    <TableCell>
+                                        <TableActionMenu
+                                            handleEdit={() =>
+                                                handleEditStore(store)
+                                            }
+                                            handleDelete={() =>
+                                                handleDeleteStore(store)
+                                            }
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
             </div>
 
-            {/* Table */}
-            <Table className="shadow-xl">
-                <TableHeader>
-                    <TableRow className="hover:bg-inherit">
-                        {columns.map((col) => (
-                            <TableHead key={col}>{col}</TableHead>
-                        ))}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {stores.map((store) => {
-                        const config = store.config[0];
-                        const [id, store_id, ...configValues] =
-                            Object.values(config);
+            {/* Dialogs */}
+            {activeDialog === 'add' && (
+                <AddStoreDialog
+                    store={selectedStore}
+                    onClose={handleCloseDialog}
+                />
+            )}
 
-                        return (
-                            <TableRow
-                                key={store.store_id}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
-                                <TableCell>{store.store_id}</TableCell>
-                                <TableCell>{store.location}</TableCell>
-                                <TableCell className="max-w-25 truncate">
-                                    {store.password}
-                                </TableCell>
-
-                                {configValues.map((value, index) => (
-                                    <TableCell key={index + value}>
-                                        {value}
-                                    </TableCell>
-                                ))}
-
-                                <TableActionMenu />
-                            </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
-        </div>
+            {activeDialog === 'delete' && (
+                <DeleteStoreDialog
+                    store={selectedStore}
+                    onClose={handleCloseDialog}
+                />
+            )}
+        </>
     );
 }
-
-export { StoresTab };
