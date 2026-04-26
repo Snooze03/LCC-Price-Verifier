@@ -39,7 +39,7 @@ const start = async () => {
     // Internal PUBLIC Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });
     // Internal PRIVATE Routes
-    FASTIFY.register(accountRoutes, { prefix: '/account' });
+    FASTIFY.register(accountRoutes, { prefix: '/accounts' });
     FASTIFY.register(storeRoutes, { prefix: '/stores' });
 
     // Remote Routes
