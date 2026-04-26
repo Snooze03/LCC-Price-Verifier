@@ -6,7 +6,18 @@ import { Toaster } from 'sonner';
 import '@/styles/index.css';
 import { AppRoutes } from './routes';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 5 * 60 * 1000,
+            retry: 3,
+        },
+        mutations: {
+            throwOnError: false,
+            retry: 3,
+        },
+    },
+});
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>

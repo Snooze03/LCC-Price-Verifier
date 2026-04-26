@@ -1,0 +1,44 @@
+import { api } from '@/api/api';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
+
+export function useAccounts() {
+    const queryClient = useQueryClient();
+
+    const get = useQuery({
+        queryKey: ['accounts'],
+        queryFn: async () => {
+            const response = await api.get('stores');
+            return response.data;
+        },
+    });
+
+    const deleteAccount = useMutation({
+        mutationKey: ['accounts-delete'],
+        mutationFn: async (account_id) => {
+            const response = await api.delete('stores', account_id);
+            return response.data;
+        },
+    });
+
+    const create = useMutation({
+        mutationKey: ['accounts-create'],
+        mutationFn: async (account) => {
+            const response = await api.post('stores', account);
+            return response.data;
+        },
+    });
+
+    return {
+        // Get Data/States
+        accounts: get.data,
+        isPending: get.isPending,
+        isError: get.isError,
+        error: get.error,
+
+        // Delete
+        deleteAccount: deleteAccount.mutateAsync,
+        isDeleting: deleteAccount.isPending,
+        isDeleteError: deleteAccount.isError,
+        deleteError: deleteAccount.error,
+    };
+}
