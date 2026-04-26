@@ -7,7 +7,7 @@ export function useAccounts() {
     const get = useQuery({
         queryKey: ['accounts'],
         queryFn: async () => {
-            const response = await api.get('stores');
+            const response = await api.get('accounts');
             return response.data;
         },
     });
@@ -15,7 +15,7 @@ export function useAccounts() {
     const deleteAccount = useMutation({
         mutationKey: ['accounts-delete'],
         mutationFn: async (account_id) => {
-            const response = await api.delete('stores', account_id);
+            const response = await api.delete(`accounts/${account_id}`);
             return response.data;
         },
     });
@@ -23,7 +23,7 @@ export function useAccounts() {
     const create = useMutation({
         mutationKey: ['accounts-create'],
         mutationFn: async (account) => {
-            const response = await api.post('stores', account);
+            const response = await api.post('accounts', account);
             return response.data;
         },
     });

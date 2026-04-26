@@ -10,8 +10,6 @@ export function useStores() {
             const response = await api.get('stores');
             return response.data;
         },
-        staleTime: 5 * 60 * 1000,
-        retry: 3,
     });
 
     const deleteRequest = useMutation({
@@ -37,7 +35,6 @@ export function useStores() {
         onError: (error) => {
             return error;
         },
-        throwOnError: false,
     });
 
     return {

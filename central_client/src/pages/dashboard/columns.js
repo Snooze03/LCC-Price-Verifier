@@ -11,3 +11,5 @@ export const STORE_COLUMNS = [
     'Image Path',
     'Actions',
 ];
+
+export const ACCOUNT_COLUMNS = ['Email', 'Role', 'Password', 'Actions'];

@@ -1,4 +1,6 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
+
 import {
     Table,
     TableBody,
@@ -8,60 +10,61 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-
-const columns = ['Email', 'Role', 'Password'];
+import { TabHeader, TabTitle } from './components/tab-header';
+import { useAccounts } from '@/hooks/useAccounts';
+import { ACCOUNT_COLUMNS } from './columns';
+import { TableActionMenu } from './components/table-action-menu';
 
 function AccountsTab() {
-    // const { accounts, isPending, isError, error } = useAccount();
-    // const [selectedAccount, setSelectedAccount] = useState(null);
-    // if (isPending)
-    //     return <p className="p-4 text-sm text-gray-500">Loading accounts...</p>;
-    // if (isError)
-    //     return (
-    //         <p className="p-4 text-sm text-red-500">Error: {error?.message}</p>
-    //     );
-    // return (
-    //     <div className="space-y-6">
-    //         <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
-    //             <h1 className="text-lg font-bold">Accounts</h1>
-    //             <Button size="sm" className="bg-[#293041] hover:bg-[#3F4759]">
-    //                 <Plus />
-    //                 Add Account
-    //             </Button>
-    //         </div>
-    //         <Table className="shadow-xl">
-    //             <TableHeader className="bg-[#344573]">
-    //                 <TableRow>
-    //                     {columns.map((col) => (
-    //                         <TableHead className="text-white" key={col}>
-    //                             {col}
-    //                         </TableHead>
-    //                     ))}
-    //                 </TableRow>
-    //             </TableHeader>
-    //             <TableBody>
-    //                 {accounts.map((account) => {
-    //                     const [id, ...accountValues] = Object.values(account);
-    //                     return (
-    //                         <TableRow
-    //                             key={id}
-    //                             onClick={() => handleRowClick(account)}
-    //                             className="cursor-pointer hover:bg-gray-100"
-    //                         >
-    //                             {accountValues.map((value) => (
-    //                                 <TableCell>{value}</TableCell>
-    //                             ))}
-    //                             {/* <TableCell className="max-w-[100px] truncate">
-    //                                 {account.password}
-    //                             </TableCell> */}
-    //                         </TableRow>
-    //                     );
-    //                 })}
-    //             </TableBody>
-    //         </Table>
-    //     </div>
-    // );
+    const { accounts, isPending, isError, error } = useAccounts();
+    console.log(accounts);
+
+    if (isPending) return <h1>Loading...</h1>;
+
+    const handleEditAccount = () => {};
+
+    const handleDeleteAccount = () => {};
+
+    return (
+        <div className="space-y-6">
+            <TabHeader>
+                <TabTitle>Accounts</TabTitle>
+            </TabHeader>
+
+            <Table className="shadow-xl">
+                <TableHeader>
+                    <TableRow className="hover:bg-inherit">
+                        {ACCOUNT_COLUMNS.map((col) => (
+                            <TableHead key={col}>{col}</TableHead>
+                        ))}
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {accounts.map((account) => (
+                        <TableRow
+                            key={account.id}
+                            className="cursor-pointer hover:bg-gray-100"
+                        >
+                            {/* Store Values */}
+                            <TableCell>{account.email}</TableCell>
+                            <TableCell className="max-w-25 truncate">
+                                {account.password}
+                            </TableCell>
+                            <TableCell>{account.role}</TableCell>
+
+                            {/* Action Menu */}
+                            <TableCell>
+                                <TableActionMenu
+                                    handleEdit={handleEditAccount}
+                                    handleDelete={handleDeleteAccount}
+                                />
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
+    );
 }
 
 export { AccountsTab };
