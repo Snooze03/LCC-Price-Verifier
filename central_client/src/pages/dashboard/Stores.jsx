@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 
 import {
     Table,
@@ -14,12 +15,13 @@ import { TabHeader, TabTitle } from './components/tab-header';
 import { TableActionMenu } from './components/table-action-menu';
 import { Button } from '@/components/ui/button';
 import { AddStoreDialog } from './dialogs/add-store-dialog';
-import { DeleteStoreDialog } from './dialogs/delete-store-dialog';
+import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
 import { STORE_COLUMNS } from './columns';
 
 export function StoresTab() {
     // Fetch stores
     const { stores, isPending, isError, error } = useStores();
+    const { deleteStore, isDeleting, isDeleteError, deleteError } = useStores();
 
     // State for Dialogs
     const [selectedStore, setSelectedStore] = useState();
@@ -32,14 +34,20 @@ export function StoresTab() {
         setActiveDialog('add');
     };
 
-    const handleEditStore = (store) => {
-        setSelectedStore(store);
-        setActiveDialog('edit');
-    };
+    const onDeleteStore = () => {
+        const store_id = selectedStore.store_id;
+        deleteStore(store_id);
 
-    const handleDeleteStore = (store) => {
-        setSelectedStore(store);
-        setActiveDialog('delete');
+        if (isDeleteError) {
+            toast.error(`Could not delete Store: ${deleteError}`, {
+                position: 'top-center',
+            });
+        } else {
+            toast.success('Store Deleted Successfully!', {
+                position: 'top-center',
+            });
+        }
+        handleCloseDialog();
     };
 
     const handleCloseDialog = () => {
@@ -104,12 +112,14 @@ export function StoresTab() {
                                     {/* Action Menu */}
                                     <TableCell>
                                         <TableActionMenu
-                                            handleEdit={() =>
-                                                handleEditStore(store)
-                                            }
-                                            handleDelete={() =>
-                                                handleDeleteStore(store)
-                                            }
+                                            handleEdit={() => {
+                                                setSelectedStore(store);
+                                                setActiveDialog('edit');
+                                            }}
+                                            handleDelete={() => {
+                                                setSelectedStore(store);
+                                                setActiveDialog('delete');
+                                            }}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -128,9 +138,11 @@ export function StoresTab() {
             )}
 
             {activeDialog === 'delete' && (
-                <DeleteStoreDialog
-                    store={selectedStore}
+                <DeleteConfirmationDialog
+                    title="Delete Store"
                     onClose={handleCloseDialog}
+                    onDelete={onDeleteStore}
+                    isDeleting={isDeleting}
                 />
             )}
         </>
