@@ -29,7 +29,6 @@ export function StoresTab() {
 
     // ===== EVENT HANDLERS =====
     const handleAddStore = () => {
-        console.log('Add Store');
         setActiveDialog('add');
     };
 
@@ -94,7 +93,10 @@ export function StoresTab() {
 
                                     {/* Config Values */}
                                     {configValues.map((value, index) => (
-                                        <TableCell key={index + value}>
+                                        <TableCell
+                                            key={index + value}
+                                            className="max-w-25 truncate"
+                                        >
                                             {value}
                                         </TableCell>
                                     ))}

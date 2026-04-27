@@ -17,3 +17,9 @@ export const CONFIG_FIELDS = [
     { name: 'db_name', label: 'Database Name' },
     { name: 'image_path', label: 'Image Path' },
 ];
+
+export const ACCOUNT_FIELDS = [
+    { name: 'email', label: 'Email', placeholder: 'JohnZeus@lccgroup.com' },
+    { name: 'role', label: 'Role' },
+    { name: 'password', label: 'Password' },
+];

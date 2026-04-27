@@ -47,17 +47,17 @@ export function AddStoreDialog({ store, onClose }) {
     });
 
     const onSubmit = async (data) => {
-        try {
+        if (isCreateError) {
+            toast.error(`Store not created: ${createError}`, {
+                position: 'top-center',
+            });
+        } else {
             await createStore(data);
             toast.success('Store Created Successfully!', {
                 position: 'top-center',
             });
-            onClose();
-        } catch (error) {
-            toast.error(`Store not created: ${createError?.message}`, {
-                position: 'top-center',
-            });
         }
+        onClose();
     };
 
     return (

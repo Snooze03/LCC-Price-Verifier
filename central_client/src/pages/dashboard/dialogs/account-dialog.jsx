@@ -1,8 +1,9 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useStores } from '@/hooks/useStores';
+import { useAccounts } from '@/hooks/useAccounts';
 import { createAccountSchema } from '../schemas/account.schema';
+import { ACCOUNT_FIELDS } from '../add-store-fields';
 import {
     Dialog,
     DialogContent,
@@ -12,23 +13,18 @@ import {
 } from '@/components/ui/dialog';
 import {
     Field,
-    FieldContent,
-    FieldDescription,
     FieldError,
     FieldGroup,
     FieldLabel,
-    FieldLegend,
-    FieldSeparator,
     FieldSet,
-    FieldTitle,
 } from '@/components/ui/field';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { STORE_FIELDS, CONFIG_FIELDS } from '../add-store-fields';
 
-export function AddStoreDialog({ onClose }) {
-    const { createStore, isCreating, isCreateError, createError } = useStores();
+export function AddAccountDialog({ onClose }) {
+    const { createAccount, isCreating, isCreateError, createError } =
+        useAccounts();
 
     const { handleSubmit, control } = useForm({
         resolver: zodResolver(createAccountSchema),
@@ -40,24 +36,24 @@ export function AddStoreDialog({ onClose }) {
     });
 
     const onSubmit = async (data) => {
-        try {
-            await createStore(data);
-            toast.success('Store Created Successfully!', {
+        if (isCreateError) {
+            toast.error(`Account not created: ${createError}`, {
                 position: 'top-center',
             });
-            onClose();
-        } catch (error) {
-            toast.error(`Store not created: ${createError?.message}`, {
+        } else {
+            await createAccount(data);
+            toast.success('Account Created Successfully!', {
                 position: 'top-center',
             });
         }
+        onClose();
     };
 
     return (
         <Dialog open onOpenChange={onClose}>
-            <DialogContent className="md:max-w-xl">
+            <DialogContent className="md:max-w-sm">
                 <DialogHeader>
-                    <DialogTitle>Add Store</DialogTitle>
+                    <DialogTitle>Add Account</DialogTitle>
                     <DialogDescription>
                         Fill in the following form to create a new store
                     </DialogDescription>
@@ -65,15 +61,9 @@ export function AddStoreDialog({ onClose }) {
 
                 <form id="add-store-form" onSubmit={handleSubmit(onSubmit)}>
                     <FieldSet>
-                        {/* ===== Store Account Form ===== */}
-                        <FieldContent>
-                            <FieldLegend>Store Account</FieldLegend>
-                            <FieldDescription>
-                                Account credentials for local server
-                            </FieldDescription>
-                        </FieldContent>
-                        <FieldGroup className="flex-row">
-                            {STORE_FIELDS.map((f) => (
+                        {/* ===== Account Form ===== */}
+                        <FieldGroup className="flex-col">
+                            {ACCOUNT_FIELDS.map((f) => (
                                 <Controller
                                     key={f.name}
                                     name={f.name}
@@ -107,15 +97,13 @@ export function AddStoreDialog({ onClose }) {
                                 />
                             ))}
                         </FieldGroup>
-                        {/* ===== END Store Account Form */}
-
-                        <FieldSeparator />
+                        {/* ===== END Account Form */}
                     </FieldSet>
 
                     {/* Form Actions */}
                     <div className="mt-6">
                         <Button className="w-full" disabled={isCreating}>
-                            {isCreating ? 'Adding Store...' : 'Add Store'}
+                            {isCreating ? 'Adding Account...' : 'Add Account'}
                         </Button>
                     </div>
                 </form>
