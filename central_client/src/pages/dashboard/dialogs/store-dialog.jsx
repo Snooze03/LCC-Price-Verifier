@@ -25,38 +25,88 @@ import {
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { STORE_FIELDS, CONFIG_FIELDS } from '../add-store-fields';
+import { STORE_FIELDS, CONFIG_FIELDS } from '../form-fields';
 
-export function AddStoreDialog({ store, onClose }) {
+export function StoreDialog({ store, onClose }) {
     const { createStore, isCreating, isCreateError, createError } = useStores();
+    const { updateStore, isUpdating, isUpdateError, updateError } = useStores();
+
+    let defaultValues = null;
+    const dialogState = store ? 'edit' : 'add';
+
+    switch (dialogState) {
+        case 'add':
+            defaultValues = {
+                store_id: '',
+                password: '',
+                location: '',
+                connection_type: '',
+                db_user: '',
+                db_password: '',
+                host: '',
+                port: '',
+                db_name: '',
+                image_path: '',
+            };
+
+            break;
+        case 'edit':
+            const { id: storeID, ...storeData } = store; // get store fields
+            const { id: configID, store_id, ...configData } = store.config[0]; // Get store config & fields
+
+            defaultValues = {
+                ...storeData,
+                ...configData,
+            };
+
+            break;
+    }
 
     const { handleSubmit, control } = useForm({
         resolver: zodResolver(createStoreSchema),
         defaultValues: {
-            store_id: '',
-            password: '',
-            location: '',
-            connection_type: '',
-            db_user: '',
-            db_password: '',
-            host: '',
-            port: '',
-            db_name: '',
-            image_path: '',
+            ...defaultValues,
         },
     });
 
     const onSubmit = async (data) => {
-        if (isCreateError) {
-            toast.error(`Store not created: ${createError}`, {
-                position: 'top-center',
-            });
-        } else {
-            await createStore(data);
-            toast.success('Store Created Successfully!', {
-                position: 'top-center',
-            });
+        switch (dialogState) {
+            case 'add':
+                await createStore(data);
+                break;
+            case 'edit':
+                const { id, store_id, password, location, ...config } = data;
+                config.id = store.config[0].id;
+
+                const formattedData = {
+                    id: store.id,
+                    store_id,
+                    password,
+                    location,
+                    config: [config],
+                };
+
+                await updateStore(formattedData);
+
+                break;
         }
+
+        if (isCreateError || isUpdateError) {
+            toast.error(
+                `An Error has Occurred: ${createError || updateError}`,
+                {
+                    position: 'top-center',
+                },
+            );
+        } else {
+            toast.success(
+                `Store ${dialogState === 'edit' ? 'Edited' : 'Created'} Successfully!`,
+                {
+                    position: 'top-center',
+                },
+            );
+        }
+
         onClose();
     };
 
@@ -64,9 +114,13 @@ export function AddStoreDialog({ store, onClose }) {
         <Dialog open onOpenChange={onClose}>
             <DialogContent className="md:max-w-xl">
                 <DialogHeader>
-                    <DialogTitle>Add Store</DialogTitle>
+                    <DialogTitle>
+                        {dialogState === 'edit' ? 'Edit' : 'Create'} Store
+                    </DialogTitle>
                     <DialogDescription>
-                        Fill in the following form to create a new store
+                        {dialogState === 'edit'
+                            ? 'Edit the fields and press Update to save your changes'
+                            : 'Fill in the following form to create a new Store'}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -122,7 +176,7 @@ export function AddStoreDialog({ store, onClose }) {
                         <FieldContent>
                             <FieldLegend>Server Configuration</FieldLegend>
                             <FieldDescription>
-                                configure the database connection and image
+                                Configure the database connection and image
                                 directory for the local server
                             </FieldDescription>
                         </FieldContent>
@@ -167,7 +221,13 @@ export function AddStoreDialog({ store, onClose }) {
                     {/* Form Actions */}
                     <div className="mt-6">
                         <Button className="w-full" disabled={isCreating}>
-                            {isCreating ? 'Adding Store...' : 'Add Store'}
+                            {isCreating
+                                ? 'Adding Store...'
+                                : isUpdating
+                                  ? 'Updating Store...'
+                                  : store
+                                    ? 'Update Store'
+                                    : 'Create Store'}
                         </Button>
                     </div>
                 </form>

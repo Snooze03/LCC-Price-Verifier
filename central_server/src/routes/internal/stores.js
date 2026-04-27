@@ -98,6 +98,7 @@ export async function storeRoutes(FASTIFY, options) {
 
             return result;
         } catch (error) {
+            FASTIFY.log.error(error);
             return error;
         }
     });

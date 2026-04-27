@@ -28,7 +28,7 @@ const start = async () => {
     // Routes
     FASTIFY.register(priceRoutes);
 
-    await FASTIFY.listen({ port: 3000, host: '0.0.0.0' });
+    await FASTIFY.listen({ port: 3002, host: '0.0.0.0' });
 };
 
 // graceful shutdown

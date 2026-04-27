@@ -1,5 +1,6 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { useAccounts } from '@/hooks/useAccounts';
 import { ACCOUNT_COLUMNS } from './columns';
@@ -15,24 +16,34 @@ import { Button } from '@/components/ui/button';
 import { TabHeader, TabTitle } from './components/tab-header';
 import { TableActionMenu } from './components/table-action-menu';
 import { EmptyState } from '@/components/empty-state';
-import { AddAccountDialog } from './dialogs/account-dialog';
+import { AccountDialog } from './dialogs/account-dialog';
+import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
 
 function AccountsTab() {
+    // Hooks
     const { accounts, isPending, isError, error } = useAccounts();
+    const { deleteAccount, isDeleting, isDeleteError, deleteError } =
+        useAccounts();
+
+    // States
+    const [selectedAccount, setSelectedAccount] = useState();
     const [activeDialog, setActiveDialog] = useState();
 
     if (isPending) return <h1>Loading...</h1>;
 
-    const handleAddAccount = () => {
-        setActiveDialog('add');
-    };
-
-    const handleEditAccount = () => {
-        setActiveDialog('edit');
-    };
-
-    const handleDeleteAccount = () => {
-        setActiveDialog('delete');
+    // ===== EVENT HANDLERS =====
+    const onDeleteAccount = () => {
+        deleteAccount(selectedAccount.id);
+        if (isDeleteError) {
+            toast.error(`Cloud not delete account: ${deleteError}`, {
+                position: 'top-center',
+            });
+        } else {
+            toast.success('Account Deleted Successfully!', {
+                position: 'top-center',
+            });
+        }
+        handleCloseDialog();
     };
 
     const handleCloseDialog = () => {
@@ -45,7 +56,7 @@ function AccountsTab() {
                 <TabHeader>
                     <TabTitle>Accounts</TabTitle>
                     <Button
-                        onClick={handleAddAccount}
+                        onClick={() => setActiveDialog('add')}
                         size="sm"
                         className="bg-[#293041] hover:bg-[#3F4759]"
                     >
@@ -89,10 +100,14 @@ function AccountsTab() {
 
                                         <TableCell>
                                             <TableActionMenu
-                                                handleEdit={handleEditAccount}
-                                                handleDelete={
-                                                    handleDeleteAccount
-                                                }
+                                                handleEdit={() => {
+                                                    setSelectedAccount(account);
+                                                    setActiveDialog('edit');
+                                                }}
+                                                handleDelete={() => {
+                                                    setSelectedAccount(account);
+                                                    setActiveDialog('delete');
+                                                }}
                                             />
                                         </TableCell>
                                     </TableRow>
@@ -104,7 +119,23 @@ function AccountsTab() {
             </div>
 
             {activeDialog === 'add' && (
-                <AddAccountDialog onClose={handleCloseDialog} />
+                <AccountDialog onClose={handleCloseDialog} />
+            )}
+
+            {activeDialog === 'edit' && (
+                <AccountDialog
+                    account={selectedAccount}
+                    onClose={handleCloseDialog}
+                />
+            )}
+
+            {activeDialog === 'delete' && (
+                <DeleteConfirmationDialog
+                    title="Delete Account"
+                    onClose={handleCloseDialog}
+                    onDelete={onDeleteAccount}
+                    isDeleting={isDeleting}
+                />
             )}
         </>
     );

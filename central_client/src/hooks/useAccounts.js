@@ -18,6 +18,9 @@ export function useAccounts() {
             const response = await api.delete(`accounts/${account_id}`);
             return response.data;
         },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+        },
     });
 
     const create = useMutation({
@@ -25,6 +28,20 @@ export function useAccounts() {
         mutationFn: async (account) => {
             const response = await api.post('accounts', account);
             return response.data;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+        },
+    });
+
+    const update = useMutation({
+        mutationKey: ['accounts-update'],
+        mutationFn: async (account) => {
+            const response = await api.patch('accounts', account);
+            return response.data;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
         },
     });
 
@@ -46,5 +63,11 @@ export function useAccounts() {
         isCreating: create.isPending,
         isCreateError: create.isError,
         createError: create.error,
+
+        // Update
+        updateAccount: update.mutate,
+        isUpdating: update.isPending,
+        isUpdateError: update.isError,
+        updateError: update.error,
     };
 }

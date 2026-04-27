@@ -12,4 +12,4 @@ export const STORE_COLUMNS = [
     'Actions',
 ];
 
-export const ACCOUNT_COLUMNS = ['Email', 'Role', 'Password', 'Actions'];
+export const ACCOUNT_COLUMNS = ['Email', 'Password', 'Role', 'Actions'];
