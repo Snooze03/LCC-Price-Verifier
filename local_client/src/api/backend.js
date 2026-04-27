@@ -1,16 +1,24 @@
 import axios from 'axios';
-import { Platform } from 'react-native';
-
-const androidUrl = process.env.EXPO_PUBLIC_ANDROID_URL;
-const webUrl = process.env.EXPO_PUBLIC_WEB_URL;
-// const baseUrl = Platform.OS === 'android' ? androidUrl : webUrl;
-let baseUrl = '';
 
 export const api = axios.create({
     timeout: 5000,
 });
 
+// Interceptor for debugging
+api.interceptors.request.use((request) => {
+    // console.log('--- API REQUEST ---');
+    // console.log('Method:', request.method);
+    // console.log('Full URL:', `${request.baseURL || ''}${request.url}`);
+    return request;
+});
+
 export function setBaseUrl(url) {
-    api.defaults.baseURL = url;
-    return baseUrl;
+    // 1. Ensure the URL starts with http:// or https://
+    const formattedUrl = url.startsWith('http') ? url : `http://${url}`;
+
+    // 2. Set the Axios default
+    api.defaults.baseURL = formattedUrl;
+
+    // console.log('Base URL set to:', formattedUrl);
+    return formattedUrl; // Return the actual URL, not the empty variable
 }
