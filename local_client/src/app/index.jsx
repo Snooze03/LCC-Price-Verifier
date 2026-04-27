@@ -3,11 +3,11 @@ import { View, StyleSheet, Button, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { ScreenContainer } from '@/components/ui/container';
-import { LoginDialog } from '@/dialog/loginDialog';
+import { StoreSelectorDialog } from '@/components/dialogs/store-selector-dialog';
 
 export default function Index() {
     const router = useRouter();
-    const [showLogin, setShowLogin] = useState(false);
+    const [dialog, setDialog] = useState(false);
 
     return (
         <ScreenContainer style={styles.container}>
@@ -21,15 +21,15 @@ export default function Index() {
             <View style={styles.card}>
                 <Button
                     title="Branch Selector"
-                    onPress={() => setShowLogin(true)}
+                    onPress={() => setDialog(true)}
                 />
             </View>
 
             {/* Show login modal */}
-            {showLogin && (
-                <LoginDialog
-                    isVisible={showLogin}
-                    setIsVisible={setShowLogin}
+            {dialog && (
+                <StoreSelectorDialog
+                    isVisible={dialog}
+                    setIsVisible={setDialog}
                 />
             )}
         </ScreenContainer>
