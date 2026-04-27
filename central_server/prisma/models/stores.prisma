@@ -3,5 +3,6 @@ model stores {
   store_id Int      @id
   password String   @db.VarChar(255)
   location String   @db.VarChar(255)
+  endpoint String   @default("10.0.3.46:3306") @db.VarChar(255)
   config   config[]
 }
