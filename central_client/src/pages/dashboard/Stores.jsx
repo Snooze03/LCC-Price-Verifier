@@ -14,7 +14,7 @@ import { useStores } from '@/hooks/useStores';
 import { TabHeader, TabTitle } from './components/tab-header';
 import { TableActionMenu } from './components/table-action-menu';
 import { Button } from '@/components/ui/button';
-import { AddStoreDialog } from './dialogs/add-store-dialog';
+import { StoreDialog } from './dialogs/store-dialog';
 import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
 import { STORE_COLUMNS } from './columns';
 
@@ -30,10 +30,6 @@ export function StoresTab() {
     if (isPending) return <h1>Loading...</h1>;
 
     // ===== EVENT HANDLERS =====
-    const handleAddStore = () => {
-        setActiveDialog('add');
-    };
-
     const onDeleteStore = () => {
         const store_id = selectedStore.store_id;
         deleteStore(store_id);
@@ -62,7 +58,7 @@ export function StoresTab() {
                 <TabHeader>
                     <TabTitle>Store Branches</TabTitle>
                     <Button
-                        onClick={handleAddStore}
+                        onClick={() => setActiveDialog('add')}
                         size="sm"
                         className="bg-[#293041] hover:bg-[#3F4759]"
                     >
@@ -131,7 +127,11 @@ export function StoresTab() {
 
             {/* Dialogs */}
             {activeDialog === 'add' && (
-                <AddStoreDialog
+                <StoreDialog onClose={handleCloseDialog} />
+            )}
+
+            {activeDialog === 'edit' && (
+                <StoreDialog
                     store={selectedStore}
                     onClose={handleCloseDialog}
                 />
