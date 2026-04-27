@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { TabHeader, TabTitle } from './components/tab-header';
 import { TableActionMenu } from './components/table-action-menu';
 import { EmptyState } from '@/components/empty-state';
-import { AddAccountDialog } from './dialogs/account-dialog';
+import { AccountDialog } from './dialogs/account-dialog';
 import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
 
 function AccountsTab() {
@@ -32,10 +32,6 @@ function AccountsTab() {
     if (isPending) return <h1>Loading...</h1>;
 
     // ===== EVENT HANDLERS =====
-    const handleAddAccount = () => {
-        setActiveDialog('add');
-    };
-
     const onDeleteAccount = () => {
         deleteAccount(selectedAccount.id);
         if (isDeleteError) {
@@ -60,7 +56,7 @@ function AccountsTab() {
                 <TabHeader>
                     <TabTitle>Accounts</TabTitle>
                     <Button
-                        onClick={handleAddAccount}
+                        onClick={() => setActiveDialog('add')}
                         size="sm"
                         className="bg-[#293041] hover:bg-[#3F4759]"
                     >
@@ -123,7 +119,14 @@ function AccountsTab() {
             </div>
 
             {activeDialog === 'add' && (
-                <AddAccountDialog onClose={handleCloseDialog} />
+                <AccountDialog onClose={handleCloseDialog} />
+            )}
+
+            {activeDialog === 'edit' && (
+                <AccountDialog
+                    account={selectedAccount}
+                    onClose={handleCloseDialog}
+                />
             )}
 
             {activeDialog === 'delete' && (
