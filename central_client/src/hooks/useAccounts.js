@@ -34,6 +34,17 @@ export function useAccounts() {
         },
     });
 
+    const update = useMutation({
+        mutationKey: ['accounts-create'],
+        mutationFn: async (account) => {
+            const response = await api.patch('accounts', account);
+            return response.data;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+        },
+    });
+
     return {
         // Get Data/States
         accounts: get.data,
@@ -52,5 +63,11 @@ export function useAccounts() {
         isCreating: create.isPending,
         isCreateError: create.isError,
         createError: create.error,
+
+        // Update
+        updateAccount: update.mutate,
+        isUpdating: update.isPending,
+        isUpdateError: update.isError,
+        updateError: update.error,
     };
 }
