@@ -15,6 +15,7 @@ import { authRoutes } from '#routes/internal/auth';
 import { accountRoutes } from '#routes/internal/accounts';
 import { storeRoutes } from '#routes/internal/stores';
 import { remoteAuth } from '#routes/remote/auth';
+import { remoteStoreRoutes } from '#routes/remote/stores';
 
 const FASTIFY = Fastify({
     logger: {
@@ -50,6 +51,7 @@ const start = async () => {
 
             // Private Routes
             instance.register(configRoutes);
+            instance.register(remoteStoreRoutes);
         },
         { prefix: '/pricever' },
     );
