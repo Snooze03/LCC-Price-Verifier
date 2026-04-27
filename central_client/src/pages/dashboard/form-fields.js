@@ -1,7 +1,8 @@
 export const STORE_FIELDS = [
     { name: 'store_id', label: 'Store ID', placeholder: 'e.g. 114' },
     { name: 'password', label: 'Password', type: 'password' },
-    { name: 'location', label: 'Location', placeholder: 'City, Street' },
+    { name: 'location', label: 'Location', placeholder: 'Tabaco City' },
+    { name: 'endpoint', label: 'Endpoint', placeholder: '10.0.0.59' },
 ];
 
 export const CONFIG_FIELDS = [

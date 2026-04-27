@@ -68,7 +68,7 @@ export function StoresTab() {
                 </TabHeader>
 
                 {/* Table */}
-                <Table className="shadow-xl">
+                <Table className="shadow-xl max-w-auto">
                     <TableHeader>
                         <TableRow className="hover:bg-inherit">
                             {STORE_COLUMNS.map((col) => (
@@ -82,6 +82,7 @@ export function StoresTab() {
                             const config = store.config[0];
                             const [configId, configStoreID, ...configValues] =
                                 Object.values(config);
+                            console.log(store.endpoint);
 
                             return (
                                 <TableRow
@@ -93,6 +94,9 @@ export function StoresTab() {
                                     <TableCell>{store.location}</TableCell>
                                     <TableCell className="max-w-25 truncate">
                                         {store.password}
+                                    </TableCell>
+                                    <TableCell className="max-w-25 truncate">
+                                        {store.endpoint}
                                     </TableCell>
 
                                     {/* Config Values */}

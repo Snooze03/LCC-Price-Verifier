@@ -40,6 +40,7 @@ export function StoreDialog({ store, onClose }) {
                 store_id: '',
                 password: '',
                 location: '',
+                endpoint: '',
                 connection_type: '',
                 db_user: '',
                 db_password: '',
@@ -75,7 +76,15 @@ export function StoreDialog({ store, onClose }) {
                 await createStore(data);
                 break;
             case 'edit':
-                const { id, store_id, password, location, ...config } = data;
+                console.log('Store:', store);
+                const {
+                    id,
+                    store_id,
+                    password,
+                    location,
+                    endpoint,
+                    ...config
+                } = data;
                 config.id = store.config[0].id;
 
                 const formattedData = {
@@ -83,9 +92,11 @@ export function StoreDialog({ store, onClose }) {
                     store_id,
                     password,
                     location,
+                    endpoint,
                     config: [config],
                 };
 
+                // console.log('Formatted: ', formattedData);
                 await updateStore(formattedData);
 
                 break;
