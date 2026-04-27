@@ -37,6 +37,20 @@ export function useStores() {
         },
     });
 
+    const update = useMutation({
+        mutationKey: ['store-update'],
+        mutationFn: async (formData) => {
+            const response = await api.patch('stores', formData);
+            return response.data;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['stores'] });
+        },
+        onError: (error) => {
+            return error;
+        },
+    });
+
     return {
         // Get data and states
         stores: get.data,
@@ -50,9 +64,16 @@ export function useStores() {
         isDeleteError: deleteRequest.isError,
         deleteError: deleteRequest.error,
 
+        // Create
         createStore: create.mutateAsync,
         isCreating: create.isPending,
         isCreateError: create.isError,
         createError: create.error,
+
+        // Update
+        updateStore: update.mutate,
+        isUpdating: update.isPending,
+        isUpdateError: update.isError,
+        updateError: update.error,
     };
 }

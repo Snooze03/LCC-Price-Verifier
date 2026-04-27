@@ -35,7 +35,7 @@ export function useAccounts() {
     });
 
     const update = useMutation({
-        mutationKey: ['accounts-create'],
+        mutationKey: ['accounts-update'],
         mutationFn: async (account) => {
             const response = await api.patch('accounts', account);
             return response.data;
