@@ -3,7 +3,7 @@ import { View, StyleSheet, Button, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { ScreenContainer } from '@/components/ui/container';
-import { LoginDialog } from '@/components/loginDialog';
+import { LoginDialog } from '@/dialog/loginDialog';
 
 export default function Index() {
     const router = useRouter();
@@ -19,7 +19,10 @@ export default function Index() {
             </View>
 
             <View style={styles.card}>
-                <Button title="Admin Panel" onPress={setShowLogin} />
+                <Button
+                    title="Branch Selector"
+                    onPress={() => setShowLogin(true)}
+                />
             </View>
 
             {/* Show login modal */}
