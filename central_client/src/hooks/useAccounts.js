@@ -40,5 +40,11 @@ export function useAccounts() {
         isDeleting: deleteAccount.isPending,
         isDeleteError: deleteAccount.isError,
         deleteError: deleteAccount.error,
+
+        // Create
+        createAccount: create.mutate,
+        isCreating: create.isPending,
+        isCreateError: create.isError,
+        createError: create.error,
     };
 }
