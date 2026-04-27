@@ -2,7 +2,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAccounts } from '@/hooks/useAccounts';
-import { createAccountSchema } from '../schemas/account.schema';
+import { createAccountSchema } from '@/schemas/auth/account.schema';
 import { ACCOUNT_FIELDS } from '../add-store-fields';
 import {
     Dialog,
