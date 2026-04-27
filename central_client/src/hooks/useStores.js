@@ -47,7 +47,8 @@ export function useStores() {
         // Delete data and states
         deleteStore: deleteRequest.mutate,
         isDeleting: deleteRequest.isPending,
-        response: deleteRequest.data,
+        isDeleteError: deleteRequest.isError,
+        deleteError: deleteRequest.error,
 
         createStore: create.mutateAsync,
         isCreating: create.isPending,
