@@ -40,7 +40,6 @@ export function useStores() {
     const update = useMutation({
         mutationKey: ['store-update'],
         mutationFn: async (formData) => {
-            console.log(formData);
             const response = await api.patch('stores', formData);
             return response.data;
         },
