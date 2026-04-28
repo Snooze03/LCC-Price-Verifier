@@ -53,7 +53,7 @@ export function StoreDialog({ store, onClose }) {
             break;
         case 'edit':
             const { id: storeID, ...storeData } = store; // get store fields
-            const { id: configID, store_id, ...configData } = store.config[0]; // Get store config & fields
+            const { id: configID, store_id, ...configData } = store.config[0]; // Get store config fields
 
             defaultValues = {
                 ...storeData,
@@ -76,7 +76,6 @@ export function StoreDialog({ store, onClose }) {
                 await createStore(data);
                 break;
             case 'edit':
-                console.log('Store:', store);
                 const {
                     id,
                     store_id,
@@ -96,7 +95,6 @@ export function StoreDialog({ store, onClose }) {
                     config: [config],
                 };
 
-                // console.log('Formatted: ', formattedData);
                 await updateStore(formattedData);
 
                 break;

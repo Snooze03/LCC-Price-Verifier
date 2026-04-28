@@ -82,7 +82,6 @@ export function StoresTab() {
                             const config = store.config[0];
                             const [configId, configStoreID, ...configValues] =
                                 Object.values(config);
-                            console.log(store.endpoint);
 
                             return (
                                 <TableRow
