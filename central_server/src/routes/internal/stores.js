@@ -20,7 +20,8 @@ export async function storeRoutes(FASTIFY, options) {
     // ========== ROUTES ==========
     // Create new Store Accounts with Config
     FASTIFY.post('/', async (request, reply) => {
-        const { store_id, password, location, ...configData } = request.body;
+        const { store_id, password, location, endpoint, ...configData } =
+            request.body;
         const hashedPassword = await FASTIFY.hash(password);
 
         try {
@@ -31,6 +32,7 @@ export async function storeRoutes(FASTIFY, options) {
                         store_id,
                         password: hashedPassword,
                         location,
+                        endpoint,
                     },
                 });
 
@@ -66,7 +68,7 @@ export async function storeRoutes(FASTIFY, options) {
 
     // Update Stores
     FASTIFY.patch('/', async (request, reply) => {
-        const { id, store_id, password, location, ...rawConfigData } =
+        const { id, store_id, password, location, endpoint, ...rawConfigData } =
             request.body;
         // Destructure config array to get object
         const config = rawConfigData.config[0];
@@ -81,6 +83,7 @@ export async function storeRoutes(FASTIFY, options) {
                         store_id,
                         password: hashedPassword,
                         location,
+                        endpoint,
                     },
                 });
 
