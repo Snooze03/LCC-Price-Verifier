@@ -6,6 +6,7 @@ import dbConnectorFP from '#plugins/FP-dbConnector';
 import fastifyStaticFP from '#plugins/FP-static';
 import { consoleLogin } from '#plugins/consoleLogin';
 import { priceRoutes } from '#routes/price';
+import { healthRoutes } from '#routes/health';
 
 const FASTIFY = fastify({
     logger: {
@@ -27,6 +28,7 @@ const start = async () => {
 
     // Routes
     FASTIFY.register(priceRoutes);
+    FASTIFY.register(healthRoutes);
 
     await FASTIFY.listen({ port: 3002, host: '0.0.0.0' });
 };
