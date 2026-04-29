@@ -1,11 +1,11 @@
 import { useQuery } from 'node_modules/@tanstack/react-query/build/legacy';
-import { api } from '@/api/api';
+import { centralAPI } from '@/api/central.api';
 
 export function useStores() {
     const get = useQuery({
         queryKey: ['stores'],
         queryFn: async () => {
-            const response = await api.get('pricever/stores');
+            const response = await centralAPI.get('pricever/stores');
             return response.data;
         },
     });

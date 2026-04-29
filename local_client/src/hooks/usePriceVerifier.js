@@ -1,5 +1,5 @@
 import { useQuery } from 'node_modules/@tanstack/react-query/build/legacy';
-import { api } from '@/api/api';
+import { api } from '@/api/central.api';
 
 export function usePriceVerifier(barcode) {
     const query = useQuery({

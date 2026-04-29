@@ -4,7 +4,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
 
-import { api, setBaseUrl } from '@/api/api';
+import { priceAPI, setBaseUrl } from '@/api/local.api';
 import { useStores } from '@/hooks/useStores';
 import {
     Card,
@@ -30,6 +30,8 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
         setIsVisible(false);
         // router.replace('store');
         router.push('store');
+        const response = await priceAPI.get('health');
+        console.log(response);
     };
 
     return (
