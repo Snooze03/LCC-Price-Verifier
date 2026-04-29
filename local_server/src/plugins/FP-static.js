@@ -1,4 +1,5 @@
 import { homedir } from 'node:os';
+import { readdir } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 
 import fastifyStatic from '@fastify/static';
@@ -10,6 +11,8 @@ async function fastifyStaticFP(FASTIFY, options) {
 
     // Route Prefix
     const routePrefix = '/images';
+
+    const imageFileExtension = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
 
     FASTIFY.register(fastifyStatic, {
         root: imageRoot,
@@ -24,14 +27,6 @@ async function fastifyStaticFP(FASTIFY, options) {
         // Performance and Caching
         setHeaders: (res, filePath) => {
             const fileExtension = extname(filePath).slice(1).toLowerCase();
-            const imageFileExtension = [
-                'jpg',
-                'jpeg',
-                'png',
-                'gif',
-                'webp',
-                'svg',
-            ];
 
             // Checks if file extension is valid
             if (imageFileExtension.includes(fileExtension)) {
@@ -42,6 +37,30 @@ async function fastifyStaticFP(FASTIFY, options) {
                 res.setHeader('X-Content-Type-Options', 'nosniff');
             }
         },
+    });
+
+    FASTIFY.get(`${routePrefix}/list`, async (request, reply) => {
+        try {
+            const files = await readdir(imageRoot);
+
+            // Filter for only valid image extensions
+            const validExtensions = [
+                '.jpg',
+                '.jpeg',
+                '.png',
+                '.gif',
+                '.webp',
+                '.svg',
+            ];
+            const images = files.filter((file) =>
+                validExtensions.includes(extname(file).toLowerCase()),
+            );
+
+            return { images };
+        } catch (err) {
+            FASTIFY.log.error(err);
+            return reply.status(500).send({ error: 'Could not list images' });
+        }
     });
 
     FASTIFY.log.info('Plugins: Fastify Static Image Registered');
