@@ -4,7 +4,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
 
-import { priceAPI, setBaseUrl } from '@/api/local.api';
+import { localAPI, setBaseUrl } from '@/api/local.api';
 import { useStores } from '@/hooks/useStores';
 import {
     Card,
@@ -15,7 +15,6 @@ import {
     CardFooter,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { TextAlignCenter } from 'lucide-react-native';
 
 export function StoreSelectorDialog({ isVisible, setIsVisible }) {
     const router = useRouter();
@@ -30,8 +29,10 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
         setIsVisible(false);
         // router.replace('store');
         router.push('store');
-        const response = await priceAPI.get('health');
-        console.log(response);
+
+        // Health Check of local server
+        // const response = await localAPI.get('health');
+        // console.log(response);
     };
 
     return (
@@ -43,7 +44,9 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
                     </CardHeader>
                     <CardContent>
                         {isPending ? (
-                            <View style={[styles.dropdown]}>Loading...</View>
+                            <View style={[styles.dropdown]}>
+                                <Text>Loading...</Text>
+                            </View>
                         ) : (
                             <Dropdown
                                 style={[
