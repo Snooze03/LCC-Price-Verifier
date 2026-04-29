@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { TextInput, View, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
 
 import { COLORS } from '@/constants/colors';
 import { usePriceVerifier } from '@/hooks/usePriceVerifier';
 import { Logo } from '@/components/logo';
 import { ScanResult } from '@/components/scanResult';
 import { ScanIndicator } from '@/components/scanIndicator';
+import { PromoImage } from '@/components/promoImage';
 import { ErrorMessage } from '@/components/errorMessage';
 import { ScreenContainer } from '@/components/ui/container';
 
@@ -54,13 +54,7 @@ export default function PriceVerifier() {
     return (
         <ScreenContainer style={styles.container}>
             <View style={styles.leftColumn}>
-                <Image
-                    style={styles.image}
-                    source={{
-                        uri: 'https://lcc.com.ph/wp-content/uploads/2025/10/ECO-BAG-DISCOUNT.jpg',
-                    }}
-                    contentFit="fill"
-                />
+                <PromoImage />
             </View>
 
             <View style={styles.rightColumn}>
@@ -113,10 +107,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         borderColor: COLORS.border,
-    },
-    image: {
-        width: '100%',
-        height: '100%',
     },
     rightColumn: {
         flex: 1.2,
