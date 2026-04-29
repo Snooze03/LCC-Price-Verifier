@@ -1,46 +1,62 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 
-import { COLORS } from '@/constants/colors';
+import { usePromoImages } from '@/hooks/usePromoImages';
+import { localAPI } from '@/api/local.api';
 
-export function PromoImage({ image, fileName, date }) {
+export function PromoImage() {
+    const DISPLAY_DELAY = 4000;
+    const BASE_URI = localAPI.defaults.baseURL;
+
+    const { imageList, isPending, isError } = usePromoImages();
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        if (imageList.length > 0) {
+            const timer = setInterval(() => {
+                setCurrentIndex((prev) =>
+                    prev === imageList.length - 1 ? 0 : prev + 1,
+                );
+            }, DISPLAY_DELAY);
+            return () => clearInterval(timer);
+        }
+    }, [imageList]);
+
+    if (isPending) return <ActivityIndicator style={{ flex: 1 }} />;
+    if (isError || imageList.length === 0) {
+        console.warn('PromoImage: No images found or error occurred');
+        return null;
+    }
+
+    const currentImage = imageList[currentIndex];
+    const fullUri = `${BASE_URI}/images/${currentImage}`;
+
     return (
         <View style={styles.container}>
             <Image
-                source={{ uri: image }}
+                key={currentImage}
+                source={{ uri: fullUri }}
                 style={styles.image}
                 contentFit="fill"
+                transition={{
+                    duration: 2000,
+                    effect: 'cross-dissolve',
+                    timing: 'ease-in-out',
+                }}
             />
-            <Text style={styles.description}>{fileName}</Text>
-            <Text style={styles.date}>Duration: {date}</Text>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: '30%',
-        height: 'auto',
+        width: '100%',
+        height: '100%',
         aspectRatio: 0.78,
-        backgroundColor: 'white',
-        marginVertical: 10,
-        marginRight: 30,
     },
     image: {
-        width: 250,
-        height: 250,
-    },
-    description: {
-        fontWeight: 'medium',
-        fontSize: 16,
-        paddingTop: 8,
-        paddingHorizontal: 10,
-    },
-    date: {
-        color: COLORS.sub_text,
-        fontSize: 14,
-        marginTop: 3,
-        paddingBottom: 10,
-        paddingHorizontal: 10,
+        width: '100%',
+        height: '100%',
     },
 });
