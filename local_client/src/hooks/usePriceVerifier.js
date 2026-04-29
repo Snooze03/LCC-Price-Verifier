@@ -1,11 +1,11 @@
 import { useQuery } from 'node_modules/@tanstack/react-query/build/legacy';
-import { api } from '@/api/central.api';
+import { localAPI } from '@/api/local.api';
 
 export function usePriceVerifier(barcode) {
     const query = useQuery({
         queryKey: [`code: ${barcode}`],
         queryFn: async () => {
-            return await api.get(`/price/${barcode}`);
+            return await localAPI.get(`/price/${barcode}`);
         },
         enabled: !!barcode && barcode !== 'null',
         retry: false,
