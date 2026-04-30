@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useAccounts } from '@/hooks/useAccounts';
-import { ACCOUNT_COLUMNS } from './columns';
+import { ACCOUNT_COLUMNS } from './constants/columns';
 import {
     Table,
     TableBody,
@@ -21,9 +21,7 @@ import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
 
 function AccountsTab() {
     // Hooks
-    const { accounts, isPending, isError, error } = useAccounts();
-    const { deleteAccount, isDeleting, isDeleteError, deleteError } =
-        useAccounts();
+    const { accounts, isPending, deleteAccount, isDeleting } = useAccounts();
 
     // States
     const [selectedAccount, setSelectedAccount] = useState();
@@ -33,17 +31,19 @@ function AccountsTab() {
 
     // ===== EVENT HANDLERS =====
     const onDeleteAccount = () => {
-        deleteAccount(selectedAccount.id);
-        if (isDeleteError) {
-            toast.error(`Cloud not delete account: ${deleteError}`, {
-                position: 'top-center',
-            });
-        } else {
-            toast.success('Account Deleted Successfully!', {
-                position: 'top-center',
-            });
-        }
-        handleCloseDialog();
+        deleteAccount(selectedAccount.id, {
+            onSuccess: () => {
+                toast.success('Account Deleted Successfully!', {
+                    position: 'top-center',
+                });
+                handleCloseDialog();
+            },
+            onError: (error) => {
+                toast.error(`Cloud not delete account: ${error}`, {
+                    position: 'top-center',
+                });
+            },
+        });
     };
 
     const handleCloseDialog = () => {
@@ -52,7 +52,7 @@ function AccountsTab() {
 
     return (
         <>
-            <div className="space-y-6">
+            <div className="space-y-6 max-w-234">
                 <TabHeader>
                     <TabTitle>Accounts</TabTitle>
                     <Button
@@ -92,7 +92,7 @@ function AccountsTab() {
                                         {accountValues.map((value) => (
                                             <TableCell
                                                 key={value}
-                                                className="max-w-25 truncate"
+                                                className="max-w-5 truncate"
                                             >
                                                 {value}
                                             </TableCell>

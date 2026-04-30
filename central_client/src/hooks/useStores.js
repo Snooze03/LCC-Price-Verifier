@@ -69,7 +69,7 @@ export function useStores() {
         deleteError: deleteRequest.error,
 
         // Create
-        createStore: create.mutateAsync,
+        createStore: create.mutate,
         isCreating: create.isPending,
         isCreateError: create.isError,
         createError: create.error,
