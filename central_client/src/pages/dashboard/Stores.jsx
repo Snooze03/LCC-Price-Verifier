@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { useStores } from '@/hooks/useStores';
+import { STORE_COLUMNS } from './constants/columns';
 import {
     Table,
     TableBody,
@@ -10,13 +12,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { useStores } from '@/hooks/useStores';
 import { TabHeader, TabTitle } from './components/tab-header';
 import { TableActionMenu } from './components/table-action-menu';
-import { Button } from '@/components/ui/button';
-import { StoreDialog } from './dialogs/store-dialog';
 import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
-import { STORE_COLUMNS } from './columns';
+import { StoreDialog } from './dialogs/store-dialog';
+import { Button } from '@/components/ui/button';
 
 export function StoresTab() {
     // Fetch stores

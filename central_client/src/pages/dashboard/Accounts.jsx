@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useAccounts } from '@/hooks/useAccounts';
-import { ACCOUNT_COLUMNS } from './columns';
+import { ACCOUNT_COLUMNS } from './constants/columns';
 import {
     Table,
     TableBody,
