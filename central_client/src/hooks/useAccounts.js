@@ -53,7 +53,7 @@ export function useAccounts() {
         error: get.error,
 
         // Delete
-        deleteAccount: deleteAccount.mutateAsync,
+        deleteAccount: deleteAccount.mutate,
         isDeleting: deleteAccount.isPending,
         isDeleteError: deleteAccount.isError,
         deleteError: deleteAccount.error,
