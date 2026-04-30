@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { BlurView } from 'expo-blur';
@@ -20,19 +20,25 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
     const router = useRouter();
     const { stores, isPending, isError, error } = useStores();
 
-    const [endpoint, setEndpoint] = useState('');
+    const [selectedStore, setSelectedStore] = useState(null);
     const [dialogFocus, setDialogFocus] = useState(false);
 
+    useEffect(() => {
+        if (stores && stores.length > 0 && selectedStore === null) {
+            setSelectedStore(stores[0]);
+        }
+    }, [stores?.length]);
+
+    // // 🔍 DEBUG
+    // console.log('stores:', JSON.stringify(stores, null, 2));
+    // console.log('selectedStore:', JSON.stringify(selectedStore, null, 2));
+
     const handleSelectedStore = async () => {
-        await setBaseUrl(endpoint);
+        if (!selectedStore) return;
 
+        await setBaseUrl(selectedStore.endpoint);
         setIsVisible(false);
-        // router.replace('store');
         router.push('store');
-
-        // Health Check of local server
-        // const response = await localAPI.get('health');
-        // console.log(response);
     };
 
     return (
@@ -59,13 +65,13 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
                                 search
                                 maxHeight={300}
                                 labelField="location"
-                                valueField="endpoint"
+                                valueField="id"
                                 placeholder="Select a branch"
                                 onFocus={() => setDialogFocus(true)}
                                 onBlur={() => setDialogFocus(false)}
-                                value={endpoint}
+                                value={selectedStore?.id ?? null}
                                 onChange={(store) => {
-                                    setEndpoint(store.endpoint);
+                                    setSelectedStore(store);
                                 }}
                             />
                         )}
