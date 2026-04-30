@@ -96,7 +96,7 @@ export function DashboardLayout() {
             </Sidebar>
 
             <SidebarInset>
-                <div className="w-auto h-screen mx-6 my-4">
+                <div className="flex-1 flex-col w-auto h-screen px-6 py-4">
                     <Outlet />
                 </div>
             </SidebarInset>

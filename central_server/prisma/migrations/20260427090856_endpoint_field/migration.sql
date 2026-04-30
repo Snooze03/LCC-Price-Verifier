@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `stores` ADD COLUMN `endpoint` VARCHAR(255) NOT NULL DEFAULT '10.0.3.46:3306';

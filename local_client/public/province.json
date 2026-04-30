@@ -1,0 +1,8 @@
+[
+    { "code": "0513", "name": "Camarines Norte", "api": "10.0.0.59:3002" },
+    { "code": "0514", "name": "Camarines Sur", "api": "10.0.0.1:3001" },
+    { "code": "0502", "name": "Albay", "api": "10.0.0.1:3002" },
+    { "code": "0562", "name": "Sorsogon", "api": "10.0.0.1:3003" },
+    { "code": "0549", "name": "Masbate", "api": "10.0.0.1:3004" },
+    { "code": "0515", "name": "Catanduanes", "api": "10.0.0.1:3005" }
+]

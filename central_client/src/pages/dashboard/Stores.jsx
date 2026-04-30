@@ -1,106 +1,153 @@
+import { useState } from 'react';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
+
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { DashboardDialog } from '@/dialog/dashboardDialog';
 import { useStores } from '@/hooks/useStores';
-import { useState } from 'react';
+import { TabHeader, TabTitle } from './components/tab-header';
+import { TableActionMenu } from './components/table-action-menu';
+import { Button } from '@/components/ui/button';
+import { StoreDialog } from './dialogs/store-dialog';
+import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
+import { STORE_COLUMNS } from './columns';
 
-const columns = [
-    'Store ID',
-    'Location',
-    'Password',
-    'Connection Type',
-    'DB User',
-    'DB Password',
-    'Host',
-    'Port',
-    'Database',
-    'Image Path',
-];
+export function StoresTab() {
+    // Fetch stores
+    const { stores, isPending, isError, error } = useStores();
+    const { deleteStore, isDeleting, isDeleteError, deleteError } = useStores();
 
-function StoresTab() {
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [selectedStore, setSelectedStore] = useState(null); // ✅ track clicked store
-    const { data, isLoading, isError, error } = useStores();
+    // State for Dialogs
+    const [selectedStore, setSelectedStore] = useState();
+    const [activeDialog, setActiveDialog] = useState(null);
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isPending) return <h1>Loading...</h1>;
 
-    const handleRowClick = (store) => {
-        setSelectedStore(store); // ✅ set the clicked store
-        setDialogOpen(true); // ✅ open dialog
+    // ===== EVENT HANDLERS =====
+    const onDeleteStore = () => {
+        const store_id = selectedStore.store_id;
+        deleteStore(store_id);
+
+        if (isDeleteError) {
+            toast.error(`Could not delete Store: ${deleteError}`, {
+                position: 'top-center',
+            });
+        } else {
+            toast.success('Store Deleted Successfully!', {
+                position: 'top-center',
+            });
+        }
+        handleCloseDialog();
     };
 
-    const handleAddClick = () => {
-        setSelectedStore(null); // ✅ clear store so dialog is in "add" mode
-        setDialogOpen(true);
+    const handleCloseDialog = () => {
+        setActiveDialog(null);
+        setSelectedStore(null);
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
-                <h1 className="text-lg font-bold">Stores</h1>
-                <Button
-                    onClick={handleAddClick}
-                    size="sm"
-                    className="bg-[#293041] hover:bg-[#3F4759]"
-                >
-                    <Plus />
-                    Add Store
-                </Button>
+        <>
+            <div className="space-y-6">
+                {/* Header */}
+                <TabHeader>
+                    <TabTitle>Store Branches</TabTitle>
+                    <Button
+                        onClick={() => setActiveDialog('add')}
+                        size="sm"
+                        className="bg-[#293041] hover:bg-[#3F4759]"
+                    >
+                        <Plus />
+                        Add Store
+                    </Button>
+                </TabHeader>
+
+                {/* Table */}
+                <Table className="shadow-xl max-w-auto">
+                    <TableHeader>
+                        <TableRow className="hover:bg-inherit">
+                            {STORE_COLUMNS.map((col) => (
+                                <TableHead key={col}>{col}</TableHead>
+                            ))}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {stores.map((store) => {
+                            // get config for each store
+                            const config = store.config[0];
+                            const [configId, configStoreID, ...configValues] =
+                                Object.values(config);
+
+                            return (
+                                <TableRow
+                                    key={store.store_id}
+                                    className="cursor-pointer hover:bg-gray-100"
+                                >
+                                    {/* Store Values */}
+                                    <TableCell>{store.store_id}</TableCell>
+                                    <TableCell>{store.location}</TableCell>
+                                    <TableCell className="max-w-25 truncate">
+                                        {store.password}
+                                    </TableCell>
+                                    <TableCell className="max-w-25 truncate">
+                                        {store.endpoint}
+                                    </TableCell>
+
+                                    {/* Config Values */}
+                                    {configValues.map((value, index) => (
+                                        <TableCell
+                                            key={index + value}
+                                            className="max-w-25 truncate"
+                                        >
+                                            {value}
+                                        </TableCell>
+                                    ))}
+
+                                    {/* Action Menu */}
+                                    <TableCell>
+                                        <TableActionMenu
+                                            handleEdit={() => {
+                                                setSelectedStore(store);
+                                                setActiveDialog('edit');
+                                            }}
+                                            handleDelete={() => {
+                                                setSelectedStore(store);
+                                                setActiveDialog('delete');
+                                            }}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
             </div>
 
-            <DashboardDialog
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                store={selectedStore}
-            />
-            <Table className="shadow-xl">
-                <TableHeader className="bg-[#344573]">
-                    <TableRow>
-                        {columns.map((col) => (
-                            <TableHead className="text-white" key={col}>
-                                {col}
-                            </TableHead>
-                        ))}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {data.map((store) => {
-                        const config = store.config?.[0] ?? {};
-                        return (
-                            <TableRow
-                                key={store.store_id}
-                                onClick={() => handleRowClick(store)} // ✅ click handler
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
-                                <TableCell>{store.store_id}</TableCell>
-                                <TableCell>{store.location}</TableCell>
-                                <TableCell className="max-w-[100px] truncate">
-                                    {store.password}
-                                </TableCell>
+            {/* Dialogs */}
+            {activeDialog === 'add' && (
+                <StoreDialog onClose={handleCloseDialog} />
+            )}
 
-                                <TableCell>{config.connection_type}</TableCell>
-                                <TableCell>{config.db_user}</TableCell>
-                                <TableCell>{config.db_password}</TableCell>
-                                <TableCell>{config.host}</TableCell>
-                                <TableCell>{config.port}</TableCell>
-                                <TableCell>{config.db_name}</TableCell>
-                                <TableCell>{config.image_path}</TableCell>
-                            </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
-        </div>
+            {activeDialog === 'edit' && (
+                <StoreDialog
+                    store={selectedStore}
+                    onClose={handleCloseDialog}
+                />
+            )}
+
+            {activeDialog === 'delete' && (
+                <DeleteConfirmationDialog
+                    title="Delete Store"
+                    onClose={handleCloseDialog}
+                    onDelete={onDeleteStore}
+                    isDeleting={isDeleting}
+                />
+            )}
+        </>
     );
 }
-
-export { StoresTab };

@@ -16,6 +16,14 @@
     --color-sidebar-primary: var(--sidebar-primary);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar: var(--sidebar);
+    --color-table-ring: var(--table-ring);
+    --color-table-border: var(--table-border);
+    --color-table-accent-foreground: var(--table-accent-foreground);
+    --color-table-accent: var(--table-accent);
+    --color-table-primary-foreground: var(--table-primary-foreground);
+    --color-table-primary: var(--table-primary);
+    --color-table-foreground: var(--table-foreground);
+    --color-table: var(--table);
     --color-chart-5: var(--chart-5);
     --color-chart-4: var(--chart-4);
     --color-chart-3: var(--chart-3);
@@ -73,6 +81,8 @@
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
     --radius: 0.625rem;
+
+    /* Sidebar Colors */
     --sidebar: #1e2433;
     --sidebar-foreground: #6b7a9e;
     --sidebar-primary: #8a96b3;
@@ -81,6 +91,16 @@
     --sidebar-accent-foreground: white;
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    /* Table Colors */
+    --table: #344573;
+    --table-foreground: white;
+    --table-primary: #8a96b3;
+    --table-primary-foreground: oklch(0.985 0 0);
+    --table-accent: #7e8fc2;
+    --table-accent-foreground: white;
+    --table-border: oklch(0.922 0 0);
+    --table-ring: oklch(0.708 0 0);
 }
 
 .dark {

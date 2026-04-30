@@ -10,7 +10,8 @@
             "@pages/*": ["./src/pages/*"],
             "@layouts/*": ["./src/components/layouts/*"],
             "@ui/*": ["./src/components/ui/*"],
-            "@/assets/*": ["./src/assets/*"]
+            "@/assets/*": ["./src/assets/*"],
+            "@/schemas/*": ["./src/schemas/*"]
         },
         "jsx": "react-native",
         "checkJs": true

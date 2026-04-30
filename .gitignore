@@ -36,8 +36,10 @@ yarn-error.*
 *.tsbuildinfo
 
 # generated native folders
-/ios
-/android
+local_client/ios
+local_client/android
+
+# Prisma
 central_server/generated
 
 # local server config

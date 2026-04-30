@@ -6,7 +6,13 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            networkMode: 'online',
+        },
+    },
+});
 
 export default function RootLayout() {
     NavigationBar.setVisibilityAsync('hidden');

@@ -1,19 +1,73 @@
 import { api } from '@/api/api';
-import { useQuery } from '@tanstack/react-query';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 
-export function useAccount() {
-    const query = useQuery({
-        queryKey: ['account'],
+export function useAccounts() {
+    const queryClient = useQueryClient();
+
+    const get = useQuery({
+        queryKey: ['accounts'],
         queryFn: async () => {
-            const response = await api.get('account');
+            const response = await api.get('accounts');
             return response.data;
         },
     });
 
+    const deleteAccount = useMutation({
+        mutationKey: ['accounts-delete'],
+        mutationFn: async (account_id) => {
+            const response = await api.delete(`accounts/${account_id}`);
+            return response.data;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+        },
+    });
+
+    const create = useMutation({
+        mutationKey: ['accounts-create'],
+        mutationFn: async (account) => {
+            const response = await api.post('accounts', account);
+            return response.data;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+        },
+    });
+
+    const update = useMutation({
+        mutationKey: ['accounts-update'],
+        mutationFn: async (account) => {
+            const response = await api.patch('accounts', account);
+            return response.data;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+        },
+    });
+
     return {
-        data: query.data,
-        isLoading: query.isLoading,
-        isError: query.isError,
-        error: query.error,
+        // Get Data/States
+        accounts: get.data,
+        isPending: get.isPending,
+        isError: get.isError,
+        error: get.error,
+
+        // Delete
+        deleteAccount: deleteAccount.mutateAsync,
+        isDeleting: deleteAccount.isPending,
+        isDeleteError: deleteAccount.isError,
+        deleteError: deleteAccount.error,
+
+        // Create
+        createAccount: create.mutate,
+        isCreating: create.isPending,
+        isCreateError: create.isError,
+        createError: create.error,
+
+        // Update
+        updateAccount: update.mutate,
+        isUpdating: update.isPending,
+        isUpdateError: update.isError,
+        updateError: update.error,
     };
 }

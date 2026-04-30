@@ -1,4 +1,9 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
+
+import { useAccounts } from '@/hooks/useAccounts';
+import { ACCOUNT_COLUMNS } from './columns';
 import {
     Table,
     TableBody,
@@ -8,79 +13,131 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { useAccount } from '@/hooks/useAccounts';
-import { AccountDialog } from '@/dialog/accountDialog';
-
-const columns = ['Email', 'Role', 'Password'];
+import { TabHeader, TabTitle } from './components/tab-header';
+import { TableActionMenu } from './components/table-action-menu';
+import { EmptyState } from '@/components/empty-state';
+import { AccountDialog } from './dialogs/account-dialog';
+import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
 
 function AccountsTab() {
-    const { data, isLoading, isError, error } = useAccount();
-    const [selectedAccount, setSelectedAccount] = useState(null); // ← add this
-    const [dialogOpen, setDialogOpen] = useState(false); // ← add this
+    // Hooks
+    const { accounts, isPending, isError, error } = useAccounts();
+    const { deleteAccount, isDeleting, isDeleteError, deleteError } =
+        useAccounts();
 
-    if (isLoading)
-        return <p className="p-4 text-sm text-gray-500">Loading accounts...</p>;
-    if (isError)
-        return (
-            <p className="p-4 text-sm text-red-500">Error: {error?.message}</p>
-        );
+    // States
+    const [selectedAccount, setSelectedAccount] = useState();
+    const [activeDialog, setActiveDialog] = useState();
 
-    const handleRowClick = (account) => {
-        setSelectedAccount(account);
-        setDialogOpen(true);
+    if (isPending) return <h1>Loading...</h1>;
+
+    // ===== EVENT HANDLERS =====
+    const onDeleteAccount = () => {
+        deleteAccount(selectedAccount.id);
+        if (isDeleteError) {
+            toast.error(`Cloud not delete account: ${deleteError}`, {
+                position: 'top-center',
+            });
+        } else {
+            toast.success('Account Deleted Successfully!', {
+                position: 'top-center',
+            });
+        }
+        handleCloseDialog();
     };
 
-    const handleAddClick = () => {
-        setSelectedAccount(null);
-        setDialogOpen(true);
+    const handleCloseDialog = () => {
+        setActiveDialog(null);
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center px-5 py-3 border border-gray-200 rounded-md shadow-sm">
-                <h1 className="text-lg font-bold">Accounts</h1>
-                <Button
-                    onClick={handleAddClick}
-                    size="sm"
-                    className="bg-[#293041] hover:bg-[#3F4759]"
-                >
-                    <Plus />
-                    Add Account
-                </Button>
+        <>
+            <div className="space-y-6">
+                <TabHeader>
+                    <TabTitle>Accounts</TabTitle>
+                    <Button
+                        onClick={() => setActiveDialog('add')}
+                        size="sm"
+                        className="bg-[#293041] hover:bg-[#3F4759]"
+                    >
+                        <Plus />
+                        Add Account
+                    </Button>
+                </TabHeader>
+
+                {accounts.length === 0 ? (
+                    <EmptyState
+                        title="No Accounts added yet"
+                        description="Add an account using the add account button"
+                    />
+                ) : (
+                    <Table className="shadow-xl">
+                        <TableHeader>
+                            <TableRow className="hover:bg-inherit">
+                                {ACCOUNT_COLUMNS.map((col) => (
+                                    <TableHead key={col}>{col}</TableHead>
+                                ))}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {accounts.map((account) => {
+                                const [id, ...accountValues] =
+                                    Object.values(account);
+
+                                return (
+                                    <TableRow
+                                        key={account.id}
+                                        className="cursor-pointer hover:bg-gray-100"
+                                    >
+                                        {accountValues.map((value) => (
+                                            <TableCell
+                                                key={value}
+                                                className="max-w-25 truncate"
+                                            >
+                                                {value}
+                                            </TableCell>
+                                        ))}
+
+                                        <TableCell>
+                                            <TableActionMenu
+                                                handleEdit={() => {
+                                                    setSelectedAccount(account);
+                                                    setActiveDialog('edit');
+                                                }}
+                                                handleDelete={() => {
+                                                    setSelectedAccount(account);
+                                                    setActiveDialog('delete');
+                                                }}
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                )}
             </div>
-            <AccountDialog
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                account={selectedAccount}
-            />
-            <Table className="shadow-xl">
-                <TableHeader className="bg-[#344573]">
-                    <TableRow>
-                        {columns.map((col) => (
-                            <TableHead className="text-white" key={col}>
-                                {col}
-                            </TableHead>
-                        ))}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {(data ?? []).map((account) => (
-                        <TableRow
-                            key={account.id}
-                            onClick={() => handleRowClick(account)}
-                            className="cursor-pointer hover:bg-gray-100"
-                        >
-                            <TableCell>{account.email}</TableCell>
-                            <TableCell>{account.role}</TableCell>
-                            <TableCell className="max-w-[100px] truncate">
-                                {account.password}
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </div>
+
+            {activeDialog === 'add' && (
+                <AccountDialog onClose={handleCloseDialog} />
+            )}
+
+            {activeDialog === 'edit' && (
+                <AccountDialog
+                    account={selectedAccount}
+                    onClose={handleCloseDialog}
+                />
+            )}
+
+            {activeDialog === 'delete' && (
+                <DeleteConfirmationDialog
+                    title="Delete Account"
+                    onClose={handleCloseDialog}
+                    onDelete={onDeleteAccount}
+                    isDeleting={isDeleting}
+                />
+            )}
+        </>
     );
 }
 
