@@ -22,7 +22,10 @@ export default function PriceVerifier() {
     inputRef.current?.focus();
 
     function handleScan(newBarcode) {
-        if (newBarcode.length >= 10) {
+        // Checks if barcode only contains digits, the scanner sometimes inputs random characters
+        const isValidNumber = /^\d+$/.test(newBarcode);
+
+        if (newBarcode.length >= 10 && isValidNumber) {
             setBarcode(newBarcode);
             setScanned(true);
 
