@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { TextInput, View, StyleSheet } from 'react-native';
+import { TextInput, View, StyleSheet, ActivityIndicator } from 'react-native';
 
 import { COLORS } from '@/constants/colors';
 import { usePriceVerifier } from '@/hooks/usePriceVerifier';
@@ -12,11 +12,10 @@ import { ScreenContainer } from '@/components/ui/container';
 
 export default function PriceVerifier() {
     const [barcode, setBarcode] = useState('');
-    const [scanResult, setScanResult] = useState(false);
-    const [disabled, setDisabled] = useState(true);
+    const [scanned, setScanned] = useState(false);
     const inputRef = useRef(null);
 
-    const { product, isLoading, isSuccess, isError } =
+    const { product, isPending, isFetching, isSuccess, isError } =
         usePriceVerifier(barcode);
 
     // @ts-ignore
@@ -24,15 +23,12 @@ export default function PriceVerifier() {
 
     function handleScan(newBarcode) {
         if (newBarcode.length >= 10) {
-            setDisabled(false);
             setBarcode(newBarcode);
-            setScanResult(true);
-            console.log('Barcode: ', barcode);
+            setScanned(true);
 
             setTimeout(() => {
                 setBarcode('');
-                setScanResult(false);
-                setDisabled(true);
+                setScanned(false);
             }, 3000);
         }
     }
@@ -53,7 +49,7 @@ export default function PriceVerifier() {
                     value={barcode}
                     onChangeText={handleScan}
                     onBlur={() => inputRef.current?.focus()}
-                    editable={disabled}
+                    editable={!scanned}
                     showSoftInputOnFocus={false}
                     pointerEvents="none"
                     caretHidden={true}
@@ -61,17 +57,18 @@ export default function PriceVerifier() {
                     contextMenuHidden={true}
                 />
 
-                {scanResult && !isLoading ? (
+                {isFetching && isPending && <ActivityIndicator />}
+
+                {scanned && isSuccess ? (
                     <ScanResult
                         productDescription={product?.description}
                         productPrice={product?.price}
                     />
                 ) : (
-                    <>
-                        {isError && <ErrorMessage />}
-                        <ScanIndicator />
-                    </>
+                    <>{isError && <ErrorMessage />}</>
                 )}
+
+                {isFetching || (isPending && <ScanIndicator />)}
             </View>
         </ScreenContainer>
     );
@@ -88,7 +85,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
-        // opacity: 0,
+        opacity: 0,
         width: 'auto',
         backgroundColor: 'white',
         borderWidth: 1,
