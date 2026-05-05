@@ -2,7 +2,6 @@
     "expo": {
         "name": "LCC PriceVer",
         "description": "A product price verifier for LCC SuperMarkets",
-        "sdkVersion": "54.0.34",
         "version": "1.0.0",
         "slug": "lcc-pricever",
         "orientation": "landscape",
