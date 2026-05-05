@@ -12,6 +12,10 @@ export function useStores() {
         },
     });
 
+    const stores = [{ location: 'Test Store', endpoint: 'http://test.com' }];
+    const isPending = false;
+    const isError = false;
+    const error = null;
     const deleteRequest = useMutation({
         mutationKey: ['store-delete'],
         mutationFn: async (store_id) => {
@@ -65,7 +69,7 @@ export function useStores() {
         deleteError: deleteRequest.error,
 
         // Create
-        createStore: create.mutateAsync,
+        createStore: create.mutate,
         isCreating: create.isPending,
         isCreateError: create.isError,
         createError: create.error,

@@ -3,7 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAccounts } from '@/hooks/useAccounts';
 import { createAccountSchema } from '@/schemas/auth/account.schema';
-import { ACCOUNT_FIELDS } from '../form-fields';
+import { ACCOUNT_FIELDS } from '../constants/form-fields';
+import { ACCOUNT_DEFAULT_VALUES } from '../constants/default-values';
 import {
     Dialog,
     DialogContent,
@@ -23,74 +24,44 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 export function AccountDialog({ account, onClose }) {
-    // Custom Hooks
-    const { createAccount, isCreating, isCreateError, createError } =
+    // Dialog state/mode
+    const isEdit = !!account;
+
+    const { createAccount, isCreating, updateAccount, isUpdating } =
         useAccounts();
-    const { updateAccount, isUpdating, isUpdateError, updateError } =
-        useAccounts();
+    const isLoading = isCreating || isUpdating;
 
-    let defaultValues = null;
-    const dialogState = account ? 'edit' : 'add';
-
-    // Sets default form values depending on dialog statae
-    switch (dialogState) {
-        case 'add':
-            defaultValues = {
-                email: '',
-                password: '',
-                role: '',
-            };
-            break;
-
-        case 'edit':
-            defaultValues = {
-                email: account.email,
-                password: account.password,
-                role: account.role,
-            };
-            break;
-    }
-
+    // Sets default form values based on dialog state
     const { handleSubmit, control } = useForm({
         resolver: zodResolver(createAccountSchema),
-        defaultValues: {
-            ...defaultValues,
-        },
+        values: isEdit
+            ? {
+                  email: account.email,
+                  password: account.password,
+                  role: account.role,
+              }
+            : ACCOUNT_DEFAULT_VALUES,
     });
 
     const onSubmit = async (data) => {
-        switch (dialogState) {
-            case 'add':
-                createAccount(data);
+        const action = isEdit ? updateAccount : createAccount;
+        const payload = isEdit ? { id: account.id, ...data } : data;
 
-                break;
-            case 'edit':
-                const formattedData = {
-                    id: account.id,
-                    ...data,
-                };
-                updateAccount(formattedData);
-
-                break;
-        }
-
-        if (isCreateError || isUpdateError) {
-            toast.error(
-                `An Error has Occurred: ${createError || updateError}`,
-                {
-                    position: 'top-center',
-                },
-            );
-        } else {
-            toast.success(
-                `Account ${dialogState === 'add' ? 'Created' : 'Edited'}  Successfully!`,
-                {
-                    position: 'top-center',
-                },
-            );
-        }
-
-        onClose();
+        action(payload, {
+            onSuccess: () => {
+                toast.success(
+                    `Account ${isEdit ? 'Updated' : 'Created'} Successfully!`,
+                    { position: 'top-center' },
+                );
+                onClose();
+            },
+            onError: (error) => {
+                toast.error(
+                    `Error: ${error.message || 'Something went wrong'}`,
+                    { position: 'top-center' },
+                );
+            },
+        });
     };
 
     return (
@@ -98,17 +69,17 @@ export function AccountDialog({ account, onClose }) {
             <DialogContent className="md:max-w-sm">
                 <DialogHeader>
                     <DialogTitle>
-                        {dialogState === 'add' ? 'Add Account' : 'Edit Account'}
+                        {isEdit ? 'Edit Account' : 'Add Account'}
                     </DialogTitle>
                     <DialogDescription>
-                        {dialogState === 'add'
-                            ? 'Fill in the form to create a new account'
-                            : 'Edit the values and press Update to save changes'}
+                        {isEdit
+                            ? 'Edit the values and press Update to save changes'
+                            : 'Fill in the form to create a new account'}
                     </DialogDescription>
                 </DialogHeader>
 
-                <form id="store-form" onSubmit={handleSubmit(onSubmit)}>
-                    <FieldSet>
+                <form id="account-form" onSubmit={handleSubmit(onSubmit)}>
+                    <FieldSet disabled={isLoading}>
                         {/* ===== Account Form ===== */}
                         <FieldGroup className="flex-col">
                             {ACCOUNT_FIELDS.map((f) => (
@@ -150,14 +121,12 @@ export function AccountDialog({ account, onClose }) {
 
                     {/* Form Actions */}
                     <div className="mt-6">
-                        <Button className="w-full" disabled={isCreating}>
-                            {isCreating
-                                ? 'Adding Account...'
-                                : isUpdating
-                                  ? 'Updating Account...'
-                                  : account
-                                    ? 'Update Account'
-                                    : 'Create Account'}
+                        <Button className="w-full" disabled={isLoading}>
+                            {isLoading
+                                ? 'Processing...'
+                                : isEdit
+                                  ? 'Update Account'
+                                  : 'Create Account'}
                         </Button>
                     </div>
                 </form>

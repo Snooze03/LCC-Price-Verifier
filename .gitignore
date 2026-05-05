@@ -47,3 +47,6 @@ local_server/config.json
 
 # vscode
 .vscode
+
+# android studio
+.idea

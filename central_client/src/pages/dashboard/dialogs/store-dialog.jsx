@@ -3,6 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useStores } from '@/hooks/useStores';
 import { createStoreSchema } from '@/schemas/auth/store.schema';
+import { STORE_DEFAULT_VALUES } from '../constants/default-values';
+import { STORE_FIELDS, CONFIG_FIELDS } from '../constants/form-fields';
 import {
     Dialog,
     DialogContent,
@@ -20,103 +22,64 @@ import {
     FieldLegend,
     FieldSeparator,
     FieldSet,
-    FieldTitle,
 } from '@/components/ui/field';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { STORE_FIELDS, CONFIG_FIELDS } from '../form-fields';
 
 export function StoreDialog({ store, onClose }) {
-    const { createStore, isCreating, isCreateError, createError } = useStores();
-    const { updateStore, isUpdating, isUpdateError, updateError } = useStores();
+    // Dialog State
+    const isEdit = !!store;
 
-    let defaultValues = null;
-    const dialogState = store ? 'edit' : 'add';
+    const { createStore, isCreating, updateStore, isUpdating } = useStores();
+    const isLoading = isCreating || isUpdating;
 
-    switch (dialogState) {
-        case 'add':
-            defaultValues = {
-                store_id: '',
-                password: '',
-                location: '',
-                endpoint: '',
-                connection_type: '',
-                db_user: '',
-                db_password: '',
-                host: '',
-                port: '',
-                db_name: '',
-                image_path: '',
-            };
-
-            break;
-        case 'edit':
-            const { id: storeID, ...storeData } = store; // get store fields
-            const { id: configID, store_id, ...configData } = store.config[0]; // Get store config fields
-
-            defaultValues = {
-                ...storeData,
-                ...configData,
-            };
-
-            break;
-    }
+    const initialValue = isEdit
+        ? {
+              ...store,
+              ...store.config[0],
+          }
+        : STORE_DEFAULT_VALUES;
 
     const { handleSubmit, control } = useForm({
         resolver: zodResolver(createStoreSchema),
-        defaultValues: {
-            ...defaultValues,
-        },
+        values: initialValue,
     });
 
     const onSubmit = async (data) => {
-        switch (dialogState) {
-            case 'add':
-                await createStore(data);
-                break;
-            case 'edit':
-                const {
-                    id,
-                    store_id,
-                    password,
-                    location,
-                    endpoint,
-                    ...config
-                } = data;
-                config.id = store.config[0].id;
+        if (isEdit) {
+            const { id, store_id, password, location, endpoint, ...config } =
+                data;
+            config.id = store.config[0].id;
 
-                const formattedData = {
-                    id: store.id,
-                    store_id,
-                    password,
-                    location,
-                    endpoint,
-                    config: [config],
-                };
-
-                await updateStore(formattedData);
-
-                break;
+            data = {
+                id: store.id,
+                store_id,
+                password,
+                location,
+                endpoint,
+                config: [config],
+            };
         }
 
-        if (isCreateError || isUpdateError) {
-            toast.error(
-                `An Error has Occurred: ${createError || updateError}`,
-                {
-                    position: 'top-center',
-                },
-            );
-        } else {
-            toast.success(
-                `Store ${dialogState === 'edit' ? 'Edited' : 'Created'} Successfully!`,
-                {
-                    position: 'top-center',
-                },
-            );
-        }
+        const action = isEdit ? updateStore : createStore;
 
-        onClose();
+        action(data, {
+            onSuccess: () => {
+                toast.success(
+                    `Store ${isEdit ? 'Edited' : 'Created'} Successfully!`,
+                    {
+                        position: 'top-center',
+                    },
+                );
+                onClose();
+            },
+            onError: (error) => {
+                toast.error(`Error: ${error || 'Something went wrong'}`, {
+                    position: 'top-center',
+                });
+            },
+        });
     };
 
     return (
@@ -124,17 +87,17 @@ export function StoreDialog({ store, onClose }) {
             <DialogContent className="md:max-w-xl">
                 <DialogHeader>
                     <DialogTitle>
-                        {dialogState === 'edit' ? 'Edit' : 'Create'} Store
+                        {isEdit ? 'Edit' : 'Create'} Store
                     </DialogTitle>
                     <DialogDescription>
-                        {dialogState === 'edit'
+                        {isEdit
                             ? 'Edit the fields and press Update to save your changes'
                             : 'Fill in the following form to create a new Store'}
                     </DialogDescription>
                 </DialogHeader>
 
-                <form id="add-store-form" onSubmit={handleSubmit(onSubmit)}>
-                    <FieldSet>
+                <form id="store-form" onSubmit={handleSubmit(onSubmit)}>
+                    <FieldSet disabled={isLoading}>
                         {/* ===== Store Account Form ===== */}
                         <FieldContent>
                             <FieldLegend>Store Account</FieldLegend>
@@ -229,14 +192,12 @@ export function StoreDialog({ store, onClose }) {
 
                     {/* Form Actions */}
                     <div className="mt-6">
-                        <Button className="w-full" disabled={isCreating}>
-                            {isCreating
-                                ? 'Adding Store...'
-                                : isUpdating
-                                  ? 'Updating Store...'
-                                  : store
-                                    ? 'Update Store'
-                                    : 'Create Store'}
+                        <Button className="w-full" disabled={isLoading}>
+                            {isLoading
+                                ? 'Processing...'
+                                : isEdit
+                                  ? 'Update Store'
+                                  : 'Create Store'}
                         </Button>
                     </div>
                 </form>

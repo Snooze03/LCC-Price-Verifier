@@ -6,7 +6,7 @@ import { usePromoImages } from '@/hooks/usePromoImages';
 import { localAPI } from '@/api/local.api';
 
 export function PromoImage() {
-    const DISPLAY_DELAY = 4000;
+    const DISPLAY_DELAY = 6000;
     const BASE_URI = localAPI.defaults.baseURL;
 
     const { imageList, isPending, isError } = usePromoImages();
@@ -24,6 +24,7 @@ export function PromoImage() {
     }, [imageList]);
 
     if (isPending) return <ActivityIndicator style={{ flex: 1 }} />;
+
     if (isError || imageList.length === 0) {
         console.warn('PromoImage: No images found or error occurred');
         return null;
@@ -40,8 +41,8 @@ export function PromoImage() {
                 style={styles.image}
                 contentFit="fill"
                 transition={{
-                    duration: 2000,
-                    effect: 'cross-dissolve',
+                    duration: 3000,
+                    effect: 'curl-up',
                     timing: 'ease-in-out',
                 }}
             />

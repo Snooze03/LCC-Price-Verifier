@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { useStores } from '@/hooks/useStores';
+import { STORE_COLUMNS } from './constants/columns';
 import {
     Table,
     TableBody,
@@ -10,18 +12,16 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { useStores } from '@/hooks/useStores';
 import { TabHeader, TabTitle } from './components/tab-header';
 import { TableActionMenu } from './components/table-action-menu';
-import { Button } from '@/components/ui/button';
-import { StoreDialog } from './dialogs/store-dialog';
 import { DeleteConfirmationDialog } from './dialogs/delete-confirm-dialog';
-import { STORE_COLUMNS } from './columns';
+import { StoreDialog } from './dialogs/store-dialog';
+import { EmptyState } from '@/components/empty-state';
+import { Button } from '@/components/ui/button';
 
 export function StoresTab() {
     // Fetch stores
-    const { stores, isPending, isError, error } = useStores();
-    const { deleteStore, isDeleting, isDeleteError, deleteError } = useStores();
+    const { stores, isPending, deleteStore, isDeleting } = useStores();
 
     // State for Dialogs
     const [selectedStore, setSelectedStore] = useState();
@@ -32,18 +32,20 @@ export function StoresTab() {
     // ===== EVENT HANDLERS =====
     const onDeleteStore = () => {
         const store_id = selectedStore.store_id;
-        deleteStore(store_id);
 
-        if (isDeleteError) {
-            toast.error(`Could not delete Store: ${deleteError}`, {
-                position: 'top-center',
-            });
-        } else {
-            toast.success('Store Deleted Successfully!', {
-                position: 'top-center',
-            });
-        }
-        handleCloseDialog();
+        deleteStore(store_id, {
+            onSuccess: () => {
+                toast.success('Store Deleted Successfully!', {
+                    position: 'top-center',
+                });
+                handleCloseDialog();
+            },
+            onError: (error) => {
+                toast.error(`Could not delete Store: ${error}`, {
+                    position: 'top-center',
+                });
+            },
+        });
     };
 
     const handleCloseDialog = () => {
@@ -53,7 +55,7 @@ export function StoresTab() {
 
     return (
         <>
-            <div className="space-y-6">
+            <div className="space-y-6 max-w-234">
                 {/* Header */}
                 <TabHeader>
                     <TabTitle>Store Branches</TabTitle>
@@ -67,65 +69,74 @@ export function StoresTab() {
                     </Button>
                 </TabHeader>
 
-                {/* Table */}
-                <Table className="shadow-xl max-w-auto">
-                    <TableHeader>
-                        <TableRow className="hover:bg-inherit">
-                            {STORE_COLUMNS.map((col) => (
-                                <TableHead key={col}>{col}</TableHead>
-                            ))}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {stores.map((store) => {
-                            // get config for each store
-                            const config = store.config[0];
-                            const [configId, configStoreID, ...configValues] =
-                                Object.values(config);
+                {stores.length === 0 ? (
+                    <EmptyState
+                        title="No Stores added yet"
+                        description="Add stores using the add store button"
+                    />
+                ) : (
+                    <Table className="shadow-xl">
+                        <TableHeader>
+                            <TableRow className="hover:bg-inherit">
+                                {STORE_COLUMNS.map((col) => (
+                                    <TableHead key={col}>{col}</TableHead>
+                                ))}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {stores.map((store) => {
+                                // get config for each store
+                                const config = store.config[0];
+                                const [
+                                    configId,
+                                    configStoreID,
+                                    ...configValues
+                                ] = Object.values(config);
 
-                            return (
-                                <TableRow
-                                    key={store.store_id}
-                                    className="cursor-pointer hover:bg-gray-100"
-                                >
-                                    {/* Store Values */}
-                                    <TableCell>{store.store_id}</TableCell>
-                                    <TableCell>{store.location}</TableCell>
-                                    <TableCell className="max-w-25 truncate">
-                                        {store.password}
-                                    </TableCell>
-                                    <TableCell className="max-w-25 truncate">
-                                        {store.endpoint}
-                                    </TableCell>
-
-                                    {/* Config Values */}
-                                    {configValues.map((value, index) => (
-                                        <TableCell
-                                            key={index + value}
-                                            className="max-w-25 truncate"
-                                        >
-                                            {value}
+                                return (
+                                    <TableRow
+                                        key={store.store_id}
+                                        className="cursor-pointer hover:bg-gray-100"
+                                    >
+                                        {/* Store Values */}
+                                        <TableCell>{store.store_id}</TableCell>
+                                        <TableCell>{store.location}</TableCell>
+                                        <TableCell className="max-w-30 truncate">
+                                            {store.password}
                                         </TableCell>
-                                    ))}
+                                        <TableCell className="max-w-25 truncate">
+                                            {store.endpoint}
+                                        </TableCell>
 
-                                    {/* Action Menu */}
-                                    <TableCell>
-                                        <TableActionMenu
-                                            handleEdit={() => {
-                                                setSelectedStore(store);
-                                                setActiveDialog('edit');
-                                            }}
-                                            handleDelete={() => {
-                                                setSelectedStore(store);
-                                                setActiveDialog('delete');
-                                            }}
-                                        />
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
+                                        {/* Config Values */}
+                                        {configValues.map((value, index) => (
+                                            <TableCell
+                                                key={index + value}
+                                                className="max-w-25 truncate"
+                                            >
+                                                {value}
+                                            </TableCell>
+                                        ))}
+
+                                        {/* Action Menu */}
+                                        <TableCell>
+                                            <TableActionMenu
+                                                handleEdit={() => {
+                                                    setSelectedStore(store);
+                                                    setActiveDialog('edit');
+                                                }}
+                                                handleDelete={() => {
+                                                    setSelectedStore(store);
+                                                    setActiveDialog('delete');
+                                                }}
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                )}
             </div>
 
             {/* Dialogs */}

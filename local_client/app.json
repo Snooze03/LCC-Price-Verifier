@@ -1,37 +1,22 @@
 {
     "expo": {
-        "name": "jsExpo",
-        "slug": "jsExpo",
+        "name": "LCC PriceVer",
+        "description": "A product price verifier for LCC SuperMarkets",
         "version": "1.0.0",
+        "slug": "lcc-pricever",
         "orientation": "landscape",
-        "icon": "",
-        "scheme": "jsexpo",
+        "icon": "./public/app-logo.png",
+        "scheme": "lcc-pricever",
         "userInterfaceStyle": "light",
         "newArchEnabled": true,
-        "ios": {
-            "supportsTablet": true
-        },
-        "edgeToEdgeEnabled": false,
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "",
-                "backgroundColor": "#ffffff"
-            },
-            "edgeToEdgeEnabled": false,
-            "package": "com.snooze33.jsExpo"
-        },
+        "platforms": ["android", "web"],
         "web": {
             "bundler": "metro",
-            "favicon": ""
+            "favicon": "./public/favicon.ico"
         },
         "plugins": ["expo-font", "expo-web-browser"],
         "experiments": {
             "typedRoutes": true
-        },
-        "extra": {
-            "eas": {
-                "projectId": "800828e5-4756-4c92-a700-75ca550e1047"
-            }
         }
     }
 }
