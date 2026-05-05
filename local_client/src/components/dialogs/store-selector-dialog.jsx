@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, View, Pressable } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
+import { X } from 'lucide-react-native';
 
 import { localAPI, setBaseUrl } from '@/api/local.api';
 import { useStores } from '@/hooks/useStores';
@@ -29,10 +30,6 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
         }
     }, [stores?.length]);
 
-    // // 🔍 DEBUG
-    // console.log('stores:', JSON.stringify(stores, null, 2));
-    // console.log('selectedStore:', JSON.stringify(selectedStore, null, 2));
-
     const handleSelectedStore = async () => {
         if (!selectedStore) return;
 
@@ -45,8 +42,14 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
         <Modal animationType="fade" transparent={true} visible={isVisible}>
             <BlurView intensity={10} tint="dark" style={styles.blurStyle}>
                 <Card style={{ width: 450 }}>
-                    <CardHeader>
+                    <CardHeader style={styles.cardHeader}>
                         <CardTitle>Branch Selector</CardTitle>
+                        <Pressable
+                            onPress={() => setIsVisible(false)}
+                            style={styles.closeButton}
+                        >
+                            <X size={20} color="#666" />
+                        </Pressable>
                     </CardHeader>
                     <CardContent>
                         {isPending ? (
@@ -93,24 +96,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    cardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    closeButton: {
+        padding: 4,
+        borderRadius: 6,
+    },
     dropdown: {
         height: 50,
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
-    },
-    icon: {
-        marginRight: 5,
-    },
-    label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 22,
-        top: 8,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
     },
     placeholderStyle: {
         fontSize: 16,
