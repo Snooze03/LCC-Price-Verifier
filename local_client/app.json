@@ -1,22 +1,31 @@
 {
-    "expo": {
-        "name": "LCC PriceVer",
-        "description": "A product price verifier for LCC SuperMarkets",
-        "version": "1.0.0",
-        "slug": "lcc-pricever",
-        "orientation": "landscape",
-        "icon": "./public/app-logo.png",
-        "scheme": "lcc-pricever",
-        "userInterfaceStyle": "light",
-        "newArchEnabled": true,
-        "platforms": ["android", "web"],
-        "web": {
-            "bundler": "metro",
-            "favicon": "./public/favicon.ico"
-        },
-        "plugins": ["expo-font", "expo-web-browser"],
-        "experiments": {
-            "typedRoutes": true
-        }
+  "expo": {
+    "name": "LCC PriceVer",
+    "description": "A product price verifier for LCC SuperMarkets",
+    "version": "1.0.0",
+    "slug": "lcc-pricever",
+    "orientation": "landscape",
+    "icon": "./public/app-logo.png",
+    "scheme": "lcc-pricever",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "platforms": [
+      "android",
+      "web"
+    ],
+    "web": {
+      "bundler": "metro",
+      "favicon": "./public/favicon.ico"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "android": {
+      "package": "com.snooze33.lccpricever"
     }
+  }
 }

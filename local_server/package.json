@@ -1,5 +1,5 @@
 {
-    "name": "backend",
+    "name": "local-server",
     "version": "1.0.0",
     "author": "",
     "main": "./src/server.js",
