@@ -1,10 +1,7 @@
 import { Stack } from 'expo-router';
-import {
-    QueryClient,
-    QueryClientProvider,
-} from 'node_modules/@tanstack/react-query/build/legacy';
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient({
     defaultOptions: {
