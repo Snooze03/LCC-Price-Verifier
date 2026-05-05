@@ -1,7 +1,7 @@
 {
     "expo": {
-        "name": "jsExpo",
-        "slug": "jsExpo",
+        "name": "LCC PriceVer",
+        "slug": "lcc-pricever",
         "version": "1.0.0",
         "orientation": "landscape",
         "icon": "",
@@ -11,13 +11,11 @@
         "ios": {
             "supportsTablet": true
         },
-        "edgeToEdgeEnabled": false,
         "android": {
             "adaptiveIcon": {
                 "foregroundImage": "",
                 "backgroundColor": "#ffffff"
             },
-            "edgeToEdgeEnabled": false,
             "package": "com.snooze33.jsExpo"
         },
         "web": {
