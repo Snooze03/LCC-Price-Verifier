@@ -5,11 +5,11 @@ export async function priceRoutes(FASTIFY, options) {
         const { barcode } = request.params;
 
         const [rows] = await FASTIFY.mysql.query(
-            `SELECT barcode.INUMBR, barcode.IUPC, price_table.description, price_table.price
-            FROM barcode
-            INNER JOIN price_table 
-            ON barcode.INUMBR = price_table.primary_sku
-            WHERE barcode.IUPC = ?`,
+            `SELECT invupc.INUMBR, invupc.IUPC, best_price.description, best_price.price
+            FROM invupc
+            INNER JOIN best_price 
+            ON invupc.INUMBR = best_price.primary_sku
+            WHERE invupc.IUPC = ?`,
             [barcode],
         );
 
