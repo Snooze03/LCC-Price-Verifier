@@ -4,7 +4,7 @@ import corsFP from '#plugins/FP-cors';
 import configFP from '#plugins/FP-config';
 import dbConnectorFP from '#plugins/FP-dbConnector';
 import fastifyStaticFP from '#plugins/FP-static';
-import { consoleLogin } from '#plugins/consoleLogin';
+import { consoleLogin } from 'src/cli/consoleLogin.js';
 import { priceRoutes } from '#routes/price';
 import { healthRoutes } from '#routes/health';
 
