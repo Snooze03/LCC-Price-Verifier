@@ -2,6 +2,7 @@ import { rawlist } from '@inquirer/prompts';
 import chalk from 'chalk';
 import boxen from 'boxen';
 
+import { api } from '#api/api';
 import { Login } from './login.js';
 
 // Event listener for prompt cancel
@@ -12,7 +13,7 @@ process.on('unhandledRejection', (error) => {
     }
 });
 
-export async function Menu() {
+export async function Menu(FASTIFY, options) {
     MenuHeader('Main Menu', 'Local Server');
 
     // Menu Options
@@ -29,13 +30,29 @@ export async function Menu() {
 
     switch (selectedOption) {
         case 'login':
-            await Login();
+            try {
+                // check if central server is up
+                await api.get('/health');
+
+                await Login();
+            } catch (error) {
+                // console.log(error);
+                FASTIFY.log.error({
+                    msg: 'Could not establish Connection to Central Server',
+                    code: error.code,
+                    err: {
+                        message: error.message,
+                    },
+                });
+
+                process.exit(0);
+            }
+
             break;
         case 'continue':
             console.log('Continue kana bro');
             break;
         case 'exit':
-            console.log('Exit kana bro');
             process.exit(0);
     }
 }
