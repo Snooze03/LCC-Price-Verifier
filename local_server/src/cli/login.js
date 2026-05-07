@@ -43,7 +43,7 @@ export async function Login(FASTIFY, options) {
             console.clear();
 
             MenuHeader(chalk.red('Authentication Error'));
-            console.log('- Status:', status);
+            console.log('- Status Code:', status);
             console.log('- Response:', data.message, '\n');
 
             console.log(chalk.yellow('Please try again'));
