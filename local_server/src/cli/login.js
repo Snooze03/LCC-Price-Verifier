@@ -1,14 +1,19 @@
-import { number, password } from '@inquirer/prompts';
-import { api, addToken } from '#api/api';
 import 'dotenv/config';
+import { number, password } from '@inquirer/prompts';
+import chalk from 'chalk';
 
-export async function consoleLogin(FASTIFY, options) {
+import { api, addToken } from '#api/api';
+import { MenuHeader } from './menu.js';
+
+export async function Login(FASTIFY, options) {
     let store_id = null;
     let passWord = '';
 
-    while (true) {
-        console.log('---------- CENTRAL SERVER AUTHENTICATION ----------');
+    // Login Header
+    console.clear();
+    MenuHeader('Server Login', 'Central Server');
 
+    while (true) {
         store_id = await number({
             message: 'Enter Store Number: ',
             validate: (value) => (value ? true : 'Please enter Password'),
@@ -26,6 +31,7 @@ export async function consoleLogin(FASTIFY, options) {
                 store_id,
                 password: passWord,
             });
+
             const access_token = response.data.body.access_token;
 
             // add token to axios response interceptor
@@ -36,13 +42,16 @@ export async function consoleLogin(FASTIFY, options) {
             const { status, data } = error.response;
             console.clear();
 
-            console.log('--------------- AUTHENTICATION ERROR --------------');
-            console.log('- Status:', status);
+            MenuHeader(chalk.red('Authentication Error'));
+            console.log('- Status Code:', status);
             console.log('- Response:', data.message, '\n');
+
+            console.log(chalk.yellow('Please try again'));
 
             continue;
         }
     }
 
-    console.log('---------- AUTHENTICATION SUCCESS ----------');
+    console.clear();
+    MenuHeader(chalk.green('Logged in Successfully!'));
 }
