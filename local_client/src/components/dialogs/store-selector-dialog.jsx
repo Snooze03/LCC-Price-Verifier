@@ -4,7 +4,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
 import { X } from 'lucide-react-native';
-
+import * as FileSystem from 'expo-file-system';
 import { localAPI, setBaseUrl } from '@/api/local.api';
 import { useStores } from '@/hooks/useStores';
 import {
