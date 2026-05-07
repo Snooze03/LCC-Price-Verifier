@@ -7,12 +7,10 @@ import { Login } from './login.js';
 // Event listener for prompt cancel
 process.on('unhandledRejection', (error) => {
     if (error instanceof Error && error.name === 'ExitPromptError') {
-        console.log(chalk.yellow('\n Cancelled Operation'));
+        console.log(chalk.yellow('\nCancelled Operation'));
         process.exit(0);
     }
 });
-
-Menu();
 
 export async function Menu() {
     MenuHeader('Main Menu', 'Local Server');
@@ -31,7 +29,7 @@ export async function Menu() {
 
     switch (selectedOption) {
         case 'login':
-            Login();
+            await Login();
             break;
         case 'continue':
             console.log('Continue kana bro');
