@@ -18,7 +18,7 @@ const FASTIFY = fastify({
 
 const start = async () => {
     // Authenticate local server
-    await Menu();
+    await FASTIFY.register(Menu);
 
     // Plugins
     await FASTIFY.register(corsFP);
