@@ -4,8 +4,12 @@ import chalk from 'chalk';
 
 import { api, addToken } from '#api/api';
 import { MenuHeader } from './menu.js';
+import { fetchConfig } from '#plugins/FP-config';
 
 export async function Login(FASTIFY, options) {
+    // central health check to fail fast if server is down
+    await centralHealthCheck(FASTIFY);
+
     let store_id = null;
     let passWord = '';
 
@@ -36,6 +40,8 @@ export async function Login(FASTIFY, options) {
 
             // add token to axios response interceptor
             await addToken(access_token);
+            // fetch store config
+            await fetchConfig();
 
             break;
         } catch (error) {
@@ -54,4 +60,21 @@ export async function Login(FASTIFY, options) {
 
     console.clear();
     MenuHeader(chalk.green('Logged in Successfully!'));
+}
+
+async function centralHealthCheck(FASTIFY) {
+    try {
+        // check if central server is up
+        await api.get('/health');
+    } catch (error) {
+        FASTIFY.log.error({
+            msg: 'Could not establish Connection to Central Server',
+            code: error.code,
+            err: {
+                message: error.message,
+            },
+        });
+
+        process.exit(0);
+    }
 }
