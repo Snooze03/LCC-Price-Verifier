@@ -2,8 +2,8 @@ import { rawlist } from '@inquirer/prompts';
 import chalk from 'chalk';
 import boxen from 'boxen';
 
-import { api } from '#api/api';
 import { Login } from './login.js';
+import { checkConfig } from '#plugins/FP-config';
 
 // Event listener for prompt cancel
 process.on('unhandledRejection', (error) => {
@@ -16,41 +16,27 @@ process.on('unhandledRejection', (error) => {
 export async function Menu(FASTIFY, options) {
     MenuHeader('Main Menu', 'Local Server');
 
+    const choices = [
+        { name: 'Login', value: 'login' },
+        { name: 'Continue', value: 'continue' },
+        { name: 'Exit', value: 'exit' },
+    ];
+
+    if (!(await checkConfig())) choices.splice(1, 1);
+
     // Menu Options
     const selectedOption = await rawlist({
         message: 'Select an Option',
-        choices: [
-            { name: 'Login', value: 'login' },
-            { name: 'Continue', value: 'continue' },
-            { name: 'Exit', value: 'exit' },
-        ],
+        choices,
         default: 'login',
         loop: true,
     });
 
     switch (selectedOption) {
         case 'login':
-            try {
-                // check if central server is up
-                await api.get('/health');
-
-                await Login();
-            } catch (error) {
-                // console.log(error);
-                FASTIFY.log.error({
-                    msg: 'Could not establish Connection to Central Server',
-                    code: error.code,
-                    err: {
-                        message: error.message,
-                    },
-                });
-
-                process.exit(0);
-            }
-
+            await Login();
             break;
         case 'continue':
-            console.log('Continue kana bro');
             break;
         case 'exit':
             process.exit(0);
