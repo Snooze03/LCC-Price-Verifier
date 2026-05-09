@@ -68,30 +68,31 @@ export async function storeRoutes(FASTIFY, options) {
 
     // Update Stores
     FASTIFY.patch('/', async (request, reply) => {
-        const { id, store_id, password, location, endpoint, ...rawConfigData } =
-            request.body;
-        // Destructure config array to get object
-        const config = rawConfigData.config[0];
-        const hashedPassword = await FASTIFY.hash(password);
+        const store = request.body;
+        const config = store?.config[0];
+
+        if (store?.password && !store?.password.startsWith('$argon2id')) {
+            store.password = await FASTIFY.hash(store.password);
+        } else {
+            delete store.password;
+        }
 
         try {
             // Transaction operation
             const result = await FASTIFY.prisma.$transaction(async (tx) => {
                 await tx.stores.update({
-                    where: { id },
+                    where: { id: store?.id },
                     data: {
-                        store_id,
-                        password: hashedPassword,
-                        location,
-                        endpoint,
+                        store_id: store?.store_id,
+                        password: store?.password,
+                        location: store?.location,
+                        endpoint: store?.endpoint,
                     },
                 });
 
                 await tx.config.update({
-                    where: { id: config.id },
-                    data: {
-                        ...config,
-                    },
+                    where: { id: config?.id },
+                    data: config,
                 });
 
                 return reply.code(200).send({

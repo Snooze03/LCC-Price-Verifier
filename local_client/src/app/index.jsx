@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { View, StyleSheet, Text, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ScanLine, MapPin, CircleCheck } from 'lucide-react-native';
+import {
+    ScanLine,
+    MapPin,
+    CircleCheck,
+    TriangleAlert,
+} from 'lucide-react-native';
 import { ScreenContainer } from '@/components/ui/container';
 import { StoreSelectorDialog } from '@/components/dialogs/store-selector-dialog';
 import { COLORS } from '@/constants/colors';
+import { localAPI } from '@/api/local.api';
 
 function CheckItem({ label, accent }) {
     return (
@@ -23,6 +29,7 @@ function IndexCard({
     buttonLabel,
     onPress,
     accent,
+    warning,
 }) {
     return (
         <View style={[styles.card, { borderLeftColor: accent }]}>
@@ -39,6 +46,12 @@ function IndexCard({
                 {checks.map((label, i) => (
                     <CheckItem key={i} label={label} accent={accent} />
                 ))}
+                {warning ? (
+                    <View style={styles.warningRow}>
+                        <TriangleAlert size={14} color="#b45309" />
+                        <Text style={styles.warningText}>{warning}</Text>
+                    </View>
+                ) : null}
                 <View style={styles.buttonContainer}>
                     <Pressable
                         style={[
@@ -60,6 +73,16 @@ function IndexCard({
 export default function Index() {
     const router = useRouter();
     const [dialog, setDialog] = useState(false);
+    const [showWarning, setShowWarning] = useState(false);
+
+    const handleOpenPriceVerifier = () => {
+        if (!localAPI.defaults.baseURL) {
+            setShowWarning(true);
+            setTimeout(() => setShowWarning(false), 3000);
+            return;
+        }
+        router.push('store');
+    };
 
     return (
         <ScreenContainer style={styles.container}>
@@ -76,7 +99,8 @@ export default function Index() {
                 description="Scan any barcode to instantly verify pricing against the store database."
                 checks={['For price verification', 'Real-time stock lookup']}
                 buttonLabel="Open Price Verifier"
-                onPress={() => router.push('store')}
+                onPress={handleOpenPriceVerifier}
+                warning={showWarning ? 'Please select a branch first.' : null}
             />
             <IndexCard
                 icon={
@@ -157,6 +181,21 @@ const styles = StyleSheet.create({
     checkText: {
         fontSize: 13,
         color: '#444',
+    },
+    warningRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        marginTop: 10,
+        backgroundColor: '#fef3c7',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 8,
+    },
+    warningText: {
+        fontSize: 12,
+        color: '#b45309',
+        fontWeight: '600',
     },
     buttonContainer: {
         marginTop: 16,

@@ -12,7 +12,7 @@ export const CONFIG_FIELDS = [
         placeholder: 'e.g. mysql',
     },
     { name: 'db_user', label: 'DB User' },
-    { name: 'db_password', label: 'DB Password', type: 'password' },
+    { name: 'db_password', label: 'DB Password' },
     { name: 'host', label: 'Host' },
     { name: 'port', label: 'Port' },
     { name: 'db_name', label: 'Database Name' },

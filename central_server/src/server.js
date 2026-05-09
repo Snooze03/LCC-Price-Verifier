@@ -10,6 +10,7 @@ import corsFP from '#plugins/FP-cors';
 import jwtTokenFP from '#plugins/FP-jwt';
 import cookiesFP from '#plugins/FP-cookies';
 import argonFP from '#plugins/FP-argon';
+import { healthRoutes } from '#routes/health';
 import { configRoutes } from '#routes/remote/config';
 import { authRoutes } from '#routes/internal/auth';
 import { accountRoutes } from '#routes/internal/accounts';
@@ -36,6 +37,9 @@ const start = async () => {
     // zod settings
     FASTIFY.setValidatorCompiler(validatorCompiler);
     FASTIFY.setSerializerCompiler(serializerCompiler);
+
+    // Health Check Route
+    FASTIFY.register(healthRoutes);
 
     // Internal PUBLIC Routes
     FASTIFY.register(authRoutes, { prefix: '/auth' });

@@ -4,7 +4,7 @@ import corsFP from '#plugins/FP-cors';
 import configFP from '#plugins/FP-config';
 import dbConnectorFP from '#plugins/FP-dbConnector';
 import fastifyStaticFP from '#plugins/FP-static';
-import { consoleLogin } from '#plugins/consoleLogin';
+import { Menu } from './cli/menu.js';
 import { priceRoutes } from '#routes/price';
 import { healthRoutes } from '#routes/health';
 
@@ -18,7 +18,7 @@ const FASTIFY = fastify({
 
 const start = async () => {
     // Authenticate local server
-    await consoleLogin();
+    await FASTIFY.register(Menu);
 
     // Plugins
     await FASTIFY.register(corsFP);
