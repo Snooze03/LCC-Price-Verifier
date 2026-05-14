@@ -1,11 +1,36 @@
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { COLORS, SPACING } from '@/constants/styles';
+import { AppText } from './app-text';
+import { MotiView } from 'moti';
 
-import { COLORS } from '@/constants/colors';
+const VARIANT_COLORS = {
+    primary: {
+        base: COLORS.primaryOne,
+        dark: COLORS.primaryOneDark,
+    },
+    secondary: {
+        base: COLORS.primaryTwo,
+        dark: COLORS.primaryTwoDark,
+    },
+};
 
-function Button({ children, style, onPress }) {
+function Button({ variant = 'primary', style, children, onPress, ...props }) {
+    const theme = VARIANT_COLORS[variant] || VARIANT_COLORS.primary;
+
     return (
-        <Pressable onPress={onPress} style={[styles.container, style]}>
-            <Text style={styles.text}>{children}</Text>
+        <Pressable {...props} onPress={onPress}>
+            {({ pressed }) => (
+                <MotiView
+                    animate={{
+                        backgroundColor: pressed ? theme.dark : theme.base,
+                        scale: pressed ? 0.95 : 1,
+                    }}
+                    transition={{ type: 'timing', duration: 150 }}
+                    style={[styles.base, style]}
+                >
+                    <AppText style={styles.text}>{children}</AppText>
+                </MotiView>
+            )}
         </Pressable>
     );
 }
@@ -13,16 +38,15 @@ function Button({ children, style, onPress }) {
 export { Button };
 
 const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: 25,
-        paddingVertical: 15,
-        borderRadius: 10,
-        backgroundColor: COLORS.brand_blue,
+    base: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: SPACING.md,
     },
     text: {
         textAlign: 'center',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: '600',
         fontSize: 18,
     },
 });
