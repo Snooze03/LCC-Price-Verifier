@@ -1,15 +1,14 @@
 {
     "compilerOptions": {
-        "module": "esnext",
+        "module": "nodenext",
         "target": "es2022",
         "checkJs": true,
         "moduleResolution": "nodenext",
-        "baseUrl": ".",
         "paths": {
-            "#plugins/*": ["src/plugins/*"],
-            "#routes/*": ["src/routes/*"],
-            "#schema/*": ["src/schema/*"],
-            "#generated/*": ["generated/*"]
+            "#plugins/*": ["./src/plugins*"],
+            "#routes/*": ["./src/routes/*"],
+            "#schema/*": ["./src/schema/*"],
+            "#generated/*": ["./generated/*"]
         }
     },
     "exclude": ["node_modules", "dist"]
