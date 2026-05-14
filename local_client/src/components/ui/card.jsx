@@ -1,53 +1,47 @@
-import { StyleSheet, View, Text } from 'react-native';
-import { COLORS } from '@/constants/colors';
+import { StyleSheet, View } from 'react-native';
 
-function Card({ children, style }) {
+import { COLORS, SPACING } from '@/constants/styles';
+import { AppText } from './app-text';
+
+export function Card({ children, style }) {
     return <View style={[styles.card, style]}>{children}</View>;
 }
 
-function CardHeader({ children, style }) {
+export function CardHeader({ children, style }) {
     return <View style={[styles.header, style]}>{children}</View>;
 }
 
-function CardTitle({ children, style }) {
-    return <Text style={[styles.title, style]}>{children}</Text>;
+export function CardTitle({ children, style }) {
+    return <AppText style={[styles.title, style]}>{children}</AppText>;
 }
 
-function CardSubTitle({ children, style }) {
-    return <Text style={[styles.subTitle, style]}>{children}</Text>;
+export function CardDescription({ children, style }) {
+    return <AppText style={[styles.description, style]}>{children}</AppText>;
 }
 
-function CardContent({ children, style }) {
+export function CardContent({ children, style }) {
     return <View style={[styles.content, style]}>{children}</View>;
 }
 
-function CardFooter({ children, style }) {
+export function CardFooter({ children, style }) {
     return <View style={[styles.footer, style]}>{children}</View>;
 }
-
-export { Card, CardHeader, CardTitle, CardSubTitle, CardContent, CardFooter };
 
 const styles = StyleSheet.create({
     card: {
         width: 'auto',
         height: 'auto',
         paddingVertical: 20,
-        paddingHorizontal: 35,
-        gap: 20,
+        paddingHorizontal: 20,
+        gap: SPACING.sm,
 
-        backgroundColor: 'white',
-        borderWidth: 2,
+        backgroundColor: COLORS.background,
+        borderWidth: 1,
         borderColor: COLORS.border,
-        borderRadius: 15,
+        borderRadius: SPACING.md,
 
-        shadowColor: '#000000',
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
-        elevation: 5,
+        shadowColor: COLORS.shadow,
+        elevation: 2,
     },
     header: {
         marginVertical: 10,
@@ -55,17 +49,16 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        fontSize: 24,
+        fontSize: SPACING.lg,
     },
-    subTitle: {
-        fontWeight: 'regular',
-        fontSize: 18,
-        color: COLORS.sub_text,
+    description: {
+        fontSize: SPACING.md,
+        color: COLORS.textMuted,
     },
     content: {
-        gap: 10,
+        gap: SPACING.sm,
     },
     footer: {
-        marginTop: 15,
+        marginTop: SPACING.md,
     },
 });
