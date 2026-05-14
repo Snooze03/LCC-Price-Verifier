@@ -1,13 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { TextInput, View, StyleSheet, ActivityIndicator } from 'react-native';
 
 import { COLORS } from '@/constants/colors';
 import { usePriceVerifier } from '@/hooks/usePriceVerifier';
-import { Logo } from '@/components/logo';
-import { ScanResult } from '@/components/scanResult';
-import { ScanIndicator } from '@/components/scanIndicator';
-import { PromoImage } from '@/components/promoImage';
-import { ErrorMessage } from '@/components/errorMessage';
+import { Logo } from '@/components/store/logo';
+import { ScanResult } from '@/components/store/scanResult';
+import { ScanIndicator } from '@/components/store/scanIndicator';
+import { PromoImage } from '@/components/store/promoImage';
+import { ErrorMessage } from '@/components/store/errorMessage';
 import { ScreenContainer } from '@/components/ui/container';
 
 export default function PriceVerifier() {
