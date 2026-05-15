@@ -23,6 +23,10 @@ export const COLORS = {
     text: 'rgba(0, 0, 0, 1.0)',
     textLight: 'rgba(255, 255, 255, 1.0)',
     textMuted: 'rgba(117, 119, 125, 1.0)',
+
+    // errors
+    error: 'rgba(255, 49, 0, 1.0)',
+    errorLight: 'rgba(252, 90, 90, 0.3)',
 };
 
 export const FONTS = {
