@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
+import { File, Paths } from 'expo-file-system';
+import { BlurView } from 'expo-blur';
 import { Modal, ActivityIndicator } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -26,7 +27,17 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
     const [dropdownFocus, setDropdownFocus] = useState(false);
 
     async function handleSelectedStore() {
-        await setBaseUrl(selectedStore.endpoint);
+        // creates a sub directory within 'Paths.document' and a config.txt file
+        const config = new File(Paths.document, 'config', 'config.txt');
+
+        if (!config.exists) {
+            config.create();
+        } else {
+            // writes selected store endpoint to file
+            config.write(selectedStore.endpoint);
+        }
+
+        await setBaseUrl(config.textSync());
 
         setIsVisible(false);
         router.push('store');
