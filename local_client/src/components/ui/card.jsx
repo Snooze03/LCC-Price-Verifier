@@ -1,71 +1,65 @@
-import { StyleSheet, View, Text } from 'react-native';
-import { COLORS } from '@/constants/colors';
+import { View } from 'react-native';
 
-function Card({ children, style }) {
+import { COLORS, SIZE } from '@/constants/styles';
+import { AppText } from './app-text';
+import { ScaledSheet } from 'react-native-size-matters';
+
+export function Card({ children, style }) {
     return <View style={[styles.card, style]}>{children}</View>;
 }
 
-function CardHeader({ children, style }) {
+export function CardHeader({ children, style }) {
     return <View style={[styles.header, style]}>{children}</View>;
 }
 
-function CardTitle({ children, style }) {
-    return <Text style={[styles.title, style]}>{children}</Text>;
+export function CardTitle({ children, style }) {
+    return <AppText style={[styles.title, style]}>{children}</AppText>;
 }
 
-function CardSubTitle({ children, style }) {
-    return <Text style={[styles.subTitle, style]}>{children}</Text>;
+export function CardDescription({ children, style }) {
+    return <AppText style={[styles.description, style]}>{children}</AppText>;
 }
 
-function CardContent({ children, style }) {
+export function CardContent({ children, style }) {
     return <View style={[styles.content, style]}>{children}</View>;
 }
 
-function CardFooter({ children, style }) {
+export function CardFooter({ children, style }) {
     return <View style={[styles.footer, style]}>{children}</View>;
 }
 
-export { Card, CardHeader, CardTitle, CardSubTitle, CardContent, CardFooter };
-
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     card: {
         width: 'auto',
         height: 'auto',
-        paddingVertical: 20,
-        paddingHorizontal: 35,
-        gap: 20,
+        paddingVertical: '15@ms',
+        paddingHorizontal: '15@ms',
+        gap: SIZE.sm,
 
-        backgroundColor: 'white',
-        borderWidth: 2,
+        backgroundColor: COLORS.background,
+        borderWidth: 1,
         borderColor: COLORS.border,
-        borderRadius: 15,
+        borderRadius: SIZE.md,
 
-        shadowColor: '#000000',
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
-        elevation: 5,
+        shadowColor: COLORS.shadow,
+        elevation: 2,
     },
     header: {
-        marginVertical: 10,
-        gap: 2,
+        marginBottom: '10@ms',
+        gap: '2@ms',
     },
     title: {
         fontWeight: 'bold',
-        fontSize: 24,
+        fontSize: SIZE.lg,
     },
-    subTitle: {
-        fontWeight: 'regular',
-        fontSize: 18,
-        color: COLORS.sub_text,
+    description: {
+        fontSize: SIZE.md,
+        color: COLORS.textMuted,
     },
     content: {
-        gap: 10,
+        gap: SIZE.sm,
     },
     footer: {
-        marginTop: 15,
+        marginTop: SIZE.md,
     },
 });

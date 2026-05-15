@@ -9,11 +9,6 @@
         "jsx": "react-native",
         "checkJs": true
     },
-    "include": [
-        "**/*.js",
-        "**/*.jsx",
-        "eslint.config.js",
-        "nativewind-env.d.ts"
-    ],
+    "include": ["**/*.js", "**/*.jsx", "eslint.config.js"],
     "exclude": ["node_modules", "dist", ".expo", ".expo/types/**/*.js"]
 }

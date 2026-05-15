@@ -9,12 +9,14 @@ export function useStores() {
             const response = await centralAPI.get('pricever/stores');
             return response.data;
         },
+        retry: false,
     });
 
     return {
         stores: get.data,
+        refetch: get.refetch,
         isPending: get.isPending,
+        isSuccess: get.isSuccess,
         isError: get.isError,
-        error: get.error,
     };
 }

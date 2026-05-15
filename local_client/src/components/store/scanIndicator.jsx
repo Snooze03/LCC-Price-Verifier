@@ -1,7 +1,10 @@
 import { useRef, useEffect } from 'react';
-import { Animated, View, Text, StyleSheet } from 'react-native';
+import { ScaledSheet, ms } from 'react-native-size-matters';
+import { Animated, View } from 'react-native';
 import { ChevronsDown } from 'lucide-react-native';
-import { COLORS } from '@/constants/colors';
+
+import { COLORS } from '@/constants/styles';
+import { AppText } from '../ui/app-text';
 
 export function ScanIndicator() {
     const bounceAnim = useRef(new Animated.Value(0)).current;
@@ -25,37 +28,37 @@ export function ScanIndicator() {
 
     return (
         <Animated.View style={{ transform: [{ translateY: bounceAnim }] }}>
-            <View style={styles.scanHereButton}>
-                <Text style={[styles.text, { color: COLORS.brand_blue }]}>
+            <View style={styles.container}>
+                <AppText style={[styles.text, { color: COLORS.primaryOne }]}>
                     scan
-                </Text>
-                <Text style={[styles.text, { color: COLORS.brand_yellow }]}>
+                </AppText>
+                <AppText style={[styles.text, { color: COLORS.primaryTwo }]}>
                     here
-                </Text>
-                <ChevronsDown size={45} />
+                </AppText>
+                <ChevronsDown size={ms(30)} />
             </View>
         </Animated.View>
     );
 }
 
-const styles = StyleSheet.create({
-    scanHereButton: {
+const styles = ScaledSheet.create({
+    container: {
         width: 'auto',
         height: 'auto',
-        paddingHorizontal: 50,
-        paddingVertical: 12,
+        paddingHorizontal: '40@ms',
+        paddingVertical: '10@ms',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 7,
+        gap: '8@ms',
         backgroundColor: 'white',
         borderWidth: 1,
-        borderRadius: 10,
+        borderRadius: '5@ms',
         borderColor: COLORS.border,
     },
     text: {
         textTransform: 'uppercase',
-        fontSize: 32,
+        fontSize: '25@ms',
         fontWeight: 'bold',
     },
 });

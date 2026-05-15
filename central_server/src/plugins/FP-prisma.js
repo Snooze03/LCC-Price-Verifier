@@ -14,23 +14,30 @@ async function prismaClientFP(FASTIFY, options) {
 
     const prisma = new PrismaClient({ adapter });
 
+    // timeout promise
+    const timeout = new Promise((_, reject) =>
+        setTimeout(
+            () => reject(new Error('Prisma connection timeout after 5s')),
+            5000,
+        ),
+    );
+
     try {
-        // FASTIFY.log.info('Prisma Connecting...');
-        await prisma.$connect();
+        // Race the connection against the timeout
+        await Promise.race([prisma.$connect(), timeout]);
+        FASTIFY.log.info('Plugins: Prisma ORM Registered');
     } catch (error) {
-        // FASTIFY.log.error('Prisma Error...');
-        FASTIFY.log.error(error);
-        throw error;
+        FASTIFY.log.error(`Database Connection Failed: ${error.message}`);
+
+        await FASTIFY.close();
+        process.exit(1);
     }
 
-    // add prisma to fastify instance
     FASTIFY.decorate('prisma', prisma);
 
     FASTIFY.addHook('onClose', async (instance) => {
         await instance.prisma.$disconnect();
     });
-
-    FASTIFY.log.info('Plugins: Prisma ORM Registered');
 }
 
 export default fastifyPlugin(prismaClientFP);
