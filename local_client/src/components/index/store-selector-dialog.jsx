@@ -7,7 +7,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 import { setBaseUrl } from '@/api/local.api';
 import { useStores } from '@/hooks/useStores';
-import { COLORS, SPACING, TYPOGRAPHY } from '@/constants/styles';
+import { COLORS, SIZE, TYPOGRAPHY } from '@/constants/styles';
 import {
     Card,
     CardHeader,
@@ -20,8 +20,7 @@ import { ConnectionError } from './connectionError';
 
 export function StoreSelectorDialog({ isVisible, setIsVisible }) {
     const router = useRouter();
-    const { stores, refetch, isPending, isSuccess, isError, error } =
-        useStores();
+    const { stores, refetch, isPending, isSuccess, isError } = useStores();
 
     const [selectedStore, setSelectedStore] = useState('');
     const [dropdownFocus, setDropdownFocus] = useState(false);
@@ -110,6 +109,6 @@ const styles = ScaledSheet.create({
     },
     inputSearchStyle: {
         height: '35@vs',
-        fontSize: SPACING.sm,
+        fontSize: SIZE.sm,
     },
 });

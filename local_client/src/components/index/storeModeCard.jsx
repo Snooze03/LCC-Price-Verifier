@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 
-import { COLORS, SPACING } from '@/constants/styles';
+import { COLORS, SIZE } from '@/constants/styles';
 import {
     Card,
     CardHeader,
@@ -51,7 +51,7 @@ const styles = ScaledSheet.create({
     },
     header: {
         fontWeight: 'bold',
-        fontSize: SPACING.lg,
+        fontSize: SIZE.lg,
         letterSpacing: 1.1,
     },
     content: {

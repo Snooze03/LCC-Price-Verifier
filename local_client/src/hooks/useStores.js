@@ -18,6 +18,5 @@ export function useStores() {
         isPending: get.isPending,
         isSuccess: get.isSuccess,
         isError: get.isError,
-        error: get.error,
     };
 }
