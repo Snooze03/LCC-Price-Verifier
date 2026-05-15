@@ -7,12 +7,12 @@ import {
     CircleCheck,
     CircleDollarSign,
 } from 'lucide-react-native';
+
+import { localAPI } from '@/api/local.api';
+import { SIZE } from '@/constants/styles';
 import { ScreenContainer } from '@/components/ui/container';
 import { StoreSelectorDialog } from '@/components/index/store-selector-dialog';
-import { localAPI } from '@/api/local.api';
-
 import { StoreModeCard } from '@/components/index/storeModeCard';
-import { SIZE } from '@/constants/styles';
 
 export default function Index() {
     const router = useRouter();
@@ -23,7 +23,7 @@ export default function Index() {
             return;
         }
 
-        router.push('store');
+        router.replace('store');
     }
 
     function storeSelector() {

@@ -27,7 +27,7 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
     const [dropdownFocus, setDropdownFocus] = useState(false);
 
     async function handleSelectedStore() {
-        // creates a sub directory within 'Paths.document' and a config.txt file
+        // creates a 'config' sub directory within 'Paths.document' and a 'config.txt' file
         const config = new File(Paths.document, 'config', 'config.txt');
 
         if (!config.exists) {
@@ -40,7 +40,8 @@ export function StoreSelectorDialog({ isVisible, setIsVisible }) {
         await setBaseUrl(config.textSync());
 
         setIsVisible(false);
-        router.push('store');
+        router.replace('store');
+        // router.push('store');
     }
 
     return (
