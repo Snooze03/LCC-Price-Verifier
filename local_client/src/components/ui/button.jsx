@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet } from 'react-native';
-import { COLORS, SPACING } from '@/constants/styles';
+import { COLORS, SIZE } from '@/constants/styles';
 import { AppText } from './app-text';
 import { MotiView } from 'moti';
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     base: {
         paddingHorizontal: 20,
         paddingVertical: 10,
-        borderRadius: SPACING.md,
+        borderRadius: SIZE.md,
     },
     text: {
         textAlign: 'center',

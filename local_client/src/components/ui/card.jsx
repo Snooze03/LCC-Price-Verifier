@@ -1,7 +1,8 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { COLORS, SPACING } from '@/constants/styles';
+import { COLORS, SIZE } from '@/constants/styles';
 import { AppText } from './app-text';
+import { ScaledSheet } from 'react-native-size-matters';
 
 export function Card({ children, style }) {
     return <View style={[styles.card, style]}>{children}</View>;
@@ -27,38 +28,38 @@ export function CardFooter({ children, style }) {
     return <View style={[styles.footer, style]}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     card: {
         width: 'auto',
         height: 'auto',
-        paddingVertical: 20,
-        paddingHorizontal: 20,
-        gap: SPACING.sm,
+        paddingVertical: '15@ms',
+        paddingHorizontal: '15@ms',
+        gap: SIZE.sm,
 
         backgroundColor: COLORS.background,
         borderWidth: 1,
         borderColor: COLORS.border,
-        borderRadius: SPACING.md,
+        borderRadius: SIZE.md,
 
         shadowColor: COLORS.shadow,
         elevation: 2,
     },
     header: {
-        marginVertical: 10,
-        gap: 2,
+        marginBottom: '10@ms',
+        gap: '2@ms',
     },
     title: {
         fontWeight: 'bold',
-        fontSize: SPACING.lg,
+        fontSize: SIZE.lg,
     },
     description: {
-        fontSize: SPACING.md,
+        fontSize: SIZE.md,
         color: COLORS.textMuted,
     },
     content: {
-        gap: SPACING.sm,
+        gap: SIZE.sm,
     },
     footer: {
-        marginTop: SPACING.md,
+        marginTop: SIZE.md,
     },
 });

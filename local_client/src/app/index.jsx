@@ -12,7 +12,7 @@ import { StoreSelectorDialog } from '@/components/index/store-selector-dialog';
 import { localAPI } from '@/api/local.api';
 
 import { StoreModeCard } from '@/components/index/storeModeCard';
-import { SPACING } from '@/constants/styles';
+import { SIZE } from '@/constants/styles';
 
 export default function Index() {
     const router = useRouter();
@@ -22,6 +22,7 @@ export default function Index() {
         if (!localAPI.defaults.baseURL) {
             return;
         }
+
         router.push('store');
     }
 
@@ -89,6 +90,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: SPACING['3xl'],
+        gap: SIZE['3xl'],
     },
 });
