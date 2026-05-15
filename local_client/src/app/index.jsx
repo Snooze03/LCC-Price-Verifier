@@ -8,7 +8,7 @@ import {
     CircleDollarSign,
 } from 'lucide-react-native';
 import { ScreenContainer } from '@/components/ui/container';
-import { StoreSelectorDialog } from '@/components/dialogs/store-selector-dialog';
+import { StoreSelectorDialog } from '@/components/index/store-selector-dialog';
 import { localAPI } from '@/api/local.api';
 
 import { StoreModeCard } from '@/components/index/storeModeCard';
