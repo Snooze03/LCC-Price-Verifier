@@ -57,7 +57,7 @@ export const TYPOGRAPHY = {
     },
 };
 
-export const SPACING = {
+export const SIZE = {
     xs: 4,
     sm: 8,
     md: 16,
