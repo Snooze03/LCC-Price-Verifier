@@ -1,54 +1,51 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { ScaledSheet } from 'react-native-size-matters';
 
-import { COLORS } from '@/constants/colors';
+import { COLORS } from '@/constants/styles';
+import { Card, CardHeader, CardContent } from '../ui/card';
+import { AppText } from '../ui/app-text';
 
 export function ScanResult({ productDescription, productPrice }) {
     return (
-        <View style={styles.boxWrapper}>
-            <View style={styles.descriptionBox}>
-                <Text style={styles.descriptionText}>{productDescription}</Text>
-            </View>
-            <View style={styles.priceBox}>
-                <Text style={styles.priceText}>
-                    <Text>₱ {productPrice}</Text>
-                </Text>
-            </View>
-        </View>
+        <Card style={styles.container}>
+            <CardHeader style={styles.header}>
+                <AppText style={styles.description}>
+                    {productDescription}
+                </AppText>
+            </CardHeader>
+            <CardContent style={styles.content}>
+                <AppText style={styles.price}>₱ {productPrice}</AppText>
+            </CardContent>
+        </Card>
     );
 }
 
-const styles = StyleSheet.create({
-    boxWrapper: {
-        width: 320,
-        padding: 12,
-        gap: 10,
-        backgroundColor: 'white',
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: COLORS.border,
+const styles = ScaledSheet.create({
+    container: {
+        width: '200@s',
+        gap: '1@ms',
     },
-    descriptionBox: {
-        backgroundColor: COLORS.brand_blue,
-        borderRadius: 10,
-        padding: 12,
-        alignItems: 'center',
+    header: {
+        backgroundColor: COLORS.primaryOne,
+        paddingHorizontal: '10@ms',
+        paddingVertical: '8@ms',
+        borderRadius: '5@ms',
     },
-    descriptionText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    priceBox: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        backgroundColor: COLORS.brand_yellow,
-        padding: 16,
-        borderRadius: 10,
-    },
-    priceText: {
-        fontSize: 48,
+    description: {
+        fontSize: '13@ms',
         fontWeight: 'bold',
-        color: '#333',
+        color: COLORS.textLight,
+        textAlign: 'center',
+    },
+    content: {
+        backgroundColor: COLORS.primaryTwo,
+        paddingHorizontal: '10@ms',
+        paddingVertical: '15@ms',
+        borderRadius: '5@ms',
+    },
+    price: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        letterSpacing: 1,
+        fontSize: '23@ms',
     },
 });

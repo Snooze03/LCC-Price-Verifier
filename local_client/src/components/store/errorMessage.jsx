@@ -1,35 +1,37 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { ScaledSheet, ms } from 'react-native-size-matters';
 import { Frown } from 'lucide-react-native';
 
 import { Card } from '@/components/ui/card';
+import { AppText } from '../ui/app-text';
+import { COLORS } from '@/constants/styles';
 
 export function ErrorMessage() {
     return (
         <Card style={styles.container}>
-            <Text style={styles.errorText}>Could not find product</Text>
-            <Frown size={20} color={'white'} strokeWidth={3} />
+            <AppText style={styles.errorText}>Could not find product</AppText>
+            <Frown size={ms(20)} color={'white'} strokeWidth={3} />
         </Card>
     );
 }
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     container: {
-        width: 320,
+        width: '200@s',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 15,
+        gap: '5@ms',
+        paddingHorizontal: '10@ms',
+        paddingVertical: '15@ms',
         backgroundColor: '#f43f5e',
         borderColor: '#fb7185',
-        borderRadius: 10,
+        borderRadius: '8@ms',
         borderWidth: 1,
     },
     errorText: {
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: '15@ms',
         fontWeight: 'bold',
-        color: 'white',
+        color: COLORS.textLight,
     },
 });
