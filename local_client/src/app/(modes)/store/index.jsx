@@ -1,8 +1,10 @@
 import { useState, useRef } from 'react';
 import { TextInput, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { useAtom } from 'jotai';
 
 import { COLORS } from '@/constants/colors';
 import { usePriceVerifier } from '@/hooks/usePriceVerifier';
+import { productAtom } from '@/atoms/product';
 import { Logo } from '@/components/store/logo';
 import { ScanResult } from '@/components/store/scanResult';
 import { ScanIndicator } from '@/components/store/scanIndicator';
@@ -13,6 +15,7 @@ import { ScreenContainer } from '@/components/ui/container';
 export default function PriceVerifier() {
     const [barcode, setBarcode] = useState('');
     const [scanned, setScanned] = useState(false);
+    const [productDisplay, setProductDisplay] = useAtom(productAtom);
     const inputRef = useRef(null);
 
     const { product, isPending, isFetching, isSuccess, isError } =
@@ -20,6 +23,10 @@ export default function PriceVerifier() {
 
     // @ts-ignore
     inputRef.current?.focus();
+
+    if (product) {
+        setProductDisplay(product);
+    }
 
     function handleScan(newBarcode) {
         // Checks if barcode only contains digits, the scanner sometimes inputs random characters
@@ -29,10 +36,16 @@ export default function PriceVerifier() {
             setBarcode(newBarcode);
             setScanned(true);
 
+            // Timeout for barcode reset
             setTimeout(() => {
                 setBarcode('');
                 setScanned(false);
             }, 3000);
+
+            // Timeout for product display reset
+            setTimeout(() => {
+                setProductDisplay(null);
+            }, 30000);
         }
     }
 
@@ -52,7 +65,7 @@ export default function PriceVerifier() {
                     value={barcode}
                     onChangeText={handleScan}
                     onBlur={() => inputRef.current?.focus()}
-                    editable={!scanned}
+                    editable={!scanned} // disables the scanner
                     showSoftInputOnFocus={false}
                     pointerEvents="none"
                     caretHidden={true}
@@ -62,16 +75,16 @@ export default function PriceVerifier() {
 
                 {isFetching && isPending && <ActivityIndicator />}
 
-                {scanned && isSuccess ? (
+                {productDisplay !== null ? (
                     <ScanResult
-                        productDescription={product?.description}
-                        productPrice={product?.price}
+                        productDescription={productDisplay?.description}
+                        productPrice={productDisplay?.price}
                     />
                 ) : (
                     <>{isError && <ErrorMessage />}</>
                 )}
 
-                {isFetching || (isPending && <ScanIndicator />)}
+                {productDisplay === null && <ScanIndicator />}
             </View>
         </ScreenContainer>
     );
@@ -88,11 +101,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
-        opacity: 0,
+        opacity: 0, // comment this to show textbox
         width: 'auto',
         backgroundColor: 'white',
         borderWidth: 1,
-        borderRadius: 10,
         borderColor: COLORS.border,
     },
     rightColumn: {
