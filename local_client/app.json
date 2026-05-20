@@ -30,11 +30,7 @@
             "typedRoutes": true
         },
         "android": {
-            "package": "com.snooze33.lccpricever",
-            "permissions": [
-                "android.permissions.ACCESS_NETWORK_STATE",
-                "android.permissions.ACCESS_WIFI_STATE"
-            ]
+            "package": "com.lccpricever"
         }
     }
 }

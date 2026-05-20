@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as FileSystem from 'expo-file-system';
 
 export const localAPI = axios.create({
     timeout: 5000,
