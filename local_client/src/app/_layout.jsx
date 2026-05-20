@@ -24,7 +24,9 @@ export default function RootLayout() {
             const configDirectory = new Directory(Paths.document, 'config');
             const config = new File(configDirectory, 'config.txt');
 
+            // Checks if app already has a config in
             if (configDirectory.exists && config.exists) {
+                // sets axios base url using config
                 setBaseUrl(config.textSync());
                 setHasConfig(true);
             } else {
@@ -44,6 +46,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
             <StatusBar hidden={true} />
             <Stack screenOptions={{ headerShown: false }}>
+                {/* In development comment the stack below, so different store accounts can be tested */}
                 <Stack.Screen
                     name="index"
                     redirect={hasConfig ? true : false}
